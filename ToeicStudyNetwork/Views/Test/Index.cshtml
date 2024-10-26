@@ -1,0 +1,116 @@
+@{
+ViewBag.Title = "Test";
+Layout = "_Layout";
+}
+
+@section customHead {
+    <link rel="stylesheet" href="~/css/test_index.css" asp-append-version="true" />
+}
+
+<section class="test">
+    <!-- Hero Section with Breadcrumb -->
+    <div class="hero-section">
+        <div class="container">
+            <h2 class="page-title">Đề thi online</h2>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="container py-5">
+
+        <!-- Select Listening & Reading and Speaking & Writing -->
+        <div class="list-skill">
+            <!-- Listening & Reading Item -->
+            <div class="skill-item lr-skill">
+                <a href="#full-test" class="skill-item-title active">Listening &amp; Reading</a>
+            </div>
+
+            <!-- Speaking & Writing Item -->
+            <div class="skill-item sw-skill">
+                <a href="#saw-test" class="skill-item-title">Speaking &amp; Writing</a>
+            </div>
+        </div>
+
+
+        <!-- Accordion Section -->
+        <div class="accordion" id="testAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        <span>Test Đầu Vào</span>
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#testAccordion">
+                    <div id="accordion-body" class="accordion-body">
+                        @for (var i = 0; i < 5; i++)
+                        {
+                            @await Html.PartialAsync("_TestItem")
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <span>Hacker TOEIC</span>
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#testAccordion">
+                    <div  class="accordion-body">
+                        @for (var i = 0; i < 4; i++)
+                        {
+                        @await Html.PartialAsync("_TestItem")
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <span>ETS 2024</span>
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#testAccordion">
+                    <div class="accordion-body">
+                        @for (var i = 0; i < 3; i++)
+                        {
+                            @await Html.PartialAsync("_TestItem")
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        <span>ETS 2023</span>
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#testAccordion">
+                    <div class="accordion-body">
+                        @for (var i = 0; i < 2; i++)
+                        {
+                            @await Html.PartialAsync("_TestItem")
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        <span>ETS 2022</span>
+                    </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#testAccordion">
+                    <div class="accordion-body">
+                        @for (var i = 0; i < 1; i++)
+                        {
+                        @await Html.PartialAsync("_TestItem")
+                        }
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</section>

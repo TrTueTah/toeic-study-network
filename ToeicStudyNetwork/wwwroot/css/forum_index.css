@@ -174,14 +174,21 @@
 
 .media-action-container {
     display: flex;
+    margin-top: 8px;
 }
 
 .media-action {
     display: flex;
     gap: 4px;
+    justify-content: center;
     align-items: center;
-    padding-top: 12px;
-    padding-right: 12px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    transition: background-color 0.5s ease;
+}
+
+.media-action:hover {
+    background-color: #f0f0f0;
 }
 
 .media-action-button {
@@ -217,7 +224,133 @@
 }
 
 
+.media-action-button.liked i {
+    color: color(display-p3 1 0.18 0.25 / 1);
+}
+
+.total-text.liked {
+    color: color(display-p3 1 0.18 0.25 / 1);
+}
 
 
+.modal-header {
+    padding: 1rem;
+}
 
+.modal-header .modal-title {
+    font-weight: 600;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.modal-header .btn-link {
+    z-index: 1;
+}
+
+.modal-title {
+    color: var(--black-500);
+    font-weight: 600;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.btn-link {
+    text-decoration: none;
+    font-size: 14px;
+    padding: 0;
+    color: var(--black-400);
+    text-transform: none;
+}
+
+.btn-link:hover {
+    background: none;
+    color: var(--black-500);
+}
+/* Grid container */
+.post-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 12px;
+    padding: 16px;
+}
+
+.avatar-section {
+    grid-row: 1 / span 2;
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-info {
+    grid-column: 2;
+    align-self: center;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--black-500);
+}
+
+.post-input {
+    grid-column: 2 / span 2;
+    padding: 8px 14px;
+    background-color: var(--white-200);
+    border: 1px solid var(--black-100);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--black-300);
+    cursor: text;
+}
+
+.action-bar {
+    grid-column: 2 / span 2;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+}
+
+.btn-action {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+}
+
+.btn-action:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+}
+
+.btn-action i {
+    color: var(--black-300);
+    font-size: 1.2rem;
+}
+
+.post-button {
+    background-color: var(--white-400); 
+    border: 1px solid var(--black-100); 
+    border-radius: 10px; 
+    color: var(--black-500); 
+    text-transform: none; 
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.post-button:disabled {
+    background-color: var(--white-200);
+    color: var(--black-300);
+    border-color: var(--black-100);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 
