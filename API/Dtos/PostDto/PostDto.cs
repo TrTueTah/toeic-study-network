@@ -1,6 +1,6 @@
 ﻿using API.Models;
 
-namespace API.Dtos.Post;
+namespace API.Dtos.PostDto;
 
 public class PostDto
 {

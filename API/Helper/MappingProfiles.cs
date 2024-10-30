@@ -1,4 +1,4 @@
-﻿using API.Dtos.Post;
+﻿using API.Dtos.PostDto;
 using API.Models;
 using AutoMapper;
 

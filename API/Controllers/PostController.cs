@@ -1,10 +1,11 @@
 ﻿using API.Interfaces;
 using API.Models;
-using API.Dtos.Post; // Thêm namespace cho DTOs
+using API.Dtos.PostDto;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using API.Dtos.Post;
-using AutoMapper; // Thêm AutoMapper
+using API.Services;
+using AutoMapper;
+using Azure.Storage.Blobs;
 
 namespace API.Controllers
 {
@@ -14,11 +15,12 @@ namespace API.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-
-        public PostController(IPostRepository postRepository, IMapper mapper)
+        private readonly BlobService _blobService;
+        public PostController(IPostRepository postRepository, IMapper mapper, BlobService blobService)
         {
             _postRepository = postRepository;
             _mapper = mapper;
+            _blobService = blobService;
         }
 
         // GET: api/v1/post/getAllPosts
@@ -69,7 +71,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(PostDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public ActionResult<PostDto> CreatePost([FromBody] CreatePostDto createPostDto)
+        public async Task<ActionResult<PostDto>> CreatePost([FromForm] CreatePostDto createPostDto)
         {
             if (createPostDto == null)
             {
@@ -77,17 +79,31 @@ namespace API.Controllers
             }
 
             var post = _mapper.Map<Post>(createPostDto);
-            
             post.CreatedAt = DateTime.Now;
+            post.MediaUrls = new List<string>();
             
-            // List<string> mediaUrls = new List<string>();
-            //
-            // if (createPostDto.MediaUrls != null && createPostDto.MediaUrls.Count > 0)
-            // {
-            //     mediaUrls.AddRange(createPostDto.MediaUrls);
-            // }
-
             if (!_postRepository.CreatePost(post))
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+            
+            List<string> mediaUrls = new List<string>();
+    
+            if (createPostDto.MediaFiles != null && createPostDto.MediaFiles.Count > 0)
+            {
+                foreach (var file in createPostDto.MediaFiles)
+                {
+                    if (file.Length > 0)
+                    {
+                        var url = await _blobService.UploadFileAsync(file, post.Id.ToString());
+                        mediaUrls.Add(url);
+                    }
+                }
+            }
+            
+            post.MediaUrls = mediaUrls;
+
+            if (!_postRepository.UpdatePost(post))
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
@@ -96,12 +112,14 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPostDto);
         }
 
+
+
         // PUT: api/v1/post/updatePost/{id}
         [HttpPut("updatePost/{id}")]
-        [ProducesResponseType(204)] // No Content
-        [ProducesResponseType(400)] // Bad Request
-        [ProducesResponseType(404)] // Not Found
-        [ProducesResponseType(500)] // Internal Server Error
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public ActionResult UpdatePost(int id, [FromBody] PostDto postDto)
         {
             if (postDto == null || postDto.Id != id)
@@ -124,24 +142,35 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // DELETE: api/v1/post/deletePost/{id}
+// DELETE: api/v1/post/deletePost/{id}
         [HttpDelete("deletePost/{id}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)] 
+        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult DeletePost(int id)
+        public async Task<ActionResult> DeletePost(int id)
         {
-            if (!_postRepository.PostExists(id))
+            var post = _postRepository.GetPostByPostId(id);
+            if (post == null)
             {
                 return NotFound();
             }
 
-            if (!_postRepository.DeletePost(id))
+            try
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                await _blobService.DeleteFolderAsync(post.Id.ToString());
+                
+                if (!_postRepository.DeletePost(id))
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
 
             return NoContent();
         }
+
     }
 }

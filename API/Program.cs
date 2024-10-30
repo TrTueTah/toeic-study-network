@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Repository;
+using Azure.Storage.Blobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,15 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = int.MaxValue;
+});
+
+
+builder.Services.AddSingleton(new BlobServiceClient(builder.Configuration["AzureBlobStorage:ConnectionString"]));
+builder.Services.AddScoped<BlobService>(provider =>
+    new BlobService(provider.GetRequiredService<BlobServiceClient>(), builder.Configuration["AzureBlobStorage:ContainerName"]));
 
 var app = builder.Build();
 
