@@ -87,13 +87,13 @@ namespace API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
             
-            List<string> mediaUrls = new List<string>();
+            ICollection<string> mediaUrls = new List<string>();
     
             if (createPostDto.MediaFiles != null && createPostDto.MediaFiles.Count > 0)
             {
-                foreach (var file in createPostDto.MediaFiles)
+                foreach (IFormFile file in createPostDto.MediaFiles)
                 {
-                    if (file.Length > 0)
+                    if (file != null && file.Length > 0)
                     {
                         var url = await _blobService.UploadFileAsync(file, post.Id.ToString());
                         mediaUrls.Add(url);
