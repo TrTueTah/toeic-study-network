@@ -1,0 +1,67 @@
+.test-item {
+	background-color: var(--white-500);
+	border: 1px solid color-mix(in srgb, var(--gray-800), transparent 85%);
+	height: 100%;
+	transition: 0.3s;
+	border-radius: 8px;
+	display: flex;
+}
+
+.test-item h3 {
+	color: color-mix(in srgb, var(--white-800));
+	font-weight: 700;
+	font-size: 16px;
+	transition: 0.3s;
+}
+
+.test-item p {
+	margin-bottom: 0;
+	color: color-mix(in srgb, var(--gray-800), transparent 40%);
+	transition: 0.3s;
+}
+
+.test-item .detail-item {
+	display: flex;
+	color: color-mix(in srgb, var(--gray-800), transparent 40%);
+	gap: 4px;
+	margin-bottom: 4px;
+}
+
+.test-item .course-tag {
+	width: fit-content;
+	color: var(--primary-500);
+	background-color: color-mix(in srgb, var(--primary-500), transparent 90%);
+	padding: 2px 8px;
+	border-radius: 30px;
+	font-size: 12px;
+	margin-top: 16px;
+}
+
+.test-item .btn-detail {
+	width: 100%;
+	background-color: transparent;
+	color: var(--primary-500);
+	border: 2px solid var(--primary-500);
+	padding: 8px;
+	border-radius: 4px;
+	transition: all 0.3s ease;
+	font-weight: bold;
+}
+
+.test-item .btn-detail:hover {
+	background-color: var(--primary-500);
+	color: var(--white-500);
+	cursor: pointer;
+}
+
+.test-item:hover {
+	box-shadow: 0px 2px 25px var(--black-100);
+}
+
+.test-item:hover h3 {
+	color: var(--black-800);
+}
+
+.test-item:hover p {
+	color: color-mix(in srgb, var(--gray-800), transparent 10%);
+}

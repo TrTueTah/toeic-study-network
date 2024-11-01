@@ -1,0 +1,124 @@
+
+@{
+    ViewBag.Title = "Forum";
+    Layout = "_LayoutForum";
+}
+
+@section customHead {
+    <link rel="stylesheet" href="~/css/forum_index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+}
+
+<div class="container">
+    <div class="row align-items-center mb-2">
+        <div class="col-auto">
+            <button class="btn btn-icon">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+        </div>
+
+        <div class="col text-center d-flex justify-content-center align-items-center">
+            <span class="py-2">Dành cho bạn</span>
+            <div class="dropdown">
+                <button class="btn btn-icon mx-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+                <ul class="dropdown-menu expanded-dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                        <a class="dropdown-item expanded-dropdown-item selected" href="#">
+                            <span>Dành cho bạn</span>
+                            <i class="bi bi-check2"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item expanded-dropdown-item" href="#">
+                            <span>Đã thích</span>
+                            <i class="bi bi-check2"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item expanded-dropdown-item" href="#">
+                            <span>Đã lưu</span>
+                            <i class="bi bi-check2"></i>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="col-auto">
+            <button class="btn btn-icon">
+                <i class="bi bi-three-dots"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="avatar">
+                <img src="https://via.placeholder.com/40x40" alt="Avatar" class="rounded-avatar">
+            </div>
+            <div role="button" class="post-text" data-mdb-toggle="modal" data-mdb-target="#postModal" tabindex="0">
+                <span>What's new?</span>
+            </div>
+            <button class="post-button py-1 px-3" data-mdb-toggle="modal" data-mdb-target="#postModal">
+                <span class="text-center">Đăng bài</span>
+            </button>
+            <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
+                            <div type="button" class="btn btn-link" data-bs-dismiss="modal"><span>Huỷ bỏ</span></div>
+                            <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel" style="font-weight: 600;">Bài viết mới</h6>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="post-grid">
+                                <div class="avatar-section">
+                                    <img src="https://via.placeholder.com/36x36" class="avatar-img rounded-circle" alt="Avatar">
+                                </div>
+                                <div class="user-info">
+                                    <span class="user-name">Tên người dùng</span>
+                                </div>
+
+                                <div class="post-input" role="button" tabindex="0">
+                                    <span>What's new?</span>
+                                </div>
+
+                                <div class="action-bar d-flex align-items-center">
+                                    <div class="action-item">
+                                        <button class="btn-action">
+                                            <i class="bi bi-images"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="action-item">
+                                        <button class="btn-action">
+                                            <i class="bi bi-text-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="post-button py-1 px-3" disabled>
+                                <span class="text-center">Đăng bài</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        @for (int i = 0; i < 4; i++)
+        {
+        @await Html.PartialAsync("_MediaPost")
+        }
+    </div>
+</div>
+
+@section scripts {
+<script src="~/js/forum.js" asp-append-version="true"></script>
+}

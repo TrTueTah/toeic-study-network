@@ -1,0 +1,356 @@
+.container {
+    width: 60%;
+    height: 100%;
+    padding-top: 2rem;
+}
+
+.forum-navbar {
+    display: flex;
+    background-color: #fafafa;
+    padding: 0 12px;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #D5D5D5;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 8px;
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.05);
+    border: 1px solid #D5D5D5;
+    box-shadow: 0 0 0 1px #D5D5D5;
+}
+
+.btn-icon:active {
+    transform: scale(0.95);
+}
+
+.btn-icon i {
+    font-size: 12px;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #D5D5D5;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+}
+
+.avatar img {
+    border-radius: 50%; 
+}
+
+.post-text {
+    flex: 1;
+    cursor: pointer;
+    padding: 8px 12px; 
+    margin-left: 12px;
+    color: #9E9E9E;
+}
+
+.post-button {
+    cursor: pointer;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #D5D5D5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.3s ease, border 0.3s ease, transform 0.1s ease;
+}
+
+.post-button:active {
+    transform: scale(0.95); 
+    border: 1px solid #D5D5D5; 
+}
+
+.media-container {
+    display: flex;
+    background-color: #ffffff;
+    padding: 16px 20px;
+    border-top: 1px solid #D5D5D5;;
+}
+
+.avatar {
+    position: relative;
+    margin-right: 16px; 
+}
+
+.rounded-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.media-main {
+    flex: 1; 
+}
+
+.media-header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.media-info {
+    display: flex;
+    gap: 12px;
+}
+
+.username {
+    cursor: pointer;
+    font-weight: 700; 
+}
+
+.username:hover {
+    text-decoration: underline;
+}
+
+.timestamp {
+    color: #999; 
+}
+
+.options-button {
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.options-button:hover {
+    background: #F0F0F0; 
+    border-radius: 50%;
+}
+
+.options-button::after {
+    display: none;
+}
+
+.media-content {
+    margin-top: 8px;
+}
+
+.media-caption {
+    margin-bottom: 8px;
+}
+
+.media-image-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto; 
+    max-width: 100%;
+    scrollbar-width: none; 
+}
+
+.media-image {
+    flex: 0 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.media-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.media-action-container {
+    display: flex;
+    margin-top: 8px;
+}
+
+.media-action {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 16px;
+    transition: background-color 0.5s ease;
+}
+
+.media-action:hover {
+    background-color: #f0f0f0;
+}
+
+.media-action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 4px;
+    color: #424242;
+}
+
+.total-text {
+    color: #424242;
+}
+
+.dropdown-menu {
+    background-color: #ffffff;
+    transition: transform 0.1s ease; 
+}
+
+.dropdown-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0; 
+}
+
+.dropdown-item span,
+.dropdown-item i {
+    font-weight: 500;
+}
+
+
+.media-action-button.liked i {
+    color: color(display-p3 1 0.18 0.25 / 1);
+}
+
+.total-text.liked {
+    color: color(display-p3 1 0.18 0.25 / 1);
+}
+
+
+.modal-header {
+    padding: 1rem;
+}
+
+.modal-header .modal-title {
+    font-weight: 600;
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.modal-header .btn-link {
+    z-index: 1;
+}
+
+.modal-title {
+    color: var(--black-500);
+    font-weight: 600;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.btn-link {
+    text-decoration: none;
+    font-size: 14px;
+    padding: 0;
+    color: var(--black-400);
+    text-transform: none;
+}
+
+.btn-link:hover {
+    background: none;
+    color: var(--black-500);
+}
+/* Grid container */
+.post-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 12px;
+    padding: 16px;
+}
+
+.avatar-section {
+    grid-row: 1 / span 2;
+}
+
+.avatar-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-info {
+    grid-column: 2;
+    align-self: center;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--black-500);
+}
+
+.post-input {
+    grid-column: 2 / span 2;
+    padding: 8px 14px;
+    background-color: var(--white-200);
+    border: 1px solid var(--black-100);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--black-300);
+    cursor: text;
+}
+
+.action-bar {
+    grid-column: 2 / span 2;
+}
+
+.action-item {
+    display: flex;
+    align-items: center;
+}
+
+.btn-action {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 50%;
+}
+
+.btn-action:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+}
+
+.btn-action i {
+    color: var(--black-300);
+    font-size: 1.2rem;
+}
+
+.post-button {
+    background-color: var(--white-400); 
+    border: 1px solid var(--black-100); 
+    border-radius: 10px; 
+    color: var(--black-500); 
+    text-transform: none; 
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.post-button:disabled {
+    background-color: var(--white-200);
+    color: var(--black-300);
+    border-color: var(--black-100);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+

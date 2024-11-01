@@ -1,0 +1,182 @@
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(
+            to right,
+            var(--primary-500),
+            var(--primary-600),
+            var(--primary-700),
+            var(--primary-800),
+            var(--primary-900)
+    );
+	color: var(--white-500);
+	padding: 60px 0;
+	text-align: center;
+}
+
+.hero-section .page-title {
+	font-size: 2.5rem;
+	font-weight: 600;
+	margin-bottom: 10px;
+	color: var(--white-500);
+}
+
+.list-skill {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.list-skill .skill-item {
+    flex-basis: 50%;
+    max-width: 50%;
+    text-align: center;
+}
+
+.list-skill .skill-item:first-of-type {
+    border-right: 1px solid #fff;
+}
+
+.list-skill .skill-item-title {
+    background-color: var(--primary-500);
+    padding: 5px 15px;
+    font-weight: 700;
+    font-size: 22px;
+    display: inline-block;
+    width: 100%;
+    color: #fff;
+    border-radius: 10px;
+    
+}
+
+.list-skill .skill-item-title.active,
+.list-skill .skill-item-title:hover {
+    background-color: var(--orange-500);
+}
+
+.list-skill .skill-item-title:first-of-type {
+    border-right: 1px solid #fff;
+}
+
+/* Accordion */
+.accordion-item {
+    border: 1px solid var(--gray-200);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-header {
+	background-color: var(--white-100);
+	border-radius: 10px;
+}
+
+.accordion-button {
+	background-color: transparent;
+	color: var(--black-800);
+	font-weight: 600;
+	font-size: 1.2rem;
+	transition: color 0.3s ease-in-out;
+}
+
+.accordion-button::after {
+    color: var(--white-100); 
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--primary-700);
+	background-color: var(--primary-100);
+}
+
+.accordion-button span {
+    text-transform: uppercase;
+}
+
+.accordion-body {
+    background-color: var(--white-100);
+    padding: 20px;
+    border-radius: 5px;
+    display: grid;
+    gap: 16px; 
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+
+/* Media Queries */
+@media (max-width: 768px) {
+	.hero-section .page-title {
+		font-size: 2rem;
+	}
+
+	.list-skill .nav-link {
+		padding: 8px 15px;
+	}
+
+	.accordion-body {
+		padding: 15px;
+	}
+}
+
+.accordion-body .test-item {
+    background-color: var(--white-500);
+    border: 1px solid color-mix(in srgb, var(--gray-800), transparent 85%);
+    height: 100%;
+    transition: 0.3s;
+    border-radius: 8px;
+    display: flex;
+}
+
+.accordion-body .test-item h3 {
+    color: color-mix(in srgb, var(--white-800));
+    font-weight: 700;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.accordion-body .test-item p {
+    margin-bottom: 0;
+    color: color-mix(in srgb, var(--gray-800), transparent 40%);
+    transition: 0.3s;
+}
+
+.accordion-body .test-item .detail-item {
+    display: flex;
+    color: color-mix(in srgb, var(--gray-800), transparent 40%);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.accordion-body .test-item .course-tag {
+    width: fit-content;
+    color: var(--primary-500);
+    background-color: color-mix(in srgb, var(--primary-500), transparent 90%);
+    padding: 2px 8px;
+    border-radius: 30px;
+    font-size: 12px;
+    margin-top: 16px;
+}
+
+.accordion-body .test-item .btn-detail {
+    width: 100%;
+    background-color: transparent;
+    color: var(--primary-500);
+    border: 2px solid var(--primary-500);
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.accordion-body .test-item .btn-detail:hover {
+    background-color: var(--primary-500);
+    color: var(--white-500);
+    cursor: pointer;
+}
+
+.accordion-body .test-item:hover {
+    box-shadow: 0px 2px 25px var(--black-100);
+}
+
+.accordion-body .test-item:hover h3 {
+    color: var(--black-800);
+}
+
+.accordion-body .test-item:hover p {
+    color: color-mix(in srgb, var(--gray-800), transparent 10%);
+}
