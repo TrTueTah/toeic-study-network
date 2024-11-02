@@ -157,7 +157,7 @@ namespace API.Controllers
 
             try
             {
-                await _blobService.DeleteFolderAsync(post.Id.ToString());
+                _blobService.DeleteFolderAsync($"posts/{id}");
                 
                 if (!_postRepository.DeletePost(id))
                 {

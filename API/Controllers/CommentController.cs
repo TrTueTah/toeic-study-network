@@ -16,6 +16,7 @@ namespace API.Controllers
         private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
         private readonly BlobService _blobService;
+
         public CommentController(ICommentRepository commentRepository, IMapper mapper, BlobService blobService)
         {
             _commentRepository = commentRepository;
@@ -46,6 +47,7 @@ namespace API.Controllers
             {
                 return NotFound();
             }
+
             var commentDto = _mapper.Map<CommentDto>(comment);
             return Ok(commentDto);
         }
@@ -72,14 +74,14 @@ namespace API.Controllers
             }
 
             ICollection<string> mediaUrls = new List<string>();
-            
+
             if (createCommentDto.MediaFiles != null && createCommentDto.MediaFiles.Count > 0)
             {
-                foreach (IFormFile file in createCommentDto.MediaFiles )
+                foreach (IFormFile file in createCommentDto.MediaFiles)
                 {
                     if (file != null && file.Length > 0)
                     {
-                        var url = await _blobService.UploadFileAsync(file, $"comment/{comment.Id}");
+                        var url = await _blobService.UploadFileAsync(file, $"comments/{comment.Id}");
                         mediaUrls.Add(url);
                     }
                 }
@@ -124,12 +126,12 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // DELETE: api/v1/comment/deleteComment/{id}
+        //DELETE: api/v1/comment/deleteComment/{id}
         [HttpDelete("deleteComment/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult DeleteComment(int id)
+        public async Task<ActionResult> DeleteComment(int id)
         {
             var comment = _commentRepository.GetCommentById(id);
             if (comment == null)
@@ -137,9 +139,18 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            if (!_commentRepository.DeleteComment(id))
+            try
             {
-                return StatusCode(500, "A problem happened while handling your request.");
+                await _blobService.DeleteFolderAsync($"comments/{id}");
+
+                if (!_commentRepository.DeleteComment(id))
+                {
+                    return StatusCode(500, "A problem happened while handling your request.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
 
             return NoContent();
