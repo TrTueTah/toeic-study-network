@@ -5,8 +5,8 @@ namespace API.Interfaces;
 
 public interface ILikeRepository
 {
-    bool AddLike(Like like);
-    bool RemoveLike(int postId, string userId);
+    bool CreateLike(Like like);
+    bool DeleteLike(int postId, string userId);
     ICollection<Like> GetLikesByPostId(int postId);
     bool UserHasLikedPost(int postId, string userId);
 }

@@ -26,75 +26,53 @@ namespace API.Controllers
             _postRepository = postRepository;
         }
 
-        // POST: api/v1/like/addLike
-        [HttpPost("addLike")]
-        [ProducesResponseType(typeof(LikeDto), 201)]
+        // POST: api/v1/like/toggleLike
+        [HttpPost("toggleLike")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<LikeDto> AddLike([FromBody] LikeDto likeDto)
+        public ActionResult ToggleLike([FromBody] LikeDto likeDto)
         {
             if (likeDto == null)
             {
                 return BadRequest("Like data is null.");
             }
-            
+
             if (!_userRepository.UserExists(likeDto.UserId))
             {
                 return NotFound("User not found.");
             }
-            
+
             if (!_postRepository.PostExists(likeDto.PostId))
             {
                 return NotFound("Post not found.");
             }
-            
-            if (_likeRepository.UserHasLikedPost(likeDto.PostId, likeDto.UserId))
+
+            bool isLiked = _likeRepository.UserHasLikedPost(likeDto.PostId, likeDto.UserId);
+
+            if (isLiked)
             {
-                return BadRequest("Already Like!");
+                if (!_likeRepository.DeleteLike(likeDto.PostId, likeDto.UserId))
+                {
+                    return StatusCode(500, "A problem occurred while unliking the post.");
+                }
+                return NoContent();
             }
-
-            var like = _mapper.Map<Like>(likeDto);
-            like.LikedAt = DateTime.Now;
-
-            if (!_likeRepository.AddLike(like))
+            else
             {
-                return StatusCode(500, "A problem occurred while handling your request.");
-            }
+                var like = _mapper.Map<Like>(likeDto);
+                like.LikedAt = DateTime.Now;
 
-            return CreatedAtAction(nameof(GetLikedUsers), new { postId = like.PostId }, likeDto);
+                if (!_likeRepository.CreateLike(like))
+                {
+                    return StatusCode(500, "A problem occurred while liking the post.");
+                }
+                return CreatedAtAction(nameof(GetLikedUsers), new { postId = like.PostId }, likeDto);
+            }
         }
-
-        // DELETE: api/v1/like/removeLike
-        [HttpDelete("removeLike")]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public ActionResult RemoveLike([FromBody] LikeDto likeRemoveDto)
-        {
-            if (!_userRepository.UserExists(likeRemoveDto.UserId))
-            {
-                return NotFound("User not found.");
-            }
-            
-            if (!_postRepository.PostExists(likeRemoveDto.PostId))
-            {
-                return NotFound("Post not found.");
-            }
-            
-            if (!_likeRepository.UserHasLikedPost(likeRemoveDto.PostId, likeRemoveDto.UserId))
-            {
-                return NotFound("Like not found.");
-            }
-
-            if (!_likeRepository.RemoveLike(likeRemoveDto.PostId, likeRemoveDto.UserId))
-            {
-                return StatusCode(500, "A problem occurred while handling your request.");
-            }
-
-            return NoContent();
-        }
-
+        
         // GET: api/v1/like/getLikedUsers/{postId}
         [HttpGet("getLikedUsers/{postId}")]
         [ProducesResponseType(typeof(ICollection<UserNameDto>), 200)]
