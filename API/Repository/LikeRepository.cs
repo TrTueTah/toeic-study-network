@@ -13,7 +13,7 @@ public class LikeRepository : ILikeRepository
         _context = context;
     }
 
-    public bool AddLike(Like like)
+    public bool CreateLike(Like like)
     { 
         if (UserHasLikedPost(like.PostId, like.UserId))
         {
@@ -23,7 +23,7 @@ public class LikeRepository : ILikeRepository
         return Save();
     }
 
-    public bool RemoveLike(int postId, string userId)
+    public bool DeleteLike(int postId, string userId)
     {
         var like = _context.Likes.SingleOrDefault(l => l.PostId == postId && l.UserId == userId);
         if (like == null)

@@ -17,7 +17,7 @@ public class PostRepository : IPostRepository
         return _context.Posts.OrderBy(p => p.Id).ToList();
     }
 
-    public Post GetPostByPostId(int id)
+    public Post GetPostById(int id)
     {
         return _context.Posts.Where(p => p.Id == id).FirstOrDefault();
     }
@@ -35,7 +35,7 @@ public class PostRepository : IPostRepository
 
     public bool UpdatePost(Post post)
     {
-        _context.Update(post);
+        _context.Posts.Update(post);
         return Save();
     }
 
@@ -48,7 +48,7 @@ public class PostRepository : IPostRepository
             return false;
         }
         
-        _context.Remove(post);
+        _context.Posts.Remove(post);
         return Save();
     }
 

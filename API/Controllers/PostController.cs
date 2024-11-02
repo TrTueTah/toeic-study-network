@@ -27,21 +27,21 @@ namespace API.Controllers
         [HttpGet("getAllPosts")]
         [ProducesResponseType(typeof(ICollection<PostDto>), 200)]
         [ProducesResponseType(500)]
-        public ActionResult<ICollection<PostDto>> GetPosts()
+        public ActionResult<ICollection<PostDto>> GetAllPosts()
         {
             var posts = _postRepository.GetAllPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
             return Ok(postDtos);
         }
 
-        // GET: api/v1/post/getPostByPostId/{id}
-        [HttpGet("getPostByPostId/{id}")]
+        // GET: api/v1/post/getPostById/{id}
+        [HttpGet("getPostById/{id}")]
         [ProducesResponseType(typeof(PostDto), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public ActionResult<PostDto> GetPost(int id)
         {
-            var post = _postRepository.GetPostByPostId(id);
+            var post = _postRepository.GetPostById(id);
             if (post == null)
             {
                 return NotFound();
@@ -95,7 +95,7 @@ namespace API.Controllers
                 {
                     if (file != null && file.Length > 0)
                     {
-                        var url = await _blobService.UploadFileAsync(file, post.Id.ToString());
+                        var url = await _blobService.UploadFileAsync(file, $"posts/{post.Id}");
                         mediaUrls.Add(url);
                     }
                 }
@@ -149,7 +149,7 @@ namespace API.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeletePost(int id)
         {
-            var post = _postRepository.GetPostByPostId(id);
+            var post = _postRepository.GetPostById(id);
             if (post == null)
             {
                 return NotFound();
@@ -157,7 +157,7 @@ namespace API.Controllers
 
             try
             {
-                await _blobService.DeleteFolderAsync(post.Id.ToString());
+                _blobService.DeleteFolderAsync($"posts/{id}");
                 
                 if (!_postRepository.DeletePost(id))
                 {
