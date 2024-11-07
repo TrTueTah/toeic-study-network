@@ -16,11 +16,13 @@ namespace API.Controllers
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
         private readonly BlobService _blobService;
-        public PostController(IPostRepository postRepository, IMapper mapper, BlobService blobService)
+        private readonly IUserRepository _userRepository;
+        public PostController(IPostRepository postRepository, IMapper mapper, BlobService blobService, IUserRepository userRepository)
         {
             _postRepository = postRepository;
             _mapper = mapper;
             _blobService = blobService;
+            _userRepository = userRepository;
         }
 
         // GET: api/v1/post/getAllPosts
@@ -31,6 +33,8 @@ namespace API.Controllers
         {
             var posts = _postRepository.GetAllPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
+            var userName = _userRepository.GetUserNameById(postDtos[0].UserId);
+            postDtos[0].UserName = userName;
             return Ok(postDtos);
         }
 

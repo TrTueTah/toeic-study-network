@@ -12,4 +12,5 @@ public class PostDto
     public ICollection<Like> Likes { get; set; }
     public ICollection<Comment> Comments { get; set; }
     public string UserId { get; set; }
+    public string UserName { get; set; }
 }

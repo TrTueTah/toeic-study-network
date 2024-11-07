@@ -17,8 +17,65 @@
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
 
-        <a class="btn-login" asp-action="SignIn" asp-controller="Authentication">Đăng nhập</a>
-
+        <div id="user-info">
+            <!-- Placeholder for user info -->
+        </div>
     </div>
 </header>
 <!-- Navbar -->
+
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+<script>
+    function getCookie(name) {
+        let cookieArr = document.cookie.split(";");
+        for (let i = 0; i < cookieArr.length; i++) {
+            let cookiePair = cookieArr[i].split("=");
+            if (name == cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    }
+
+    function isTokenExpired(token) {
+        try {
+            const decoded = jwt_decode(token);
+            const currentTime = Math.floor(Date.now() / 1000);
+            return decoded.exp < currentTime;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return true;
+        }
+    }
+    function deleteCookie(name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    }
+    function logout() {
+        deleteCookie("token");
+        window.location.href = "/Authentication/SignIn";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let token = getCookie("token");
+
+        if (token && !isTokenExpired(token)) {
+            const decodedToken = jwt_decode(token);
+            const givenName = decodedToken.given_name || "User";
+            document.getElementById("user-info").innerHTML = `
+                <a type="button" data-bs-toggle="dropdown" aria-expanded="false" href="/" class="user-image">
+                    <img src="/assets/img/icon-image.png" alt="userimage">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><h6 class="dropdown-header fw-bold text-dark">${givenName}</h6></li>
+                    <li><button class="dropdown-item" type="button">Hồ sơ chi tiết</button></li>
+                    <li><button class="dropdown-item text-danger" type="button" onclick="logout()">Đăng xuất</button></li>
+                </ul>
+            `;
+        } else {
+            document.getElementById("user-info").innerHTML = `
+                <a class="btn-login" href="/Authentication/SignIn">Đăng nhập</a>
+            `;
+        }
+    });
+</script>

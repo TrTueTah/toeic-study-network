@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using API.Dtos.UserDto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
