@@ -22,14 +22,16 @@ namespace API.Controllers;
         }
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(NewUserDto), 200)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 
-            if (user == null) return Unauthorized("Invalid username!");
+            if (user == null) return Unauthorized("Invalid Email!");
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 
@@ -40,7 +42,7 @@ namespace API.Controllers;
                 {
                     UserName = user.UserName,
                     Email = user.Email,
-                    Token = _tokenService.CreateToken(user)
+                    Token = _tokenService.CreateToken(user, "AccessToken")
                 }
             );
         }
@@ -71,7 +73,7 @@ namespace API.Controllers;
                             {
                                 UserName = appUser.UserName,
                                 Email = appUser.Email,
-                                Token = _tokenService.CreateToken(appUser)
+                                Token = _tokenService.CreateToken(appUser, "AccessToken")
                             }
                         );
                     }

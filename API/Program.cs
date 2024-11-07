@@ -72,7 +72,19 @@ builder.Services.AddSingleton(new BlobServiceClient(builder.Configuration["Azure
 builder.Services.AddScoped<BlobService>(provider =>
     new BlobService(provider.GetRequiredService<BlobServiceClient>(), builder.Configuration["AzureBlobStorage:ContainerName"]));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -81,6 +93,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

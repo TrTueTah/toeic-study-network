@@ -15,7 +15,7 @@ public class TokenService : ITokenService
         _configuration = configuration;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
     }
-    public string CreateToken(AppUser user)
+    public string CreateToken(AppUser user, string TokenType)
     {
         var claims = new List<Claim>
         {
@@ -25,7 +25,8 @@ public class TokenService : ITokenService
         
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
-        {
+        {   
+            TokenType = TokenType,
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddHours(3),
             SigningCredentials = creds,

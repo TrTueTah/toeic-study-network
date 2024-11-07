@@ -26,4 +26,9 @@ public class UserRepository : IUserRepository
         var saved = _context.SaveChanges();
         return saved > 0 ? true : false;
     }
+
+    public string GetUserNameById(string userId)
+    {
+        return _context.Users.FirstOrDefault(u => u.Id == userId).UserName;
+    }
 }

@@ -1,4 +1,4 @@
-
+@model List<ToeicStudyNetwork.Models.PostModel>
 @{
     ViewBag.Title = "Forum";
     Layout = "_LayoutForum";
@@ -20,7 +20,8 @@
         <div class="col text-center d-flex justify-content-center align-items-center">
             <span class="py-2">Dành cho bạn</span>
             <div class="dropdown">
-                <button class="btn btn-icon mx-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn btn-icon mx-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="dropdown-menu expanded-dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -68,15 +69,18 @@
             <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
+                        <div
+                            class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
                             <div type="button" class="btn btn-link" data-bs-dismiss="modal"><span>Huỷ bỏ</span></div>
-                            <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel" style="font-weight: 600;">Bài viết mới</h6>
+                            <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel"
+                                style="font-weight: 600;">Bài viết mới</h6>
                         </div>
 
                         <div class="modal-body">
                             <div class="post-grid">
                                 <div class="avatar-section">
-                                    <img src="https://via.placeholder.com/36x36" class="avatar-img rounded-circle" alt="Avatar">
+                                    <img src="https://via.placeholder.com/36x36" class="avatar-img rounded-circle"
+                                        alt="Avatar">
                                 </div>
                                 <div class="user-info">
                                     <span class="user-name">Tên người dùng</span>
@@ -92,7 +96,7 @@
                                             <i class="bi bi-images"></i>
                                         </button>
                                     </div>
-                                    
+
                                     <div class="action-item">
                                         <button class="btn-action">
                                             <i class="bi bi-text-left"></i>
@@ -112,13 +116,13 @@
 
         </div>
 
-        @for (int i = 0; i < 4; i++)
+        @foreach (var post in Model)
         {
-        @await Html.PartialAsync("_MediaPost")
+            @await Html.PartialAsync("_MediaPost", post)
         }
     </div>
 </div>
 
 @section scripts {
-<script src="~/js/forum.js" asp-append-version="true"></script>
+    <script src="~/js/forum.js" asp-append-version="true"></script>
 }

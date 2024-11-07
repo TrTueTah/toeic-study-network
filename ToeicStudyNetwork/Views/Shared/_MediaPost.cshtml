@@ -1,93 +1,73 @@
-  <div class="media-container">
-            <div class="avatar">
-                <img src="https://via.placeholder.com/40x40" alt="Avatar" style="width: 40px; height: 40px; border-radius: 100%;"/>
+@model ToeicStudyNetwork.Models.PostModel
+<div class="media-container">
+    <div class="avatar">
+        <img src="https://via.placeholder.com/40x40" alt="Avatar"
+            style="width: 40px; height: 40px; border-radius: 100%;" />
+    </div>
+    <div class="media-main">
+        <div class="media-header d-flex justify-content-between align-items-center">
+            <div class="media-info">
+                <div class="username">@Model.UserName</div>
+                <div class="timestamp">@Model.CreatedAt</div>
             </div>
-            <div class="media-main">
-                <div class="media-header d-flex justify-content-between align-items-center">
-                    <div class="media-info">
-                        <div class="username">slowey.psd</div>
-                        <div class="timestamp">22h</div>
-                    </div>
-                    <div class="dropdown">
-                        <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-three-dots"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <span>Saved</span>
-                                    <i class="bi bi-bookmark"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#">
-                                    <span>Copy link</span>
-                                    <i class="bi bi-link-45deg"></i>
-                                </a>
-                            </li>
-                        </ul>
+            <div class="dropdown">
+                <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <span>Saved</span>
+                            <i class="bi bi-bookmark"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <span>Copy link</span>
+                            <i class="bi bi-link-45deg"></i>
+                        </a>
+                    </li>
+                </ul>
 
-                    </div>
-                </div>
-
-                <div class="media-content">
-                    <div class="media-caption">
-                        <span>em cũng giống như họ bởi vì hình ảnh của em dần mờ đi, nhưng vẫn xuất hiện trong những cơn mộng mị</span>
-                    </div>
-                    <div class="media-image-container">
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/280x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-                        <div class="media-image">
-                            <img src="https://via.placeholder.com/210x280" alt="Media Image"/>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="media-action-container">
-                    <div class="media-action">
-                        <button class="media-action-button">
-                            <i class="bi bi-heart"></i>
-                        </button>
-                        <span class="total-text">8018</span>
-                    </div>
-                    <div class="media-action">
-                        <button class="media-action-button">
-                            <i class="bi bi-chat"></i>
-                        </button>
-                        <span class="total-text"></span>
-                    </div>
-                    <div class="media-action">
-                        <button class="media-action-button">
-                            <i class="bi bi-send"></i>
-                        </button>
-                        <span class="total-text">88</span>
-                    </div>
-                </div>
             </div>
         </div>
 
+        <div class="media-content">
+            <div class="media-caption">
+                <span>@Model.Content</span>
+            </div>
+            <div class="media-image-container">
+                @if (Model.MediaUrls != null && Model.MediaUrls.Count > 0)
+                {
+                    foreach (var mediaUrl in Model.MediaUrls)
+                    {
+                        <div class="media-image">
+                            <img src="@mediaUrl" alt="Media Image" />
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="media-action-container">
+            <div class="media-action">
+                <button class="media-action-button">
+                    <i class="bi bi-heart"></i>
+                </button>
+                <span class="total-text">@Model.TotalLikes</span>
+            </div>
+            <div class="media-action">
+                <button class="media-action-button">
+                    <i class="bi bi-chat"></i>
+                </button>
+                <span class="total-text"></span>
+            </div>
+            <div class="media-action">
+                <button class="media-action-button">
+                    <i class="bi bi-send"></i>
+                </button>
+                <span class="total-text">88</span>
+            </div>
+        </div>
+    </div>
+</div>
