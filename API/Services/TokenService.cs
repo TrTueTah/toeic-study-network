@@ -22,22 +22,22 @@ public class TokenService : ITokenService
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
         };
-        
+
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
-        {   
+        {
             TokenType = TokenType,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddHours(3),
+            Expires = DateTime.Now.AddHours(1),
             SigningCredentials = creds,
             Issuer = _configuration["JWT:Issuer"],
             Audience = _configuration["JWT:Audience"]
         };
-        
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        
+
         return tokenHandler.WriteToken(token);
     }
 }

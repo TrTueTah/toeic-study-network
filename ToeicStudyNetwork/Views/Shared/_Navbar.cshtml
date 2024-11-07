@@ -12,7 +12,7 @@
                 <li><a href="/Forum">Diễn đàn</a></li>
                 <li><a href="/Test">Đề thi online</a></li>
                 <li><a href="/">Hỗ trợ</a></li>
-                
+
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
@@ -56,9 +56,9 @@
         window.location.href = "/Authentication/SignIn";
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         let token = getCookie("token");
-
+        console.log(token);
         if (token && !isTokenExpired(token)) {
             const decodedToken = jwt_decode(token);
             const givenName = decodedToken.given_name || "User";
