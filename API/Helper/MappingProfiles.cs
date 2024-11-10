@@ -16,17 +16,17 @@ public class MappingProfiles : Profile
         CreateMap<PostDto, Post>();
         CreateMap<Post, CreatePostDto>();
         CreateMap<CreatePostDto, Post>();
-        
+
         //Like
         CreateMap<Like, LikeDto>();
         CreateMap<LikeDto, Like>();
-        
+
         //User
-        CreateMap<AppUser, UserNameDto>();
-        CreateMap<UserNameDto, AppUser>();
-        CreateMap<AppUser, UserDto>();
-        CreateMap<UserDto, AppUser>();
-        
+        CreateMap<User, UserNameDto>();
+        CreateMap<UserNameDto, User>();
+        CreateMap<User, UserDto>();
+        CreateMap<UserDto, User>();
+
         //Comment
         CreateMap<Comment, CommentDto>();
         CreateMap<CommentDto, Comment>();

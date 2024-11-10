@@ -1,95 +1,101 @@
 ﻿using API.Dtos.Account;
 using API.Interfaces;
 using API.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 [Route("api/account")]
-    [ApiController]
-    public class AccountController : ControllerBase
+[ApiController]
+public class AccountController : ControllerBase
+{
+    private readonly ITokenService _tokenService;
+    private readonly IUserRepository _userRepository;
+    public AccountController(ITokenService tokenService, IUserRepository userRepository)
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly ITokenService _tokenService;
-        private readonly SignInManager<AppUser> _signinManager;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
-        {
-            _userManager = userManager;
-            _tokenService = tokenService;
-            _signinManager = signInManager;
-        }
+        _tokenService = tokenService;
+        _userRepository = userRepository;
+    }
 
-        [HttpPost("login")]
-        [ProducesResponseType(typeof(NewUserDto), 200)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> Login(LoginDto loginDto)
+
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(NewUserDto), 200)]
+    [ProducesResponseType(500)]
+    public async Task<IActionResult> Login(LoginDto loginDto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var user = _userRepository.GetUserByEmail(loginDto.Email);
+
+        if (user == null) return Unauthorized("Invalid Email!");
+
+        string hashedPassword = _userRepository.HashPassword(loginDto.Password);
+        if (user.Password != hashedPassword) return Unauthorized("Invalid Password!");
+
+        // if () return Unauthorized("Username not found and/or password incorrect");
+
+        return Ok(
+            new NewUserDto
+            {
+                Username = user.Username,
+                Email = user.Email,
+                Token = _tokenService.CreateToken(user, "AccessToken")
+            }
+        );
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+    {
+        try
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
+            // Kiểm tra Username đã tồn tại chưa
+            var existingUserByUsername = _userRepository.GetUserByUsername(registerDto.Username);
+            if (existingUserByUsername != null)
+            {
+                return Conflict(new { Message = "Username is existed" });
+            }
 
-            if (user == null) return Unauthorized("Invalid Email!");
+            // Kiểm tra Email đã tồn tại chưa
+            var existingUserByEmail = _userRepository.GetUserByEmail(registerDto.Email);
+            if (existingUserByEmail != null)
+            {
+                return Conflict(new { Message = "Email is existed" });
+            }
 
-            var result = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            // Tạo user mới
+            var appUser = new User
+            {
+                Username = registerDto.Username,
+                Email = registerDto.Email,
+                Password = _userRepository.HashPassword(registerDto.Password),
+            };
 
-            if (!result.Succeeded) return Unauthorized("Username not found and/or password incorrect");
+            var createdUser = _userRepository.CreateUser(appUser);
 
-            return Ok(
-                new NewUserDto
-                {
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    Token = _tokenService.CreateToken(user, "AccessToken")
-                }
-            );
+            if (createdUser != null)
+            {
+                return Ok(
+                    new NewUserDto
+                    {
+                        Username = appUser.Username,
+                        Email = appUser.Email,
+                        Token = _tokenService.CreateToken(appUser, "AccessToken")
+                    }
+                );
+            }
+            else
+            {
+                return StatusCode(500, "Lỗi trong quá trình tạo user.");
+            }
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        catch (Exception e)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-
-                var appUser = new AppUser
-                {
-                    UserName = registerDto.UserName,
-                    Email = registerDto.Email
-                };
-
-                var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
-
-                if (createdUser.Succeeded)
-                {
-                    var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
-                    if (roleResult.Succeeded)
-                    {
-                        return Ok(
-                            new NewUserDto
-                            {
-                                UserName = appUser.UserName,
-                                Email = appUser.Email,
-                                Token = _tokenService.CreateToken(appUser, "AccessToken")
-                            }
-                        );
-                    }
-                    else
-                    {
-                        return StatusCode(500, roleResult.Errors);
-                    }
-                }
-                else
-                {
-                    return StatusCode(500, createdUser.Errors);
-                }
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e);
-            }
+            return StatusCode(500, new { Message = "Đã xảy ra lỗi không xác định.", Error = e.Message });
         }
     }
+}

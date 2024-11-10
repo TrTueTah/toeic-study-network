@@ -85,14 +85,14 @@ namespace API.Controllers
             var post = _mapper.Map<Post>(createPostDto);
             post.CreatedAt = DateTime.Now;
             post.MediaUrls = new List<string>();
-            
+
             if (!_postRepository.CreatePost(post))
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
-            
+
             ICollection<string> mediaUrls = new List<string>();
-    
+
             if (createPostDto.MediaFiles != null && createPostDto.MediaFiles.Count > 0)
             {
                 foreach (IFormFile file in createPostDto.MediaFiles)
@@ -104,7 +104,7 @@ namespace API.Controllers
                     }
                 }
             }
-            
+
             post.MediaUrls = mediaUrls;
 
             if (!_postRepository.UpdatePost(post))
@@ -146,7 +146,7 @@ namespace API.Controllers
             return NoContent();
         }
 
-// DELETE: api/v1/post/deletePost/{id}
+        // DELETE: api/v1/post/deletePost/{id}
         [HttpDelete("deletePost/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -162,7 +162,7 @@ namespace API.Controllers
             try
             {
                 _blobService.DeleteFolderAsync($"posts/{id}");
-                
+
                 if (!_postRepository.DeletePost(id))
                 {
                     return StatusCode(500, "A problem happened while handling your request.");

@@ -14,7 +14,7 @@ public class PostRepository : IPostRepository
     }
     public ICollection<Post> GetAllPosts()
     {
-        return _context.Posts.OrderBy(p => p.Id).ToList();
+        return _context.Posts.ToList();
     }
 
     public Post GetPostById(int id)
@@ -47,7 +47,7 @@ public class PostRepository : IPostRepository
         {
             return false;
         }
-        
+
         _context.Posts.Remove(post);
         return Save();
     }
