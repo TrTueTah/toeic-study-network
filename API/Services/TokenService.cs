@@ -15,12 +15,12 @@ public class TokenService : ITokenService
         _configuration = configuration;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SigningKey"]));
     }
-    public string CreateToken(AppUser user, string TokenType)
+    public string CreateToken(User user, string TokenType)
     {
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.GivenName, user.UserName)
+            new Claim(JwtRegisteredClaimNames.GivenName, user.Username),
         };
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
@@ -31,7 +31,11 @@ public class TokenService : ITokenService
             Expires = DateTime.Now.AddHours(1),
             SigningCredentials = creds,
             Issuer = _configuration["JWT:Issuer"],
-            Audience = _configuration["JWT:Audience"]
+            Audience = _configuration["JWT:Audience"],
+            Claims = new Dictionary<string, object>
+            {
+                { "role", user.Role }
+            }
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();

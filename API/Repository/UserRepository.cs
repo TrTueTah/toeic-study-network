@@ -1,6 +1,9 @@
-﻿using API.Data;
+﻿using System.Security.Cryptography;
+using System.Text;
+using API.Data;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace API.Repository;
 
@@ -12,7 +15,7 @@ public class UserRepository : IUserRepository
     {
         _context = context;
     }
-    public AppUser GetUserById(string userId)
+    public User GetUserById(string userId)
     {
         return _context.Users.FirstOrDefault(u => u.Id == userId);
     }
@@ -29,6 +32,32 @@ public class UserRepository : IUserRepository
 
     public string GetUserNameById(string userId)
     {
-        return _context.Users.FirstOrDefault(u => u.Id == userId).UserName;
+        return _context.Users.FirstOrDefault(u => u.Id == userId).Username;
+    }
+
+    public User GetUserByEmail(string email)
+    {
+        return _context.Users.FirstOrDefault(u => u.Email == email);
+    }
+
+    public User CreateUser(User user)
+    {
+        _context.Users.Add(user);
+        _context.SaveChanges();
+        return user;
+    }
+
+    public string HashPassword(string password)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Convert.ToBase64String(bytes);
+        }
+    }
+
+    public User GetUserByUsername(string username)
+    {
+        return _context.Users.FirstOrDefault(u => u.Username == username);
     }
 }

@@ -4,7 +4,7 @@ namespace API.Interfaces;
 
 public interface IPostRepository
 {
-    ICollection<Post> GetAllPosts(); 
+    ICollection<Post> GetAllPosts();
     Post GetPostById(int id);
     ICollection<Post> GetPostsByUserId(string id);
     bool CreatePost(Post post);
