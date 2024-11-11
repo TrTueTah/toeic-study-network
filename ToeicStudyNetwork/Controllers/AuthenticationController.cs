@@ -54,6 +54,43 @@ namespace ToeicStudyNetwork.Controllers
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             return View(model);
         }
+        [HttpPost]
+        public async Task<IActionResult> SignUp(SignUpModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            if (model.Password != model.ConfirmPassword)
+            {
+                ModelState.AddModelError(string.Empty, "Password and Confirm Password do not match.");
+                return View(model);
+            }
+            var signUpData = new
+            {
+                Username = model.Username,
+                Email = model.Email,
+                Password = model.Password,
+            };
+            var json = JsonConvert.SerializeObject(signUpData);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("http://localhost:5112/api/account/register", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+                var token = (string)responseObject.token;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    // Save the token to cookies
+                    Response.Cookies.Append("token", token);
+
+                    // Handle successful login (e.g., redirect to a dashboard)
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            return View(model);
+        }
 
         public IActionResult SignIn()
         {
@@ -74,8 +111,24 @@ namespace ToeicStudyNetwork.Controllers
             }
             return View();
         }
+
         public IActionResult SignUp()
         {
+            var token = Request.Cookies["token"];
+            Console.WriteLine(token);
+            if (!string.IsNullOrEmpty(token))
+            {
+                if (IsTokenExpired(token))
+                {
+                    // Delete the token if it is expired
+                    Response.Cookies.Delete("token");
+                }
+                else
+                {
+                    // Redirect to Home if the token is valid
+                    return RedirectToAction("Index", "Home");
+                }
+            }
             return View();
         }
         private bool IsTokenExpired(string token)

@@ -1,4 +1,5 @@
-﻿using API.Dtos.CommentDto;
+﻿using API.Dtos.Account;
+using API.Dtos.CommentDto;
 using API.Dtos.LikeDto;
 using API.Dtos.PostDto;
 using API.Dtos.UserDto;
@@ -32,5 +33,11 @@ public class MappingProfiles : Profile
         CreateMap<CommentDto, Comment>();
         CreateMap<Comment, CreateCommentDto>();
         CreateMap<CreateCommentDto, Comment>();
+
+        //Account
+        CreateMap<User, UserLoginResponseDto>();
+        CreateMap<UserLoginResponseDto, User>();
+        CreateMap<User, UserRegisterResponseDto>();
+        CreateMap<UserRegisterResponseDto, User>();
     }
 }
