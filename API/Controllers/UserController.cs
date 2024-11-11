@@ -24,6 +24,7 @@ namespace API.Controllers
 
         // GET: api/v1/users/{userId}
         [HttpGet("{userId}")]
+        [Authorize]
         [ProducesResponseType(typeof(UserDto), 200)]
         [ProducesResponseType(404)]
         public ActionResult<UserDto> GetUserById(string userId)

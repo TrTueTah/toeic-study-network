@@ -4,6 +4,8 @@ using API.Data;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository;
 
@@ -35,9 +37,9 @@ public class UserRepository : IUserRepository
         return _context.Users.FirstOrDefault(u => u.Id == userId).Username;
     }
 
-    public User GetUserByEmail(string email)
+    public async Task<User> GetUserByEmail(string email)
     {
-        return _context.Users.FirstOrDefault(u => u.Email == email);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public User CreateUser(User user)
