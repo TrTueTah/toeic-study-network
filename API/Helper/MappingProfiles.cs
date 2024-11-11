@@ -1,5 +1,6 @@
 ﻿using API.Dtos.Account;
 using API.Dtos.CommentDto;
+using API.Dtos.ExamDto;
 using API.Dtos.LikeDto;
 using API.Dtos.PostDto;
 using API.Dtos.UserDto;
@@ -39,5 +40,9 @@ public class MappingProfiles : Profile
         CreateMap<UserLoginResponseDto, User>();
         CreateMap<User, UserRegisterResponseDto>();
         CreateMap<UserRegisterResponseDto, User>();
+
+        //Exam
+        CreateMap<Exam, CreateExamRequestDto>();
+        CreateMap<CreateExamRequestDto, Exam>();
     }
 }

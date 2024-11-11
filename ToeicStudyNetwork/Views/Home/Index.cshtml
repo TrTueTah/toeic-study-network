@@ -1,26 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<ToeicStudyNetwork.Models.ExamModel>
+@{
+  ViewData["Title"] = "Home Page";
 }
 
 @section customHead {
-<link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
+  <link rel="stylesheet" href="~/css/home_index.css" asp-append-version="true" />
 }
 
 <!-- Hero Section -->
 <section id="hero" class="hero section">
-    <div class="hero-bg">
-        <img src="~/assets/img/hero-bg-light.webp" alt="">
+  <div class="hero-bg">
+    <img src="~/assets/img/hero-bg-light.webp" alt="">
+  </div>
+  <div class="container text-center">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <h1 data-aos="fade-up">Chào Mừng Đến Với <span>StuX</span></h1>
+      <p data-aos="fade-up" data-aos-delay="100">Kết nối, chia sẻ và luyện tập TOEIC cùng cộng đồng<br></p>
+      <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
+        <a href="#about" class="btn-get-started">Tham gia ngay</a>
+      </div>
+      <img src="~/assets/img/hero-services-img.webp" class="img-fluid hero-img" alt="" data-aos="zoom-out"
+        data-aos-delay="300">
     </div>
-    <div class="container text-center">
-        <div class="d-flex flex-column justify-content-center align-items-center">
-            <h1 data-aos="fade-up">Chào Mừng Đến Với <span>StuX</span></h1>
-            <p data-aos="fade-up" data-aos-delay="100">Kết nối, chia sẻ và luyện tập TOEIC cùng cộng đồng<br></p>
-            <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
-                <a href="#about" class="btn-get-started">Tham gia ngay</a>
-            </div>
-            <img src="~/assets/img/hero-services-img.webp" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
-        </div>
-    </div>
+  </div>
 
 </section>
 <!-- /Hero Section -->
@@ -82,12 +84,12 @@
   <div class="container">
     <div class="row d-flex flex-wrap">
       <!-- Start Test Items -->
-      @for (var i = 0; i < 8; i++)
+      @* @foreach (var exam in Model)
       {
       <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
-        @await Html.PartialAsync("_TestItem")
+      @await Html.PartialAsync("_TestItem", exam)
       </div>
-      }
+      } *@
       <!-- End Test Items -->
     </div>
   </div>
@@ -115,78 +117,101 @@
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
-              <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              <button class="accordion-button" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
                 Non consectetur a erat nam at lectus urna duis?
               </button>
             </h2>
-            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-mdb-parent="#faqAccordion">
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
+                Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur
+                gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.
               </div>
             </div>
           </div>
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingTwo">
-              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                 Feugiat scelerisque varius morbi enim nunc faucibus?
               </button>
             </h2>
-            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-mdb-parent="#faqAccordion">
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id
+                donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit
+                ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
               </div>
             </div>
           </div>
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingThree">
-              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                 Dolor sit amet consectetur adipiscing elit pellentesque?
               </button>
             </h2>
-            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-mdb-parent="#faqAccordion">
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis.
+                Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum
+                integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt.
+                Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi
+                quis.
               </div>
             </div>
           </div>
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingFour">
-              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                 Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?
               </button>
             </h2>
-            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-mdb-parent="#faqAccordion">
+            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
+                Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id
+                donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit
+                ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.
               </div>
             </div>
           </div>
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingFive">
-              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
                 Tempus quam pellentesque nec nam aliquam sem et tortor?
               </button>
             </h2>
-            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-mdb-parent="#faqAccordion">
+            <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in.
+                Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc
+                vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus
+                gravida quis blandit turpis cursus in.
               </div>
             </div>
           </div>
 
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingSix">
-              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse" data-mdb-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+              <button class="accordion-button collapsed" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
                 Perspiciatis quod quo quos nulla quo illum ullam?
               </button>
             </h2>
-            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-mdb-parent="#faqAccordion">
+            <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+              data-mdb-parent="#faqAccordion">
               <div class="accordion-body">
-                Enim ea facilis quaerat voluptas quidem et dolorem. Quis et consequatur non sed in suscipit sequi. Distinctio ipsam dolore et.
+                Enim ea facilis quaerat voluptas quidem et dolorem. Quis et consequatur non sed in suscipit sequi.
+                Distinctio ipsam dolore et.
               </div>
             </div>
           </div>
@@ -201,4 +226,3 @@
 
 </section>
 <!-- /Faq Section -->
-

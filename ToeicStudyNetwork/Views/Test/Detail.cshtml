@@ -1,0 +1,10 @@
+@model ToeicStudyNetwork.Models.ExamModel
+@{
+    ViewBag.Title = @Model.Title;
+    Layout = "_Layout";
+}
+<h2>Chi tiết bài thi: @Model.Title</h2>
+<p>Mô tả: </p>
+<p>Thời gian: 40 phút</p>
+<p>Số câu hỏi: 200</p>
+<a href="/Test">Quay lại danh sách bài thi</a>
