@@ -1,7 +1,8 @@
+@model ToeicStudyNetwork.Models.ExamModel
 <div data-aos="fade-up" data-aos-delay="100">
     <div class="card test-item position-relative item-cyan">
         <div class="card-body">
-            <h3 class="card-title">New Economy TOEIC Test 1</h3>
+            <h3 class="card-title">@Model.Title</h3>
             <div class="detail-item">
                 <i class="bi bi-clock"></i>
                 <p>40 phút</p>
@@ -22,7 +23,8 @@
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-detail">Chi tiết</button>
+            <a class="btn btn-detail" asp-controller="Test" asp-route-id="@Model.Id" asp-action="DetailExam">Chi
+                tiết</a>
         </div>
     </div>
 </div>
