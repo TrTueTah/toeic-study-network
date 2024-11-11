@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const practiceTab = document.getElementById("practice-tab");
-    const takeTestTab = document.getElementById("take-test-tab");
-    const discussionTab = document.getElementById("discussion-tab");
-    const contentDiv = document.getElementById("content-div");
+  const practiceTab = document.getElementById("practice-tab");
+  const takeTestTab = document.getElementById("take-test-tab");
+  const discussionTab = document.getElementById("discussion-tab");
+  const contentDiv = document.getElementById("content-div");
 
-    function loadPracticeTabContent() {
-        contentDiv.innerHTML = `
+  function loadPracticeTabContent() {
+    contentDiv.innerHTML = `
             <!-- Pro Tips Section -->
             <div class="alert alert-pro-tips my-3">
                 <i class="bi bi-lightbulb"></i>
@@ -197,45 +197,46 @@ document.addEventListener("DOMContentLoaded", function () {
                         Trích dẫn từ buổi họp</a>
                     <a href="#" class="btn btn-sm btn-outline-secondary me-1">#[Part 4] Câu hỏi yêu cầu, gợi ý</a>
                 </div>
+                
             </div>
         `;
-    }
+  }
 
-    function setActiveTab(tab) {
-        document.querySelectorAll(".nav-link").forEach(function (navLink) {
-            navLink.classList.remove("active");
-        });
-        tab.classList.add("active");
-    }
-
-    practiceTab.addEventListener("click", function (event) {
-        event.preventDefault();
-        loadPracticeTabContent();
-        setActiveTab(practiceTab);
+  function setActiveTab(tab) {
+    document.querySelectorAll(".nav-link").forEach(function (navLink) {
+      navLink.classList.remove("active");
     });
+    tab.classList.add("active");
+  }
 
-    takeTestTab.addEventListener("click", function (event) {
-        event.preventDefault();
-        setActiveTab(takeTestTab);
-        contentDiv.innerHTML = `
+  practiceTab.addEventListener("click", function (event) {
+    event.preventDefault();
+    loadPracticeTabContent();
+    setActiveTab(practiceTab);
+  });
+
+  takeTestTab.addEventListener("click", function (event) {
+    event.preventDefault();
+    setActiveTab(takeTestTab);
+    contentDiv.innerHTML = `
                 <div class="alert alert-take-test my-3">
                 <i class="bi bi-exclamation-circle"></i>
                 Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra 120 phút cho bài test này.
             </div>
             <a class="btn mb-3 btn-primary">Bắt đầu thi</a>
             `;
-    });
+  });
 
-    discussionTab.addEventListener("click", function (event) {
-        event.preventDefault();
-        setActiveTab(discussionTab);
-        contentDiv.innerHTML = `
+  discussionTab.addEventListener("click", function (event) {
+    event.preventDefault();
+    setActiveTab(discussionTab);
+    contentDiv.innerHTML = `
                 <div class="alert alert-warning my-3">
                     <i class="bi bi-chat-dots"></i>
                     <strong>Discussion:</strong> Tham gia thảo luận với các học viên khác để trao đổi kinh nghiệm và kiến thức.
                 </div>
             `;
-    });
+  });
 
-    loadPracticeTabContent();
+  loadPracticeTabContent();
 });
