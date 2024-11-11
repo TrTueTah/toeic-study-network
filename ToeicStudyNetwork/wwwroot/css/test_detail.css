@@ -1,0 +1,27 @@
+.info-badge {
+    background-color: #e9ecef;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 0.875rem;
+}
+.alert-custom {
+    color: #d9534f;
+    font-weight: bold;
+}
+.table-results th {
+    background-color: #f8f9fa;
+}
+.badge-custom {
+    font-size: 0.875rem;
+    padding: 0.3rem 0.6rem;
+}
+.alert-pro-tips {
+    background-color: #e6f7f2;
+    border-left: 4px solid #28a745;
+    padding: 10px;
+}
+.alert-take-test {
+    background-color: #ffefd8;
+    border-left: 4px solid #b2a797;
+    padding: 10px;
+}
