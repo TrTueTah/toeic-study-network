@@ -10,5 +10,6 @@ namespace API.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now.ToUniversalTime();
+        public List<Part> Parts { get; set; } = new List<Part>();
     }
 }

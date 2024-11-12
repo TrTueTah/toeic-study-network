@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Exam> Exams { get; set; }
+    public DbSet<Part> Parts { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -25,5 +26,9 @@ public class ApplicationDbContext : DbContext
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId);
+        builder.Entity<Exam>()
+            .HasMany(e => e.Parts)
+            .WithOne(p => p.Exam)
+            .HasForeignKey(p => p.ExamId);
     }
 }

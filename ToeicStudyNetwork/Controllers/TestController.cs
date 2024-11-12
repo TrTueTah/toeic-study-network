@@ -41,10 +41,30 @@ public class TestController : Controller
 
         return exam;
     }
+
+    [NonAction]
+    public async Task<List<PartModel>> FetchPartsAsync(string id)
+    {
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/exam/getPartsByExamId/{id}");
+        response.EnsureSuccessStatusCode();
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var parts = JsonConvert.DeserializeObject<List<PartModel>>(responseString);
+
+        return parts;
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> DetailExam(string id)
     {
         var exam = await FetchExamAsync(id);
         return View("Detail", exam);
+    }
+
+    [HttpGet("{id}/start")]
+    public async Task<IActionResult> StartExam(string id)
+    {
+        // var parts = await FetchPartsAsync(id);
+        return View("Start");
     }
 }

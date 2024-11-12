@@ -1,0 +1,123 @@
+@model ToeicStudyNetwork.Models.PartModel
+@{
+  ViewBag.Title = "New Economy TOEIC Test 10";
+  Layout = "_Layout";
+}
+
+@section customHead {
+  <link rel="stylesheet" href="~/css/test_start.css" asp-append-version="true" />
+}
+
+<section class="start">
+  <div class="main-container">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3>New Economy TOEIC Test 10</h3>
+      <button class="btn btn-outline-danger">Thoát</button>
+    </div>
+
+    <!-- Audio Player Section -->
+    <div class="mb-4 audio-controls">
+      <button class="btn btn-primary">
+        <i class="bi bi-play-fill"></i> Play
+      </button>
+      <input type="range" class="form-range flex-grow-1">
+      <span>00:00</span>
+    </div>
+
+    <!-- Tabs for Test Parts -->
+    <ul class="nav nav-tabs tab-nav mb-4" id="partTabs" role="tablist">
+      <li class="nav-item">
+        <button class="nav-link active" id="part1-tab" data-bs-toggle="tab" data-bs-target="#part1" type="button">Part
+          1</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part2-tab" data-bs-toggle="tab" data-bs-target="#part2" type="button">Part
+          2</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part3-tab" data-bs-toggle="tab" data-bs-target="#part3" type="button">Part
+          3</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part4-tab" data-bs-toggle="tab" data-bs-target="#part4" type="button">Part
+          4</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part5-tab" data-bs-toggle="tab" data-bs-target="#part5" type="button">Part
+          5</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part6-tab" data-bs-toggle="tab" data-bs-target="#part6" type="button">Part
+          6</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" id="part7-tab" data-bs-toggle="tab" data-bs-target="#part7" type="button">Part
+          7</button>
+      </li>
+    </ul>
+
+    <!-- Main Content Area -->
+    <div class="row">
+      <!-- Questions Section -->
+      <div class="col-md-8 question-list">
+        <!-- Example Questions (Replace with dynamic content as needed) -->
+        <div class="question-item">
+          <h6>71. What did the listener offer to do?</h6>
+          <div>
+            <input type="radio" id="q71a" name="q71"> A. Attend a meeting<br>
+            <input type="radio" id="q71b" name="q71"> B. Go to New York<br>
+            <input type="radio" id="q71c" name="q71"> C. Take care of the speaker's child<br>
+            <input type="radio" id="q71d" name="q71"> D. Lend a personal item<br>
+          </div>
+        </div>
+
+        <div class="question-item">
+          <h6>72. What will happen in April?</h6>
+          <div>
+            <input type="radio" id="q72a" name="q72"> A. An annual conference<br>
+            <input type="radio" id="q72b" name="q72"> B. A business merger<br>
+            <input type="radio" id="q72c" name="q72"> C. A budget review<br>
+            <input type="radio" id="q72d" name="q72"> D. A town meeting<br>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Section -->
+      <div class="col-md-4">
+        <h5>Thời gian còn lại:</h5>
+        <div class="time-remaining mb-3">117:35</div>
+        <button class="btn btn-primary mb-3 w-100">NỘP BÀI</button>
+
+        <!-- Question Navigation -->
+        <div class="question-nav">
+          <h6>Part 1</h6>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-secondary">1</button>
+            <button class="btn btn-outline-secondary">2</button>
+            <button class="btn btn-outline-secondary">3</button>
+            <button class="btn btn-outline-secondary">4</button>
+            <button class="btn btn-outline-secondary">5</button>
+            <button class="btn btn-outline-secondary">6</button>
+          </div>
+
+          <h6 class="mt-3">Part 2</h6>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-secondary">7</button>
+            <button class="btn btn-outline-secondary">8</button>
+            <button class="btn btn-outline-secondary">9</button>
+            <button class="btn btn-outline-secondary">10</button>
+          </div>
+
+          <h6 class="mt-3">Part 3</h6>
+          <div class="d-flex flex-wrap">
+            <button class="btn btn-outline-secondary">32</button>
+            <button class="btn btn-outline-secondary">33</button>
+            <button class="btn btn-outline-secondary">34</button>
+            <button class="btn btn-outline-secondary">35</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

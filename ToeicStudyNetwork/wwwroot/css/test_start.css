@@ -1,0 +1,29 @@
+  .main-container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 20px;
+  }
+  .audio-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .question-list {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  .question-item {
+    margin-bottom: 20px;
+  }
+  .question-nav button {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+  }
+  .tab-nav .nav-link {
+    font-weight: bold;
+  }
+  .time-remaining {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
