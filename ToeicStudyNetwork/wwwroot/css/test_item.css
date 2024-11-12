@@ -23,8 +23,9 @@
 .test-item .detail-item {
 	display: flex;
 	color: color-mix(in srgb, var(--gray-800), transparent 40%);
-	gap: 4px;
+	gap: 8px;
 	margin-bottom: 4px;
+    align-items: center;
 }
 
 .test-item .course-tag {
@@ -65,3 +66,6 @@
 .test-item:hover p {
 	color: color-mix(in srgb, var(--gray-800), transparent 10%);
 }
+
+
+

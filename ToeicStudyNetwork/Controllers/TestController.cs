@@ -20,7 +20,7 @@ public class TestController : Controller
         return View(exams);
     }
     [NonAction]
-    public async Task<List<ExamModel>> FetchExamsAsync()
+    private async Task<List<ExamModel>> FetchExamsAsync()
     {
         var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/exam/getAllExams");
         response.EnsureSuccessStatusCode();
@@ -31,7 +31,7 @@ public class TestController : Controller
         return exams;
     }
     [NonAction]
-    public async Task<ExamModel> FetchExamAsync(string id)
+    private async Task<ExamModel> FetchExamAsync(string id)
     {
         var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/exam/getExamById/{id}");
         response.EnsureSuccessStatusCode();
@@ -66,5 +66,26 @@ public class TestController : Controller
     {
         // var parts = await FetchPartsAsync(id);
         return View("Start");
+    }
+    
+    [HttpGet("{id}/tabs/{activeTab}")]
+    public async Task<IActionResult> DetailExamTab(string id, string activeTab = "practice")
+    {
+        var exam = await FetchExamAsync(id);
+        ViewBag.ActiveTab = activeTab; 
+        return View("Detail", exam);
+    }
+
+    public IActionResult LoadTabContent(string activeTab)
+    {
+        ViewBag.ActiveTab = activeTab;
+
+        return activeTab switch
+        {
+            "practice" => PartialView("_PracticeTab"),
+            "takeTest" => PartialView("_TakeExamTab"),
+            "discussion" => PartialView("_DiscussionTab"),
+            _ => PartialView("_PracticeTab")
+        };
     }
 }

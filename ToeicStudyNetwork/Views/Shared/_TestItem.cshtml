@@ -3,7 +3,7 @@
     <div class="card test-item position-relative item-cyan">
         <div class="card-body">
             <h3 class="card-title">@Model.Title</h3>
-            <div class="detail-item">
+            <div class="detail-item" style="font-size: 14px">
                 <i class="bi bi-clock"></i>
                 <p>40 phút</p>
                 <p>|</p>
@@ -13,7 +13,7 @@
                 <i class="bi bi-chat"></i>
                 <p>2084</p>
             </div>
-            <div class="detail-item">
+            <div class="detail-item" style="font-size: 14px">
                 <p>7 phần thi</p>
                 <p>|</p>
                 <p>200 câu hỏi</p>
@@ -23,8 +23,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <a class="btn btn-detail" asp-controller="Test" asp-route-id="@Model.Id" asp-action="DetailExam">Chi
-                tiết</a>
+            <a class="btn btn-detail" asp-controller="Test" asp-route-id="@Model.Id" asp-action="DetailExam">Chi tiết</a>
         </div>
     </div>
 </div>
