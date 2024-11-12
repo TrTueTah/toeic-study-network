@@ -6,16 +6,17 @@
 
 @section customHead {
     <link rel="stylesheet" href="~/css/test_detail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 }
 
 <section class="detail p-4">
-    <div class="container my-4 border rounded-4 p-4 bg-white">
+    <div class="container my-4 border rounded-3 p-4 bg-white">
         <!-- Title and Details -->
         <div class="mb-4">
-            <h2 class="fw-bold">@Model.Title<span class="text-success">✔</span></h2>
+            <h2 class="fw-bold exam-title">@Model.Title</h2>
 
             <!-- Tabs -->
-            <ul class="nav nav-tabs mb-3">
+            <ul id="exam-info-tabs" class="nav nav-tabs my-3 custom-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" href="#">Thông tin đề thi</a>
                 </li>
@@ -25,81 +26,96 @@
             </ul>
 
             <!-- Test Information -->
-            <div class="mb-2">
-                <p><i class="bi bi-clock"></i> Thời gian làm bài: 120 phút | 7 phần thi | 200 câu hỏi | 1341 bình luận
-                </p>
-                <p><i class="bi bi-people"></i> 992847 người đã luyện tập đề thi này</p>
+            <div class="mb-2 custom-test-information">
+                <div class="info">
+                    <i class="bi bi-clock"></i>
+                    <p>Thời gian làm bài:<span> 120 phút | 7 phần thi | 200 câu hỏi | 1341 bình luận</span>
+                    </p>
+                </div>
+                <div class="info">
+                    <i class="bi bi-people"></i>
+                    <p>Số người đã làm đề:<span> 992847</span></p>
+                </div>
                 <p class="alert-custom">Chú ý: để được quy đổi sang scaled score (ví dụ trên thang điểm 990 cho TOEIC
                     hoặc 9.0 cho IELTS), vui lòng chọn chế độ làm FULL TEST.</p>
             </div>
         </div>
 
         <!-- Results Table -->
-        <h5 class="fw-bold">Kết quả làm bài của bạn:</h5>
+        <div class="result-title">
+            <h5 class="fw-bold ">Kết quả làm bài của bạn:</h5>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered table-results">
                 <thead>
                     <tr>
-                        <th>Ngày làm</th>
-                        <th>Kết quả</th>
-                        <th>Thời gian làm bài</th>
-                        <th>Chi tiết</th>
+                        <th class="fw-bold">Ngày làm</th>
+                        <th class="fw-bold">Kết quả</th>
+                        <th class="fw-bold">Thời gian làm bài</th>
+                        <th class="fw-bold">Chi tiết</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            11/11/2024 <span class="badge bg-success badge-custom">Full test</span>
+                        <td class="column-layout">
+                            <div>11/11/2024</div>
+                            <span class="badge text-black badge-custom">Full test</span>
                         </td>
+
                         <td>12/200 (Điểm: 70)</td>
                         <td>0:00:47</td>
-                        <td><a href="#" class="text-decoration-underline">Xem chi tiết</a></td>
+                        <td><a href="#" class="">Xem chi tiết</a></td>
                     </tr>
                     <tr>
-                        <td>
-                            11/11/2024 <span class="badge bg-warning text-dark badge-custom">Luyện tập Part 2</span>
+                        <td class="column-layout">
+                            11/11/2024 <span class="badge text-black badge-custom">Luyện tập Part 2</span>
                         </td>
                         <td>8/25</td>
                         <td>0:00:32</td>
-                        <td><a href="#" class="text-decoration-underline">Xem chi tiết</a></td>
+                        <td><a href="#" class="">Xem chi tiết</a></td>
                     </tr>
                     <tr>
-                        <td>
-                            11/11/2024 <span class="badge bg-warning text-dark badge-custom">Luyện tập Part 1</span>
+                        <td class="column-layout">
+                            11/11/2024 <span class="badge text-black badge-custom">Luyện tập Part 1</span>
                         </td>
                         <td>4/6</td>
                         <td>0:00:17</td>
-                        <td><a href="#" class="text-decoration-underline">Xem chi tiết</a></td>
+                        <td><a href="#" class="">Xem chi tiết</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <!-- Practice Modes Section -->
-        <ul class="nav nav-tabs mt-4">
+        <ul id="practice-tabs" class="nav nav-tabs my-3 custom-tabs">
             <li class="nav-item">
-                <a class="nav-link active" id="practice-tab" href="#practice">Luyện tập</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "practice" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "practice" })">Luyện tập</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="take-test-tab" href="#take-test">Làm full test</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "takeTest" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "takeTest" })">Làm full test</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="discussion-tab" href="#discussion">Thảo luận</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "discussion" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "discussion" })">Thảo luận</a>
             </li>
         </ul>
 
         <div id="content-div">
-            <div class="alert alert-take-test my-3">
-                <i class="bi bi-exclamation-circle"></i>
-                Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra 120 phút cho bài test
-                này.
-            </div>
-            <a class="btn mb-3 btn-primary" asp-controller="Test" asp-route-id="@Model.Id" asp-action="StartExam">Bắt
-                đầu thi</a>
+            @if (ViewBag.ActiveTab == "practice")
+            {
+            @await Html.PartialAsync("_PracticeTab")
+            }
+            else if (ViewBag.ActiveTab == "takeTest")
+            {
+            @await Html.PartialAsync("_TakeExamTab")
+            }
+            else if (ViewBag.ActiveTab == "discussion")
+            {
+            @await Html.PartialAsync("_DiscussionTab")
+            }
         </div>
     </div>
 </section>
 
-@* @section scripts {
-<script src="~/js/test_detail.js" asp-append-version="true"></script>
-} *@
+@section scripts {
+    <script src="~/js/test_detail.js" asp-append-version="true"></script>
+}
