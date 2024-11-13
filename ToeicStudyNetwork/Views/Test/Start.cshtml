@@ -1,6 +1,6 @@
-@model ToeicStudyNetwork.Models.PartModel
+@model ToeicStudyNetwork.Models.TakeTestModel
 @{
-  ViewBag.Title = "New Economy TOEIC Test 10";
+  ViewBag.Title = @Model.Title;
   Layout = "_Layout";
 }
 
@@ -12,7 +12,7 @@
   <div class="main-container">
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3>New Economy TOEIC Test 10</h3>
+      <h3>@Model.Title</h3>
       <button class="btn btn-outline-danger">Thoát</button>
     </div>
 
@@ -31,30 +31,13 @@
         <button class="nav-link active" id="part1-tab" data-bs-toggle="tab" data-bs-target="#part1" type="button">Part
           1</button>
       </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part2-tab" data-bs-toggle="tab" data-bs-target="#part2" type="button">Part
-          2</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part3-tab" data-bs-toggle="tab" data-bs-target="#part3" type="button">Part
-          3</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part4-tab" data-bs-toggle="tab" data-bs-target="#part4" type="button">Part
-          4</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part5-tab" data-bs-toggle="tab" data-bs-target="#part5" type="button">Part
-          5</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part6-tab" data-bs-toggle="tab" data-bs-target="#part6" type="button">Part
-          6</button>
-      </li>
-      <li class="nav-item">
-        <button class="nav-link" id="part7-tab" data-bs-toggle="tab" data-bs-target="#part7" type="button">Part
-          7</button>
-      </li>
+      @foreach (var part in Model.PartModels)
+      {
+        <li class="nav-item">
+          <button class="nav-link" id="part@(part.PartNumber)-tab" data-bs-toggle="tab"
+            data-bs-target="#part@(part.PartNumber)" type="button">Part @(part.PartNumber)</button>
+        </li>
+      }
     </ul>
 
     <!-- Main Content Area -->

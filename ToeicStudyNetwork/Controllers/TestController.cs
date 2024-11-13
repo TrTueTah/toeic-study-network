@@ -45,7 +45,7 @@ public class TestController : Controller
     [NonAction]
     public async Task<List<PartModel>> FetchPartsAsync(string id)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/exam/getPartsByExamId/{id}");
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/part/getPartsByExamId/{id}");
         response.EnsureSuccessStatusCode();
 
         var responseString = await response.Content.ReadAsStringAsync();
@@ -64,15 +64,21 @@ public class TestController : Controller
     [HttpGet("{id}/start")]
     public async Task<IActionResult> StartExam(string id)
     {
-        // var parts = await FetchPartsAsync(id);
-        return View("Start");
+        var parts = await FetchPartsAsync(id);
+        var exam = await FetchExamAsync(id);
+        TakeTestModel takeTestModel = new TakeTestModel
+        {
+            Title = exam.Title,
+            PartModels = parts,
+        };
+        return View("Start", takeTestModel);
     }
-    
+
     [HttpGet("{id}/tabs/{activeTab}")]
     public async Task<IActionResult> DetailExamTab(string id, string activeTab = "practice")
     {
         var exam = await FetchExamAsync(id);
-        ViewBag.ActiveTab = activeTab; 
+        ViewBag.ActiveTab = activeTab;
         return View("Detail", exam);
     }
 

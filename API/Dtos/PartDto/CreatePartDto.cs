@@ -9,10 +9,6 @@ namespace API.Dtos.PartDto
     public class CreatePartDto
     {
         public int PartNumber { get; set; }
-        [AllowNull]
-        public string? ImageFile { get; set; } = "";
-        [AllowNull]
-        public string? AudioFile { get; set; } = "";
         public string ExamId { get; set; }
     }
 }
