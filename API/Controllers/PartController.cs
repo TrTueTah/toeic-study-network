@@ -59,11 +59,22 @@ namespace API.Controllers
             {
                 return NotFound();
             }
-            return Ok(parts);
+            List<PartResponseDto> partResponseDtos = new List<PartResponseDto>();
+            foreach (var part in parts)
+            {
+                partResponseDtos.Add(new PartResponseDto
+                {
+                    Id = part.Id,
+                    PartNumber = part.PartNumber,
+                    CreatedAt = part.CreatedAt,
+                    ExamId = part.ExamId
+                });
+            }
+            return Ok(partResponseDtos);
         }
 
         [HttpPost("createPart")]
-        public async Task<IActionResult> AddPart([FromForm] CreatePartDto createPartDto)
+        public async Task<IActionResult> AddPart([FromBody] CreatePartDto createPartDto)
         {
             if (!ModelState.IsValid)
             {
@@ -72,8 +83,6 @@ namespace API.Controllers
             var part = new Part
             {
                 PartNumber = createPartDto.PartNumber,
-                ImageFile = createPartDto.ImageFile,
-                AudioFile = createPartDto.AudioFile,
                 ExamId = createPartDto.ExamId
             };
             var newPart = await _partRepository.AddPart(part);

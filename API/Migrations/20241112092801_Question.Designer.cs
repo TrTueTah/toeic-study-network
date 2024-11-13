@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241110080842_Init")]
-    partial class Init
+    [Migration("20241112092801_Question")]
+    partial class Question
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,23 @@ namespace API.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("API.Models.Exam", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exams");
+                });
+
             modelBuilder.Entity("API.Models.Like", b =>
                 {
                     b.Property<int>("Id")
@@ -81,6 +98,28 @@ namespace API.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("API.Models.Part", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExamId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PartNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("Parts");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -111,6 +150,45 @@ namespace API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("API.Models.Question", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerA")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerB")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerC")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerD")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CorrectAnswer")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PartId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuenstionNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -157,6 +235,17 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("API.Models.Part", b =>
+                {
+                    b.HasOne("API.Models.Exam", "Exam")
+                        .WithMany("Parts")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+                });
+
             modelBuilder.Entity("API.Models.Post", b =>
                 {
                     b.HasOne("API.Models.User", "User")
@@ -166,6 +255,27 @@ namespace API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("API.Models.Question", b =>
+                {
+                    b.HasOne("API.Models.Part", "Part")
+                        .WithMany("Questions")
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+                });
+
+            modelBuilder.Entity("API.Models.Exam", b =>
+                {
+                    b.Navigation("Parts");
+                });
+
+            modelBuilder.Entity("API.Models.Part", b =>
+                {
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>

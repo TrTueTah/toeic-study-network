@@ -102,17 +102,11 @@ namespace API.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("AudioFile")
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ExamId")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ImageFile")
                         .HasColumnType("text");
 
                     b.Property<int>("PartNumber")
@@ -153,6 +147,49 @@ namespace API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("API.Models.Question", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerA")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerB")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerC")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AnswerD")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("CorrectAnswer")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PartId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuenstionNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -221,9 +258,25 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Models.Question", b =>
+                {
+                    b.HasOne("API.Models.Part", "Part")
+                        .WithMany("Questions")
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+                });
+
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
                     b.Navigation("Parts");
+                });
+
+            modelBuilder.Entity("API.Models.Part", b =>
+                {
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>

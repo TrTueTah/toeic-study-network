@@ -11,10 +11,6 @@ namespace ToeicStudyNetwork.Models
         public string Id { get; set; }
         public int PartNumber { get; set; }
         public DateTime CreatedAt { get; set; }
-        [AllowNull]
-        public string? ImageFile { get; set; } = "";
-        [AllowNull]
-        public string? AudioFile { get; set; } = "";
         public string ExamId { get; set; }
     }
 }

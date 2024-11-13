@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Like> Likes { get; set; }
     public DbSet<Exam> Exams { get; set; }
     public DbSet<Part> Parts { get; set; }
+    public DbSet<Question> Questions { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -30,5 +31,9 @@ public class ApplicationDbContext : DbContext
             .HasMany(e => e.Parts)
             .WithOne(p => p.Exam)
             .HasForeignKey(p => p.ExamId);
+        builder.Entity<Part>()
+            .HasMany(p => p.Questions)
+            .WithOne(q => q.Part)
+            .HasForeignKey(q => q.PartId);
     }
 }
