@@ -54,6 +54,18 @@ public class TestController : Controller
         return parts;
     }
 
+    [NonAction]
+    public async Task<List<QuestionModel>> FetchQuestionsAsync(string id)
+    {
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/question/getQuestionsByPartId/{id}");
+        response.EnsureSuccessStatusCode();
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var questions = JsonConvert.DeserializeObject<List<QuestionModel>>(responseString);
+
+        return questions;
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> DetailExam(string id)
     {
@@ -68,6 +80,7 @@ public class TestController : Controller
         var exam = await FetchExamAsync(id);
         TakeTestModel takeTestModel = new TakeTestModel
         {
+            TestType = "Full Test",
             Title = exam.Title,
             PartModels = parts,
         };
@@ -80,6 +93,14 @@ public class TestController : Controller
         var exam = await FetchExamAsync(id);
         ViewBag.ActiveTab = activeTab;
         return View("Detail", exam);
+    }
+
+    [HttpGet("{partId}/questions")]
+    public async Task<IActionResult> GetQuestionsByPartId(string partId)
+    {
+        var questions = await FetchQuestionsAsync(partId);
+
+        return PartialView("_QuestionWrapper", questions);
     }
 
     public IActionResult LoadTabContent(string activeTab)

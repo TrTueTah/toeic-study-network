@@ -8,8 +8,8 @@ namespace ToeicStudyNetwork.Models
     public class TakeTestModel
     {
         public string Title { get; set; }
+        public string TestType { get; set; }
         public List<PartModel> PartModels { get; set; }
         public DateTime TimeLimit { get; set; } = DateTime.Now.AddMinutes(120);
-
     }
 }

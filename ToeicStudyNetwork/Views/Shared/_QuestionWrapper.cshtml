@@ -1,0 +1,26 @@
+@model List<ToeicStudyNetwork.Models.QuestionModel>
+
+@foreach (var question in Model)
+{
+  <div class="question-item">
+    <h6>@question.QuenstionNumber. @question.Title</h6>
+    <form>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="question@question.Id" id="answerA">
+        <label class="form-check-label" for="answerA">A. @question.AnswerA</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="question@question.Id" id="answerB">
+        <label class="form-check-label" for="answerB">B. @question.AnswerB</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="question@question.Id" id="answerC">
+        <label class="form-check-label" for="answerC">C. @question.AnswerC</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="question@question.Id" id="answerD">
+        <label class="form-check-label" for="answerD">D. @question.AnswerD</label>
+      </div>
+    </form>
+  </div>
+}
