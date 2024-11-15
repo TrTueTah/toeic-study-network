@@ -3,5 +3,6 @@
     <span style="font-style: normal">Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra
         120 phút cho bài test này.</span>
 </div>
-<a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)" asp-controller="Test"
-    asp-route-id="@Model.Id" asp-action="StartExam">Bắt đầu thi</a>
+<a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)"
+    href="@Url.Action("StartExam", "Test", new { id = Model.Id, partNumbers = new List<int> {1, 2, 3, 4, 5, 6, 7} })">Bắt
+    đầu thi</a>
