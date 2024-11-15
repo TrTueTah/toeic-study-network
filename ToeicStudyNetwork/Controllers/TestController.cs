@@ -74,15 +74,16 @@ public class TestController : Controller
     }
 
     [HttpGet("{id}/start")]
-    public async Task<IActionResult> StartExam(string id)
+    public async Task<IActionResult> StartExam(string id, List<int> partNumbers)
     {
         var parts = await FetchPartsAsync(id);
+        var filteredParts = parts.Where(part => partNumbers.Contains(part.PartNumber)).ToList();
         var exam = await FetchExamAsync(id);
-        TakeTestModel takeTestModel = new TakeTestModel
+        TakeTestModel takeTestModel = new()
         {
             TestType = "Full Test",
             Title = exam.Title,
-            PartModels = parts,
+            PartModels = filteredParts,
         };
         return View("Start", takeTestModel);
     }
