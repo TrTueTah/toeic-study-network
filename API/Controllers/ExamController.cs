@@ -77,7 +77,7 @@ namespace API.Controllers
                         AnswerC = q.AnswerC,
                         AnswerD = q.AnswerD,
                         CorrectAnswer = q.CorrectAnswer,
-                        QuenstionNumber = q.QuenstionNumber,
+                        QuestionNumber = q.QuestionNumber,
                         PartId = q.PartId,
                         PartNumber = part.PartNumber
                     }));
