@@ -44,7 +44,7 @@ namespace API.Controllers
                 AnswerC = createQuestionDto.AnswerC,
                 AnswerD = createQuestionDto.AnswerD,
                 CorrectAnswer = createQuestionDto.CorrectAnswer,
-                QuenstionNumber = createQuestionDto.QuenstionNumber,
+                QuestionNumber = createQuestionDto.QuestionNumber,
                 PartId = createQuestionDto.PartId
             };
             await _questionRepository.AddQuestion(question);
