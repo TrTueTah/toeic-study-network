@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos.ExamDto;
 using API.Interfaces;
 using API.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -15,7 +10,6 @@ namespace API.Controllers
     public class ExamController : ControllerBase
     {
         private readonly IExamRepository _examRepository;
-        private readonly IMapper _mapper;
         public ExamController(IExamRepository examRepository)
         {
             _examRepository = examRepository;

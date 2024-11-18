@@ -4,12 +4,12 @@ namespace API.Interfaces;
 
 public interface ICommentRepository
 {
-    ICollection<Comment> GetAllComments();
-    Comment GetCommentById(int id);
-    Comment GetCommentByUserAndPostId(string userId, int postId);
+    List<Comment> GetAllComments();
+    Comment GetCommentById(string id);
+    Comment GetCommentByUserAndPostId(string userId, string postId);
     bool CreateComment(Comment comment);
-    bool DeleteComment(int id);
+    bool DeleteComment(string id);
     bool UpdateComment(Comment comment);
     
-    bool CommentExists(int id);
+    bool CommentExists(string id);
 }
