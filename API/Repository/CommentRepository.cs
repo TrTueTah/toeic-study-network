@@ -11,17 +11,17 @@ public class CommentRepository : ICommentRepository
     {
         _context = context;
     }
-    public ICollection<Comment> GetAllComments()
+    public List<Comment> GetAllComments()
     {
         return _context.Comments.OrderBy(c => c.Id).ToList();
     }
 
-    public Comment GetCommentById(int id)
+    public Comment GetCommentById(String id)
     {
         return _context.Comments.Find(id);
     }
 
-    public Comment GetCommentByUserAndPostId(string userId, int postId)
+    public Comment GetCommentByUserAndPostId(string userId, string postId)
     {
         return _context.Comments.Find(userId, postId);
     }
@@ -32,7 +32,7 @@ public class CommentRepository : ICommentRepository
         return Save();
     }
 
-    public bool DeleteComment(int id)
+    public bool DeleteComment(string id)
     {
         var comment = _context.Comments.Find(id);
 
@@ -50,8 +50,9 @@ public class CommentRepository : ICommentRepository
         _context.Comments.Update(comment);
         return Save();
     }
+    
 
-    public bool CommentExists(int id)
+    public bool CommentExists(string id)
     {
         return _context.Posts.Any(c => c.Id == id);
     }

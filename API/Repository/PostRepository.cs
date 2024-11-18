@@ -1,7 +1,6 @@
 ﻿using API.Data;
 using API.Interfaces;
 using API.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository;
 
@@ -12,17 +11,17 @@ public class PostRepository : IPostRepository
     {
         _context = context;
     }
-    public ICollection<Post> GetAllPosts()
+    public List<Post> GetAllPosts()
     {
         return _context.Posts.ToList();
     }
 
-    public Post GetPostById(int id)
+    public Post GetPostById(string id)
     {
         return _context.Posts.Where(p => p.Id == id).FirstOrDefault();
     }
 
-    public ICollection<Post> GetPostsByUserId(string id)
+    public List<Post> GetPostsByUserId(string id)
     {
         return _context.Posts.Where(p => p.UserId == id).ToList();
     }
@@ -39,7 +38,7 @@ public class PostRepository : IPostRepository
         return Save();
     }
 
-    public bool DeletePost(int id)
+    public bool DeletePost(string id)
     {
         var post = _context.Posts.Find(id);
 
@@ -58,7 +57,7 @@ public class PostRepository : IPostRepository
         return saved > 0 ? true : false;
     }
 
-    public bool PostExists(int id)
+    public bool PostExists(string id)
     {
         return _context.Posts.Any(c => c.Id == id);
     }

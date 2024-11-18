@@ -72,13 +72,13 @@ namespace API.Controllers
                 return CreatedAtAction(nameof(GetLikedUsers), new { postId = like.PostId }, likeDto);
             }
         }
-        
+
         // GET: api/v1/like/getLikedUsers/{postId}
         [HttpGet("getLikedUsers/{postId}")]
         [ProducesResponseType(typeof(ICollection<UserNameDto>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<ICollection<UserNameDto>> GetLikedUsers(int postId)
+        public ActionResult<ICollection<UserNameDto>> GetLikedUsers(string postId)
         {
             if (!_postRepository.PostExists(postId))
             {

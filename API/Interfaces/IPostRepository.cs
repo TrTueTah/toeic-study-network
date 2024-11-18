@@ -4,12 +4,12 @@ namespace API.Interfaces;
 
 public interface IPostRepository
 {
-    ICollection<Post> GetAllPosts();
-    Post GetPostById(int id);
-    ICollection<Post> GetPostsByUserId(string id);
+    List<Post> GetAllPosts();
+    Post GetPostById(string id);
+    List<Post> GetPostsByUserId(string id);
     bool CreatePost(Post post);
     bool UpdatePost(Post post);
-    bool DeletePost(int id);
+    bool DeletePost(string id);
     bool Save();
-    bool PostExists(int id);
+    bool PostExists(string id);
 }

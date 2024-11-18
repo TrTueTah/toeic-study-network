@@ -23,7 +23,7 @@ public class LikeRepository : ILikeRepository
         return Save();
     }
 
-    public bool DeleteLike(int postId, string userId)
+    public bool DeleteLike(string postId, string userId)
     {
         var like = _context.Likes.SingleOrDefault(l => l.PostId == postId && l.UserId == userId);
         if (like == null)
@@ -35,12 +35,12 @@ public class LikeRepository : ILikeRepository
         return Save();
     }
 
-    public ICollection<Like> GetLikesByPostId(int postId)
+    public List<Like> GetLikesByPostId(string postId)
     {
         return _context.Likes.Where(l => l.PostId == postId).ToList();
     }
 
-    public bool UserHasLikedPost(int postId, string userId)
+    public bool UserHasLikedPost(string postId, string userId)
     {
         return _context.Likes.Any(l => l.PostId == postId && l.UserId == userId);
     }
