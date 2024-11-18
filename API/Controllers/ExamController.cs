@@ -13,7 +13,6 @@ namespace API.Controllers
         private readonly IExamRepository _examRepository;
         private readonly IPartRepository _partRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IMapper _mapper;
         public ExamController(IExamRepository examRepository, IPartRepository partRepository, IQuestionRepository questionRepository)
         {
             _partRepository = partRepository;

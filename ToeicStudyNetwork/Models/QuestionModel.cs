@@ -14,7 +14,10 @@ namespace ToeicStudyNetwork.Models
         public string? AnswerC { get; set; }
         public string? AnswerD { get; set; }
         public string CorrectAnswer { get; set; }
-        public int QuenstionNumber { get; set; }
+        public int QuestionNumber { get; set; }
+        
+        public int PartNumber { get; set; }
+        
         public string PartId { get; set; }
     }
 }
