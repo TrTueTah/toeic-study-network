@@ -74,19 +74,31 @@ public class TestController : Controller
     }
 
     [HttpGet("{id}/start")]
-    public async Task<IActionResult> StartExam(string id, List<int> partNumbers)
+    public async Task<IActionResult> StartExam(string id)
     {
-        var parts = await FetchPartsAsync(id);
-        var filteredParts = parts.Where(part => partNumbers.Contains(part.PartNumber)).ToList();
         var exam = await FetchExamAsync(id);
+    
         TakeTestModel takeTestModel = new()
         {
+            Id = exam.Id,
             TestType = "Full Test",
             Title = exam.Title,
-            PartModels = filteredParts,
+            PartQuestions = new Dictionary<int, List<QuestionModel>>()
         };
+
+        foreach (var question in exam.Questions)
+        {
+            if (!takeTestModel.PartQuestions.ContainsKey(question.PartNumber))
+            {
+                takeTestModel.PartQuestions[question.PartNumber] = new List<QuestionModel>();
+            }
+        
+            takeTestModel.PartQuestions[question.PartNumber].Add(question);
+        }
+
         return View("Start", takeTestModel);
     }
+
 
     [HttpGet("{id}/tabs/{activeTab}")]
     public async Task<IActionResult> DetailExamTab(string id, string activeTab = "practice")

@@ -10,6 +10,6 @@ namespace ToeicStudyNetwork.Models
         public string Id;
         public string Title;
         public DateTime CreatedAt;
-        public List<PartModel> Parts;
+        public List<QuestionModel> Questions { get; set; }
     }
 }
