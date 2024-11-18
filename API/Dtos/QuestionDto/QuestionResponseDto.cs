@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Models
+namespace API.Dtos.QuestionDto
 {
-    public class Question
+    public class QuestionResponseDto
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string? Title { get; set; }
         public string? AnswerA { get; set; } = "";
         public string? AnswerB { get; set; } = "";
@@ -16,6 +15,6 @@ namespace API.Models
         public string CorrectAnswer { get; set; }
         public int QuestionNumber { get; set; }
         public string PartId { get; set; }
-        public Part Part { get; set; }
+        public int PartNumber { get; set; }
     }
 }
