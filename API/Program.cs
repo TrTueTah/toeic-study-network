@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Repository;
-using Azure.Storage.Blobs;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
@@ -65,6 +65,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IPartRepository, PartRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<FirebaseService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -90,11 +91,6 @@ builder.Services.Configure<IISServerOptions>(options =>
     options.MaxRequestBodySize = int.MaxValue;
 });
 
-
-builder.Services.AddSingleton(new BlobServiceClient(builder.Configuration["AzureBlobStorage:ConnectionString"]));
-builder.Services.AddScoped<BlobService>(provider =>
-    new BlobService(provider.GetRequiredService<BlobServiceClient>(), builder.Configuration["AzureBlobStorage:ContainerName"]));
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>
@@ -106,21 +102,19 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-app.UseSwagger();
-app.UseSwaggerUI();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    // Automatically create tables if they don't exist
-    dbContext.Database.EnsureCreated();
 }
 
 app.UseCors("AllowAll");

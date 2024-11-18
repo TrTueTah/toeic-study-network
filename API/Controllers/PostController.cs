@@ -2,10 +2,8 @@
 using API.Models;
 using API.Dtos.PostDto;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using API.Services;
 using AutoMapper;
-using Azure.Storage.Blobs;
 
 namespace API.Controllers
 {
@@ -15,26 +13,32 @@ namespace API.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-        private readonly BlobService _blobService;
         private readonly IUserRepository _userRepository;
-        public PostController(IPostRepository postRepository, IMapper mapper, BlobService blobService, IUserRepository userRepository)
+        private readonly FirebaseService _firebaseService;
+
+        public PostController(IPostRepository postRepository, IMapper mapper, IUserRepository userRepository, FirebaseService firebaseService)
         {
             _postRepository = postRepository;
             _mapper = mapper;
-            _blobService = blobService;
             _userRepository = userRepository;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/v1/post/getAllPosts
         [HttpGet("getAllPosts")]
-        [ProducesResponseType(typeof(ICollection<PostDto>), 200)]
+        [ProducesResponseType(typeof(List<PostDto>), 200)]
         [ProducesResponseType(500)]
-        public ActionResult<ICollection<PostDto>> GetAllPosts()
+        public ActionResult<List<PostDto>> GetAllPosts() 
         {
             var posts = _postRepository.GetAllPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
-            var userName = _userRepository.GetUserNameById(postDtos[0].UserId);
-            postDtos[0].UserName = userName;
+
+            var firstPost = postDtos.FirstOrDefault();
+            if (firstPost != null)
+            {
+                firstPost.UserName = _userRepository.GetUserNameById(firstPost.UserId);
+            }
+
             return Ok(postDtos);
         }
 
@@ -43,7 +47,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(PostDto), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<PostDto> GetPost(int id)
+        public ActionResult<PostDto> GetPost(string id)
         {
             var post = _postRepository.GetPostById(id);
             if (post == null)
@@ -56,13 +60,13 @@ namespace API.Controllers
 
         // GET: api/v1/post/getPostsByUserId/{userId}
         [HttpGet("getPostsByUserId/{userId}")]
-        [ProducesResponseType(typeof(ICollection<PostDto>), 200)]
+        [ProducesResponseType(typeof(List<PostDto>), 200)] 
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<ICollection<PostDto>> GetPostsByUserId(string userId)
+        public ActionResult<List<PostDto>> GetPostsByUserId(string userId)
         {
             var posts = _postRepository.GetPostsByUserId(userId);
-            if (posts == null || posts.Count == 0)
+            if (posts.Count == 0)
             {
                 return NotFound("No posts found for this user.");
             }
@@ -81,9 +85,14 @@ namespace API.Controllers
             {
                 return BadRequest("Post is null.");
             }
+            
+            if (string.IsNullOrEmpty(createPostDto.UserId) || !_userRepository.UserExists(createPostDto.UserId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
 
             var post = _mapper.Map<Post>(createPostDto);
-            post.CreatedAt = DateTime.Now;
+            post.CreatedAt = DateTime.UtcNow;
             post.MediaUrls = new List<string>();
 
             if (!_postRepository.CreatePost(post))
@@ -91,7 +100,7 @@ namespace API.Controllers
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            ICollection<string> mediaUrls = new List<string>();
+            List<string> mediaUrls = new List<string>();
 
             if (createPostDto.MediaFiles != null && createPostDto.MediaFiles.Count > 0)
             {
@@ -99,7 +108,7 @@ namespace API.Controllers
                 {
                     if (file != null && file.Length > 0)
                     {
-                        var url = await _blobService.UploadFileAsync(file, $"posts/{post.Id}");
+                        var url = await _firebaseService.UploadFileAsync(file, $"posts/{post.Id}");
                         mediaUrls.Add(url);
                     }
                 }
@@ -116,15 +125,13 @@ namespace API.Controllers
             return CreatedAtAction(nameof(GetPost), new { id = post.Id }, createdPostDto);
         }
 
-
-
         // PUT: api/v1/post/updatePost/{id}
         [HttpPut("updatePost/{id}")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult UpdatePost(int id, [FromBody] PostDto postDto)
+        public ActionResult UpdatePost(string id, [FromBody] PostDto postDto)
         {
             if (postDto == null || postDto.Id != id)
             {
@@ -151,7 +158,7 @@ namespace API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> DeletePost(int id)
+        public async Task<ActionResult> DeletePost(string id)
         {
             var post = _postRepository.GetPostById(id);
             if (post == null)
@@ -161,8 +168,8 @@ namespace API.Controllers
 
             try
             {
-                _blobService.DeleteFolderAsync($"posts/{id}");
-
+                await _firebaseService.DeleteFolderAsync($"posts/{id}");
+                
                 if (!_postRepository.DeletePost(id))
                 {
                     return StatusCode(500, "A problem happened while handling your request.");
@@ -175,6 +182,5 @@ namespace API.Controllers
 
             return NoContent();
         }
-
     }
 }
