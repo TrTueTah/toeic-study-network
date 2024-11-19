@@ -4,6 +4,63 @@ let questions = [];
 document.addEventListener('DOMContentLoaded', function () {
   questions.push({id: 1, title: '', description: ''});
 });
+document.addEventListener('DOMContentLoaded', function () {
+  for (let i = 2; i <= 200; i++) {
+    questions.push({ id: i, title: '', description: '' });
+
+    const newQuestionElement = document.createElement('div');
+    newQuestionElement.id = `test-question-${i}`;
+    newQuestionElement.className = 'pb-2';
+    newQuestionElement.innerHTML = `
+      <div class="section-content-container" style="display: none;">
+        <div class="d-flex flex-column">
+          <b id="test-question-title-${i}"></b>
+          <span>
+            <ul id="test-answer-options-${i}" style="padding-left: 1rem; list-style: none"></ul>
+          </span>
+          <div class="button-group button-group-absolute">
+            <button class="button-group-item" id="edit-question-button-${i}">
+              <i class="fa fa-edit" style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <form class="edit-form" style="display: block;">
+        <div>
+          <div style="position: relative">
+            <label class="form-label" style="width: 350px">
+              <span class="label-text label-required">Question</span>
+              <input type="text" placeholder="Enter question here" required="" class="form-input" id="test-question-input-${i}" value="">
+              <span id="error-message-${i}" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
+            </label>
+            <label class="form-label">
+              <span class="label-text label-required">Answer options</span>
+              <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard" id="test-answer-input-${i}"></textarea>
+            </label>
+          </div>
+        </div>
+      </form>`;
+
+    document.getElementById('test-question-list').appendChild(newQuestionElement);
+
+    const questionListItem = `
+      <span class="test-questions-listitem" data-qid="${i}" id="test-questions-lisitem-${i}">${i}</span>
+    `;
+    document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.test-questions-listitem').forEach(item => {
+    item.addEventListener('click', function () {
+      const qid = this.dataset.qid;
+      const targetQuestion = document.getElementById(`test-question-${qid}`);
+      if (targetQuestion) {
+        targetQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+});
 
 document.addEventListener('scroll', function () {
   const subContainer = document.querySelector('.sub-container');

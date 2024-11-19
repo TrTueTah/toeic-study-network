@@ -10,7 +10,7 @@
 
 .sub-container {
     position: static;
-    flex: 0.3;
+    flex: 0.5;
     width: 100%;
     border: 1px solid var(--gray-200);
     height: fit-content;
