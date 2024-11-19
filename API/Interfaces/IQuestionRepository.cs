@@ -12,6 +12,7 @@ namespace API.Interfaces
         Task<Question> GetQuestionById(string id);
         Task<Question> AddQuestion(Question question);
         Task<List<Question>> GetQuestionsByPartId(string partId);
-        List<Question> ExtractQuestionsFromLines(List<string> lines);
+        List<Question> ExtractQuestionsFromReading(List<string> lines);
+        List<Question> ExtractQuestionsFromListening(List<string> lines);
     }
 }

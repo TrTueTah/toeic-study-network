@@ -59,10 +59,11 @@ namespace API.Controllers
             var questions = await _questionRepository.GetQuestionsByPartId(partId);
             return Ok(questions);
         }
-        [HttpPost("upload-healthcheck")]
-        public async Task<IActionResult> UploadFile(IFormFile file)
+
+        [HttpPost("upload-reading")]
+        public async Task<IActionResult> UploadFileReading([FromForm] UploadReadingDto uploadReadingDto)
         {
-            if (file == null || file.Length == 0)
+            if (uploadReadingDto.QuestionFile == null || uploadReadingDto.QuestionFile.Length == 0 || uploadReadingDto.AnswerFile == null || uploadReadingDto.AnswerFile.Length == 0)
             {
                 return BadRequest("File không hợp lệ.");
             }
@@ -70,104 +71,56 @@ namespace API.Controllers
             try
             {
                 // Đọc nội dung tệp từ IFormFile
-                var lines = new List<string>();
-                using (var reader = new StreamReader(file.OpenReadStream()))
+                var linesFromQuestion = new List<string>();
+                using (var reader = new StreamReader(uploadReadingDto.QuestionFile.OpenReadStream()))
                 {
                     while (!reader.EndOfStream)
                     {
                         var line = await reader.ReadLineAsync();
                         if (line != null)
                         {
-                            lines.Add(line);
+                            linesFromQuestion.Add(line);
                         }
                     }
                 }
 
+                var linesFromAnswer = new List<string>();
+                using (var reader = new StreamReader(uploadReadingDto.AnswerFile.OpenReadStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = await reader.ReadLineAsync();
+                        if (line != null)
+                        {
+                            linesFromAnswer.Add(line);
+                        }
+                    }
+                }
                 // Xử lý dữ liệu từ tệp
-                var questions = _questionRepository.ExtractQuestionsFromLines(lines);
-                // Ghi kết quả vào tệp output.txt
-                WriteQuestionsToFile("output.txt", questions);
+                var questions = _questionRepository.ExtractQuestionsFromReading(linesFromQuestion);
+                var correctAnswers = ExtractCorrectAnswers(linesFromAnswer);
 
-                return Ok(new { Count = questions.Count });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Đã xảy ra lỗi: {ex.Message}");
-            }
-        }
+                var response = new List<UploadQuestionResponseDto>();
 
-        [HttpPost("upload")]
-        public async Task<IActionResult> CreateQuestionFromFile([FromForm] UploadQuestionDto uploadQuestionDto)
-        {
-            if (uploadQuestionDto.File == null || uploadQuestionDto.File.Length == 0)
-            {
-                return BadRequest("File không hợp lệ.");
-            }
-
-            try
-            {
-                // Đọc nội dung tệp từ IFormFile
-                var lines = new List<string>();
-                using (var reader = new StreamReader(uploadQuestionDto.File.OpenReadStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        var line = await reader.ReadLineAsync();
-                        if (line != null)
-                        {
-                            lines.Add(line);
-                        }
-                    }
-                }
-
-                var partMap = new Dictionary<int, string>();
-                foreach (var partId in uploadQuestionDto.PartIds)
-                {
-                    var part = await _partRepository.GetPartById(partId);
-                    if (part == null)
-                    {
-                        return BadRequest($"Không tìm thấy Part với Id: {partId}");
-                    }
-                    partMap.Add(part.PartNumber, partId);
-                }
-
-                var questions = _questionRepository.ExtractQuestionsFromLines(lines);
-                var questionsResponse = new List<QuestionResponseDto>();
-                var partNumber = 0;
                 foreach (var question in questions)
                 {
-                    if (question.QuestionNumber >= 101 && question.QuestionNumber <= 130)
+                    if (correctAnswers.ContainsKey(question.QuestionNumber))
                     {
-                        question.PartId = partMap.GetValueOrDefault(5);
-                        partNumber = 5;
+                        question.CorrectAnswer = correctAnswers[question.QuestionNumber];
+                        var questionResponse = new UploadQuestionResponseDto
+                        {
+                            Title = question.Title,
+                            AnswerA = question.AnswerA,
+                            AnswerB = question.AnswerB,
+                            AnswerC = question.AnswerC,
+                            AnswerD = question.AnswerD,
+                            CorrectAnswer = question.CorrectAnswer,
+                            QuestionNumber = question.QuestionNumber,
+                        };
+                        response.Add(questionResponse);
                     }
-                    else if (question.QuestionNumber >= 131 && question.QuestionNumber <= 146)
-                    {
-                        question.PartId = partMap.GetValueOrDefault(6);
-                        partNumber = 6;
-                    }
-                    else if (question.QuestionNumber >= 147 && question.QuestionNumber <= 200)
-                    {
-                        question.PartId = partMap.GetValueOrDefault(7);
-                        partNumber = 7;
-                    }
-
-                    await _questionRepository.AddQuestion(question);
-                    questionsResponse.Add(new QuestionResponseDto
-                    {
-                        Title = question.Title,
-                        AnswerA = question.AnswerA,
-                        AnswerB = question.AnswerB,
-                        AnswerC = question.AnswerC,
-                        AnswerD = question.AnswerD,
-                        CorrectAnswer = question.CorrectAnswer,
-                        QuestionNumber = question.QuestionNumber,
-                        PartId = question.PartId,
-                        PartNumber = partNumber
-                    });
                 }
-
-                return Ok(questionsResponse);
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -175,7 +128,112 @@ namespace API.Controllers
             }
         }
 
-        private void WriteQuestionsToFile(string outputPath, List<Question> questions)
+        [HttpPost("upload-listening")]
+        public async Task<IActionResult> UploadFileListening([FromForm] UploadListeningDto uploadListeningDto)
+        {
+            if (uploadListeningDto.QuestionFile == null || uploadListeningDto.QuestionFile.Length == 0 || uploadListeningDto.AnswerFile == null || uploadListeningDto.AnswerFile.Length == 0)
+            {
+                return BadRequest("File không hợp lệ.");
+            }
+
+            try
+            {
+                // Đọc nội dung tệp từ IFormFile
+                var linesFromQuestion = new List<string>();
+                using (var reader = new StreamReader(uploadListeningDto.QuestionFile.OpenReadStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = await reader.ReadLineAsync();
+                        if (line != null)
+                        {
+                            linesFromQuestion.Add(line);
+                        }
+                    }
+                }
+
+                var linesFromAnswer = new List<string>();
+                using (var reader = new StreamReader(uploadListeningDto.AnswerFile.OpenReadStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        var line = await reader.ReadLineAsync();
+                        if (line != null)
+                        {
+                            linesFromAnswer.Add(line);
+                        }
+                    }
+                }
+                // Xử lý dữ liệu từ tệp
+                var questions = _questionRepository.ExtractQuestionsFromListening(linesFromQuestion);
+                var correctAnswers = ExtractCorrectAnswers(linesFromAnswer);
+
+                for (int i = 1; i <= 6; i++)
+                {
+                    var question = new Question
+                    {
+                        QuestionNumber = i,
+                        Title = "",
+                        AnswerA = "",
+                        AnswerB = "",
+                        AnswerC = "",
+                        AnswerD = "",
+                        CorrectAnswer = correctAnswers[i],
+                        PartId = "",
+                    };
+                    questions.Add(question);
+                }
+
+                for (int i = 7; i <= 31; i++)
+                {
+                    var question = new Question
+                    {
+                        QuestionNumber = i,
+                        Title = "",
+                        AnswerA = "",
+                        AnswerB = "",
+                        AnswerC = "",
+                        AnswerD = null,
+                        CorrectAnswer = correctAnswers[i],
+                        PartId = "",
+                    };
+                    questions.Add(question);
+                }
+
+                var response = new List<UploadQuestionResponseDto>();
+
+                foreach (var question in questions)
+                {
+                    if (correctAnswers.ContainsKey(question.QuestionNumber))
+                    {
+                        question.CorrectAnswer = correctAnswers[question.QuestionNumber];
+                        var questionResponse = new UploadQuestionResponseDto
+                        {
+                            Title = question.Title,
+                            AnswerA = question.AnswerA,
+                            AnswerB = question.AnswerB,
+                            AnswerC = question.AnswerC,
+                            AnswerD = question.AnswerD,
+                            CorrectAnswer = question.CorrectAnswer,
+                            QuestionNumber = question.QuestionNumber,
+                        };
+                        response.Add(questionResponse);
+                    }
+                }
+
+
+                // Ghi kết quả vào tệp output.txt
+                WriteQuestionsToFile("output.txt", response);
+
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Đã xảy ra lỗi: {ex.Message}");
+            }
+        }
+        private void WriteQuestionsToFile(string outputPath, List<UploadQuestionResponseDto> questions)
         {
             using var writer = new StreamWriter(outputPath);
             foreach (var question in questions)
@@ -185,8 +243,35 @@ namespace API.Controllers
                 writer.WriteLine($"(B) {question.AnswerB}");
                 writer.WriteLine($"(C) {question.AnswerC}");
                 writer.WriteLine($"(D) {question.AnswerD}");
+                writer.WriteLine($"Đáp án: {question.CorrectAnswer}");
                 writer.WriteLine();
             }
+        }
+        private Dictionary<int, string> ExtractCorrectAnswers(List<string> lines)
+        {
+            var correctAnswers = new Dictionary<int, string>();
+
+            foreach (var line in lines)
+            {
+                // Tách phần số thứ tự và đáp án từ dòng
+                var parts = line.Split(' ');
+
+                if (parts.Length == 2 &&
+                    int.TryParse(parts[0], out int questionNumber) &&
+                    parts[1].StartsWith("(") &&
+                    parts[1].EndsWith(")"))
+                {
+                    // Loại bỏ dấu ngoặc để lấy đáp án
+                    var answer = parts[1].Trim('(', ')');
+                    correctAnswers[questionNumber] = answer;
+                }
+                else
+                {
+                    Console.WriteLine($"Dòng không hợp lệ: {line}");
+                }
+            }
+
+            return correctAnswers;
         }
     }
 }
