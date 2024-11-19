@@ -17,16 +17,12 @@
                 <div>
                     <div class="section-content-container">
                         <div class="d-flex flex-column">
-                            <b id="test-info-title-display"></b>
-                            <span id="test-info-description-display"></span> 
+                            <b id="test-info-title"></b>
+                            <span id="test-info-description"></span>
                             <div class="button-group button-group-absolute">
-                                <button class="button-group-item" onclick="editTestInfo()">
+                                <button class="button-group-item" id="edit-info-button-1">
                                     <i class="fa fa-edit"
-                                       style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-                                </button>
-                                <button class="button-group-item button-group-item-delete">
-                                    <i class="fa fa-trash"
-                                       style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
+                                        style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
                                 </button>
                             </div>
                         </div>
@@ -35,80 +31,87 @@
                     <form class="edit-form" style="display: none;">
                         <div>
                             <div style="position: relative">
-                                <label class="form-label" style="width: 350px" id="test-info-title">
+                                <label class="form-label" style="width: 350px">
                                     <span class="label-text label-required">Title</span>
-                                    <input type="text" placeholder="Enter test title" required="" class="form-input" id="test-info-input"
-                                           value="">
+                                    <input type="text" placeholder="Enter test title" required="" class="form-input"
+                                        id="test-info-title-input" value="">
                                 </label>
-                                <label id="test-info-description" class="form-label">
+                                <label class="form-label">
                                     <span class="label-text label-required">Description</span>
-                                    <textarea placeholder="Enter test description" required="" class="form-textarea" id="test-info-description-input"></textarea>
+                                    <textarea placeholder="Enter test description" required="" class="form-textarea"
+                                        id="test-info-description-input"></textarea>
                                 </label>
                                 <div class="button-group">
                                     <button class="button-group-item button-group-item-delete">
                                         <i class="fa fa-trash"
-                                           style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
+                                            style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-controls">
-                            <button class="button cancel-button">Cancel</button>
-                            <button class="button save-button" onclick="saveTestInfo(event)">
-                                <span style="display: inline-block; width: 73px;">Save</span>
-                            </button>
-                        </div>
                     </form>
+                </div>
+                <div class="form-controls">
+                    <button class="button cancel-button">Cancel</button>
+                    <button class="button save-button" type="button" onclick="saveTestInfo()">
+                        <span style="display: inline-block; width: 73px;">Save</span>
+                    </button>
                 </div>
             </div>
             <div id="test-question-section" class="section">
                 <div class="section-header">QUESTION LIST</div>
                 <div class="section-divider"></div>
-                <div>
-                    <div class="section-content-container">
-                        <div class="d-flex flex-column">
-                            <b id="test-question-display"></b>
-                            <span>
-                    <ul id="answer-options" style="padding-left: 1rem; list-style: none">
-                    </ul>
-                </span>
-
-                            <div class="button-group button-group-absolute">
-                                <button class="button-group-item">
-                                    <i class="fa fa-edit" style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-                                </button>
-                                <button class="button-group-item button-group-item-delete">
-                                    <i class="fa fa-trash" style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form class="edit-form" style="display: none;">
-                        <div>
-                            <div style="position: relative">
-                                <label class="form-label" style="width: 350px" id="test-question-title">
-                                    <span class="label-text label-required">Title</span>
-                                    <input type="text" placeholder="Enter question title" required="" class="form-input" id="test-question-input" value="">
-                                </label>
-                                <label id="test-question-description" class="form-label">
-                                    <span class="label-text label-required">Description</span>
-                                    <textarea placeholder="" required="" class="form-textarea" id="test-question-options"></textarea>
-                                </label>
-                                <div class="button-group">
-                                    <button class="button-group-item button-group-item-delete">
-                                        <i class="fa fa-trash" style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
+                <div id="test-question-list">
+                    <div id="test-question-1" class="mb-4">
+                        <div class="section-content-container">
+                            <div class="d-flex flex-column">
+                                <b id="test-question-title-1"></b>
+                                <span>
+                                    <ul id="test-answer-options-1" style="padding-left: 1rem; list-style: none">
+                                    </ul>
+                                </span>
+                                <div class="button-group button-group-absolute">
+                                    <button class="button-group-item" id="edit-question-button-1">
+                                        <i class="fa fa-edit"
+                                            style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-controls">
-                            <button class="button cancel-button">Cancel</button>
-                            <button class="button save-button" type="button" onclick="saveQuestion()">
-                                <span style="display: inline-block; width: 73px;">Save</span>
-                            </button>
-                        </div>
-                    </form>
+
+                        <form class="edit-form" style="display: none;">
+                            <div>
+                                <div style="position: relative">
+                                    <label class="form-label" style="width: 350px">
+                                        <span class="label-text label-required">Title</span>
+                                        <input type="text" placeholder="Enter question title" required=""
+                                            class="form-input" id="test-question-input-1" value="">
+                                    </label>
+                                    <label class="form-label">
+                                        <span class="label-text label-required">Description</span>
+                                        <textarea placeholder="" required="" class="form-textarea"
+                                            id="test-answer-input-1"></textarea>
+                                    </label>
+                                    <div class="button-group-absolute">
+                                        <button class="button-group-item button-group-item-delete"
+                                            onclick="deleteQuestion(event, 1)">
+                                            <i class="fa fa-trash"
+                                                style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="form-controls" style="justify-content: space-between">
+                    <button class="button add-more-button" onclick="addMoreQuestion(event)">+ Add more</button>
+                    <div>
+                        <button class="button cancel-button">Cancel</button>
+                        <button class="button save-button" type="button" onclick="saveQuestions()">
+                            <span style="display: inline-block; width: 73px;">Save</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -116,80 +119,6 @@
     </div>
 </div>
 
-<script>
-    function toggleEditMode(section, isEditMode) {
-        const form = section.querySelector('.edit-form');
-        const contentContainer = section.querySelector('.section-content-container');
-
-        if (isEditMode) {
-            section.classList.add('edit-mode');
-            form.style.display = 'block';
-            contentContainer.style.display = 'none';
-        } else {
-            section.classList.remove('edit-mode');
-            form.style.display = 'none';
-            contentContainer.style.display = 'block';
-        }
-    }
-
-    document.querySelectorAll('.cancel-button').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); 
-            const section = button.closest('.section');
-            toggleEditMode(section, false);
-        });
-    });
-
-    document.querySelectorAll('.save-button').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); 
-            const section = button.closest('.section');
-            toggleEditMode(section, false); 
-        });
-    });
-
-    document.querySelectorAll('.button-group-item').forEach(button => {
-        button.addEventListener('click', function (event) {
-            event.preventDefault(); 
-            const section = button.closest('.section');
-            toggleEditMode(section, true); 
-        });
-    });
-
-    function editTestInfo() {
-        document.querySelector('.edit-form').style.display = 'block';
-        document.querySelector('.section-content-container').style.display = 'none';
-    }
-
-    function saveTestInfo(event) {
-        event.preventDefault(); 
-
-        const newTitle = document.getElementById('test-info-input').value;
-        const newDescription = document.getElementById('test-info-description-input').value;
-
-        document.getElementById('test-info-title-display').textContent = newTitle;
-        document.getElementById('test-info-description-display').textContent = newDescription;
-
-        document.querySelector('.edit-form').style.display = 'none';
-        document.querySelector('.section-content-container').style.display = 'block';
-    }
-
-    let questionCounter = 1;
-
-    function saveQuestion() {
-        const questionText = document.getElementById('test-question-input').value;
-
-        document.getElementById('test-question-display').innerText = `${questionCounter}. ${questionText}`;
-
-        const optionsText = document.getElementById('test-question-options').value;
-
-
-        document.getElementById('answer-options').innerHTML = optionsText.split('\n').map((option, index) => {
-            return `<li>(${String.fromCharCode(65 + index)}) ${option}</li>`;
-        }).join('');
-
-        document.querySelector('.edit-form').style.display = 'none';
-
-        //questionCounter++;
-    }
-</script>
+@section scripts {
+    <script src="~/js/admin_index.js" asp-append-version="true"></script>
+}
