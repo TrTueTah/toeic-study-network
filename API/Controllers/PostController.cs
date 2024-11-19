@@ -168,7 +168,7 @@ namespace API.Controllers
 
             try
             {
-                await _firebaseService.DeleteFolderAsync($"posts/{id}");
+                await _firebaseService.DeleteFolderAsync($"posts/{id}/");
                 
                 if (!_postRepository.DeletePost(id))
                 {
