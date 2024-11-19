@@ -23,8 +23,7 @@ namespace API.Repository
             await _context.SaveChangesAsync();
             return question;
         }
-
-        public List<Question> ExtractQuestionsFromLines(List<string> lines)
+        public List<Question> ExtractQuestionsFromReading(List<string> lines)
         {
             var questions = new List<Question>();
             int i = 0;
@@ -59,6 +58,57 @@ namespace API.Repository
                         // Console.WriteLine($"(B) {question.AnswerB}");
                         // Console.WriteLine($"(C) {question.AnswerC}");
                         // Console.WriteLine($"(D) {question.AnswerD}");
+                        questions.Add(question);
+                        i += 5; // Bỏ qua 5 dòng (câu hỏi + 4 lựa chọn)
+                    }
+                    else
+                    {
+                        // Nếu không đủ dòng, ghi log và bỏ qua câu hỏi này
+                        Console.WriteLine($"Không đủ dữ liệu cho câu hỏi: {questionNumber}");
+                        i++;
+                    }
+                }
+                else
+                {
+                    // Nếu không tìm thấy questionNumber, bỏ qua dòng này
+                    i++;
+                }
+            }
+
+            return questions;
+        }
+
+        public List<Question> ExtractQuestionsFromListening(List<string> lines)
+        {
+            var questions = new List<Question>();
+            int i = 0;
+
+            while (i < lines.Count)
+            {
+                // Kiểm tra nếu dòng bắt đầu bằng một số có thể là questionNumber
+                var parts = lines[i].Split('.', 2); // Chỉ tách tại dấu '.' đầu tiên
+                if (parts.Length >= 2 && int.TryParse(parts[0], out int questionNumber) && questionNumber >= 32 && questionNumber <= 100)
+                {
+                    // Lưu questionNumber và tiêu đề câu hỏi
+                    var question = new Question
+                    {
+                        QuestionNumber = questionNumber,
+                        Title = parts[1].Trim() // Lấy phần còn lại sau "32. " làm tiêu đề
+                    };
+
+                    // Kiểm tra 4 dòng tiếp theo cho các lựa chọn (A), (B), (C), (D)
+                    if (i + 4 < lines.Count)
+                    {
+                        if (lines[i + 1].StartsWith("(A)"))
+                            question.AnswerA = lines[i + 1][3..].Trim();
+                        if (lines[i + 2].StartsWith("(B)"))
+                            question.AnswerB = lines[i + 2][3..].Trim();
+                        if (lines[i + 3].StartsWith("(C)"))
+                            question.AnswerC = lines[i + 3][3..].Trim();
+                        if (lines[i + 4].StartsWith("(D)"))
+                            question.AnswerD = lines[i + 4][3..].Trim();
+
+                        // Thêm câu hỏi vào danh sách
                         questions.Add(question);
                         i += 5; // Bỏ qua 5 dòng (câu hỏi + 4 lựa chọn)
                     }
