@@ -1,4 +1,5 @@
-﻿using Firebase.Storage;
+﻿using System.Net.Http.Headers;
+using Firebase.Storage;
 using Newtonsoft.Json;
 
 namespace API.Services
@@ -7,12 +8,11 @@ namespace API.Services
     {
         private readonly FirebaseStorage _firebaseStorage;
         private readonly HttpClient _httpClient;
-        private readonly string _firebaseApiUrl = "https://firebasestorage.googleapis.com/v0/b/your-firebase-app-id.appspot.com/o";
-
+        private readonly string _firebaseApiUrl;
         public FirebaseService(IConfiguration configuration, HttpClient httpClient)
         {
             var firebaseConfig = configuration.GetSection("Firebase");
-
+            _firebaseApiUrl = $"https://firebasestorage.googleapis.com/v0/b/{firebaseConfig["BucketName"]}/o";
             _firebaseStorage = new FirebaseStorage(
                 firebaseConfig["BucketName"],
                 new FirebaseStorageOptions
@@ -44,44 +44,40 @@ namespace API.Services
                 return fileUrl;
             }
         }
-
-        public async Task DeleteFileAsync(string filePath)
+        public async Task DeleteFolderAsync(string folderPath)
         {
             try
             {
-                var fileReference = _firebaseStorage.Child(filePath);
-                await fileReference.DeleteAsync();
+                var listUrl = $"{_firebaseApiUrl}?prefix={Uri.EscapeDataString(folderPath)}";
+
+                var request = new HttpRequestMessage(HttpMethod.Get, listUrl);
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var response = await _httpClient.SendAsync(request);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to retrieve file list from Firebase Storage. Status code: {response.StatusCode}");
+                }
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                dynamic jsonObject = JsonConvert.DeserializeObject(jsonResponse);
+                if (jsonObject.items == null)
+                {
+                    return;
+                }
+
+                foreach (var item in jsonObject.items)
+                {
+                    string filePath = item.name;
+                    await _firebaseStorage.Child(filePath).DeleteAsync();
+                }
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error deleting file from Firebase: {ex.Message}");
+                throw new Exception($"Failed to delete folder: {ex.Message}");
             }
         }
-        
-        public async Task DeleteFolderAsync(string folderPath)
-        {
-            var filesToDelete = await ListFilesInFolder(folderPath);
 
-            foreach (var file in filesToDelete)
-            {
-                await DeleteFileAsync(file);
-            }
-        }
-        
-        private async Task<List<string>> ListFilesInFolder(string folderPath)
-        {
-            var fileUrls = new List<string>();
-
-            var requestUri = $"{_firebaseApiUrl}/{folderPath}?&fields=items/name";
-            var response = await _httpClient.GetStringAsync(requestUri);
-            var fileList = JsonConvert.DeserializeObject<dynamic>(response);
-
-            foreach (var file in fileList.items)
-            {
-                fileUrls.Add(file.name.ToString());
-            }
-
-            return fileUrls;
-        }
     }
 }

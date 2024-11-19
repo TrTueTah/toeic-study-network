@@ -1,6 +1,7 @@
 ﻿using API.Interfaces;
 using API.Models;
 using API.Dtos.CommentDto;
+using API.Repository;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using API.Services;
@@ -13,11 +14,16 @@ namespace API.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
-
-        public CommentController(ICommentRepository commentRepository, IMapper mapper)
+        private readonly IUserRepository _userRepository;
+        private readonly FirebaseService _firebaseService;
+        private readonly IPostRepository _postRepository;
+        public CommentController(ICommentRepository commentRepository, IMapper mapper, IUserRepository userRepository, FirebaseService firebaseService, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
+            _firebaseService = firebaseService;
+            _postRepository = postRepository;
         }
 
         // GET: api/v1/comment/getAllComments
@@ -54,21 +60,30 @@ namespace API.Controllers
         {
             if (createCommentDto == null) return BadRequest("Comment is null.");
 
+            if (string.IsNullOrEmpty(createCommentDto.UserId) || !_userRepository.UserExists(createCommentDto.UserId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
+            if (string.IsNullOrEmpty(createCommentDto.PostId) || !_postRepository.PostExists(createCommentDto.PostId))
+            {
+                return BadRequest("Invalid post ID.");
+            }
+            
             var comment = _mapper.Map<Comment>(createCommentDto);
-            comment.CreatedAt = DateTime.Now;
+            comment.CreatedAt = DateTime.UtcNow;
             comment.MediaUrls = new List<string>();
-
+            
             if (!_commentRepository.CreateComment(comment)) return StatusCode(500, "A problem occurred.");
 
             List<string> mediaUrls = new List<string>();
             if (createCommentDto.MediaFiles?.Count > 0)
             {
-                foreach (var file in createCommentDto.MediaFiles)
+                foreach (IFormFile file in createCommentDto.MediaFiles)
                 {
                     if (file?.Length > 0)
                     {
-                        // var url = await _blobService.UploadFileAsync(file, $"comments/{comment.Id}");
-                        // mediaUrls.Add(url);
+                        var url = await _firebaseService.UploadFileAsync(file, $"comments/{comment.Id}");
+                        mediaUrls.Add(url);
                     }
                 }
             }
@@ -112,7 +127,7 @@ namespace API.Controllers
 
             try
             {
-                // await _blobService.DeleteFolderAsync($"comments/{id}");
+                await _firebaseService.DeleteFolderAsync($"comments/{id}/");
 
                 if (!_commentRepository.DeleteComment(id)) return StatusCode(500, "A problem occurred.");
             }
