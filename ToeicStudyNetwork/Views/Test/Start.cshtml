@@ -37,7 +37,7 @@
           @foreach (var part in Model.PartQuestions)
           {
           <li class="nav-item" role="presentation">
-            <a class="nav-link @(part.Key == 1 ? "active" : "")" id="part@(part.Key)-tab" data-bs-toggle="tab" data-bs-target="#part@(part.Key)" type="button" asp-controller="Test">
+            <a class="nav-link @(part.Key == 1 ? "active" : "")" id="part@(part.Key)-tab" data-bs-toggle="tab" data-bs-target="#part@(part.Key)" role="tab" aria-controls="part@part.Key" aria-selected="false" type="button" asp-controller="Test">
               Part @(part.Key)
             </a>
           </li>
@@ -116,89 +116,21 @@
             </button>
 
             <div class="test-questions-list">
-              <div class="test-questions-list-part">
-                <h6 id="part-1">Part 1</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 0; i < 6; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
+              @foreach (var part in Model.PartQuestions)
+              {
+                <div class="test-questions-list-part">
+                  <h6 id="part-@part.Key">Part @part.Key 
+                  </h6>
+                  <div class="test-questions-list-wrapper">
+                    @foreach (var question in part.Value)
+                    {
+                      <span class="test-questions-listitem" data-qid="@question.QuestionNumber" id="test-questions-lisitem-@question.QuestionNumber">
+                        @(question.QuestionNumber)
+                      </span>
+                    }
+                  </div>
                 </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-2">Part 2</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 6; i < 31; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-3">Part 3</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 31; i < 70; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-4">Part 4</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 70; i < 100; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-5">Part 5</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 100; i < 130; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-6">Part 6</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 130; i < 146; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <div class="test-questions-list-part">
-                <h6 id="part-7">Part 7</h6>
-                <div class="test-questions-list-wrapper">
-                  @for (var i = 146; i < 200; i++)
-                  {
-                    <span class="test-questions-listitem" data-qid="8592" id="test-questions-lisitem-8592">
-                      @(i + 1)
-                    </span>
-                  }
-                </div>
-              </div>
+              }
             </div>
           </div>
         </div>
@@ -209,15 +141,3 @@
 
 <script src="~/js/test_start.js" asp-append-version="true"></script>
 <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-<script>
-  const controls = [
-    'play', 'progress', 'current-time', 'duration', 'mute', 'volume'
-  ];
-
-  const player = new Plyr('#player', {
-    controls: controls,
-    loop: {     
-      active: true,
-    },
-  });
-</script>

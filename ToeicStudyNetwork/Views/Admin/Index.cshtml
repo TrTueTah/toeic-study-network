@@ -1,0 +1,124 @@
+@{
+    ViewBag.Title = "Tạo Đề Thi TOEIC";
+    Layout = "_LayoutAdmin";
+}
+
+@section customHead {
+    <link rel="stylesheet" href="~/css/admin_index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/test_start.css" asp-append-version="true" />
+}
+
+<div class="container p-3 d-flex gap-4">
+    <div class="main-container p-3">
+        <div id="test-builder-scrollable" class="scrollable-container">
+            <div id="test-info-section" class="section edit-mode">
+                <div class="section-header">TEST INFORMATION</div>
+                <div class="section-divider"></div>
+                <div>
+                    <div class="section-content-container">
+                        <div class="d-flex flex-column">
+                            <b id="test-info-title"></b>
+                            <span id="test-info-description"></span>
+                            <div class="button-group button-group-absolute">
+                                <button class="button-group-item" id="edit-info-button-1">
+                                    <i class="fa fa-edit"
+                                       style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form class="edit-form" style="display: block;">
+                        <div>
+                            <div style="position: relative">
+                                <label class="form-label" style="width: 350px">
+                                    <span class="label-text label-required">Title</span>
+                                    <input type="text" placeholder="Enter test title" required="" class="form-input"
+                                           id="test-info-title-input" value="">
+                                </label>
+                                <label class="form-label">
+                                    <span class="label-text label-required">Description</span>
+                                    <textarea placeholder="Enter test description" required="" class="form-textarea"
+                                        id="test-info-description-input"></textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="form-controls">
+                    <button class="button cancel-button">Cancel</button>
+                    <button class="button save-button" type="button" onclick="saveTestInfo()">
+                        <span style="display: inline-block; width: 73px;">Save</span>
+                    </button>
+                </div>
+            </div>
+            <div id="test-question-section" class="section edit-mode">
+                <div class="section-header">QUESTION LIST</div>
+                <div class="section-divider"></div>
+                <div id="test-question-list">
+                    <div id="test-question-1" class="pb-2">
+                        <div class="section-content-container" style="display: none">
+                            <div class="d-flex flex-column">
+                                <b id="test-question-title-1"></b>
+                                <span>
+                                    <ul id="test-answer-options-1" style="padding-left: 1rem; list-style: none">
+                                    </ul>
+                                </span>
+                                <div class="button-group button-group-absolute">
+                                    <button class="button-group-item" id="edit-question-button-1">
+                                        <i class="fa fa-edit"
+                                           style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form class="edit-form" style="display: block;">
+                            <div>
+                                <div style="position: relative">
+                                    <label class="form-label" style="width: 350px">
+                                        <span class="label-text label-required">Question</span>
+                                        <input type="text" placeholder="Enter question here" required=""
+                                               class="form-input" id="test-question-input-1" value="">
+                                        <span id="error-message-1" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
+                                    </label>
+                                    <label class="form-label">
+                                        <span class="label-text label-required">Answer options</span>
+                                        <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard"
+                                            id="test-answer-input-1"></textarea>
+                                    </label>
+                                    
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="form-controls">
+                    <button class="button add-more-button" onclick="addMoreQuestion(event)">+ Add more</button>
+                    <button class="button save-button" type="button" onclick="saveQuestions()">
+                        <span style="display: inline-block; width: 73px;">Save</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="sub-container p-2">
+        <button class="btn btn-outline-primary btn-block mb-3" id="submit-test">
+            Import
+        </button>
+
+        <div class="test-questions-list">
+            <div class="test-questions-list-part">
+                <div class="test-questions-list-wrapper">
+                    <span class="test-questions-listitem" data-qid="1" id="test-questions-lisitem-1">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/admin_index.js" asp-append-version="true"></script>
+}
