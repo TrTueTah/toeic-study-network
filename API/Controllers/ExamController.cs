@@ -2,6 +2,7 @@ using API.Dtos.ExamDto;
 using API.Dtos.QuestionDto;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,6 +20,7 @@ namespace API.Controllers
             _examRepository = examRepository;
             _questionRepository = questionRepository;
         }
+
         [HttpGet("getAllExams")]
         public async Task<IActionResult> GetAllExams()
         {
@@ -30,9 +32,12 @@ namespace API.Controllers
 
             return Ok(exams);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("createExam")]
         public async Task<IActionResult> CreateExam(CreateExamRequestDto request)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest();

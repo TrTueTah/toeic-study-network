@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using API.Repository;
 using Microsoft.OpenApi.Models;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,11 +81,19 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = builder.Configuration["JWT:Audience"],
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("RequireUserRole", policy =>
+            policy.RequireClaim("role", "User")); // Xác định quyền "User"
+        options.AddPolicy("RequireAdminRole", policy =>
+            policy.RequireClaim("role", "Admin")); // Xác định quyền "Admin"
+    });
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.Configure<IISServerOptions>(options =>
 {
@@ -117,6 +126,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<CustomAuthorizationMiddleware>();
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.UseAuthentication();

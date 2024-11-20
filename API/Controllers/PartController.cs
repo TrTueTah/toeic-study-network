@@ -6,6 +6,7 @@ using API.Data;
 using API.Dtos.PartDto;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -73,6 +74,7 @@ namespace API.Controllers
             return Ok(partResponseDtos);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("createPart")]
         public async Task<IActionResult> AddPart([FromBody] CreatePartDto createPartDto)
         {
