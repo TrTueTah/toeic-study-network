@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Dtos.QuestionDto;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -35,6 +36,7 @@ namespace API.Controllers
             return Ok(question);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("createQuestion")]
         public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionDto createQuestionDto)
         {
@@ -60,6 +62,7 @@ namespace API.Controllers
             return Ok(questions);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("upload-reading")]
         public async Task<IActionResult> UploadFileReading([FromForm] UploadReadingDto uploadReadingDto)
         {
@@ -128,6 +131,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("upload-listening")]
         public async Task<IActionResult> UploadFileListening([FromForm] UploadListeningDto uploadListeningDto)
         {

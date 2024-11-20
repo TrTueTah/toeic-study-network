@@ -21,21 +21,18 @@ public class TokenService : ITokenService
         {
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.GivenName, user.Username),
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim("type", TokenType)
         };
 
         var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            TokenType = TokenType,
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.Now.AddHours(1),
             SigningCredentials = creds,
             Issuer = _configuration["JWT:Issuer"],
             Audience = _configuration["JWT:Audience"],
-            Claims = new Dictionary<string, object>
-            {
-                { "role", user.Role }
-            }
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
