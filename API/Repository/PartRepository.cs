@@ -37,5 +37,12 @@ namespace API.Repository
         {
             return _context.Parts.FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<Part> UpdatePart(Part part)
+        {
+            _context.Parts.Update(part);
+            await _context.SaveChangesAsync();
+            return part;
+        }
     }
 }

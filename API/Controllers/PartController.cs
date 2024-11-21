@@ -6,6 +6,7 @@ using API.Data;
 using API.Dtos.PartDto;
 using API.Interfaces;
 using API.Models;
+using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,11 @@ namespace API.Controllers
     public class PartController : ControllerBase
     {
         private readonly IPartRepository _partRepository;
-        public PartController(IPartRepository partRepository)
+        private readonly FirebaseService _firebaseService;
+        public PartController(IPartRepository partRepository, FirebaseService firebaseService)
         {
             _partRepository = partRepository;
+            _firebaseService = firebaseService;
         }
 
         [HttpGet("getAllParts")]
@@ -90,6 +93,41 @@ namespace API.Controllers
             var newPart = await _partRepository.AddPart(part);
 
             return Ok(newPart);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("uploadMediaFile/{id}")]
+        public async Task<IActionResult> UploadMediaFile([FromForm] UploadMediaFileDto uploadMediaFileDto, string id)
+        {
+            var part = await _partRepository.GetPartById(id);
+            if (part == null)
+            {
+                return NotFound();
+            }
+            var imageFilesUrl = new List<string>();
+            var audioFilesUrl = new List<string>();
+            if (uploadMediaFileDto.ImageFiles != null && uploadMediaFileDto.ImageFiles.Count > 0)
+            {
+                foreach (var imageFile in uploadMediaFileDto.ImageFiles)
+                {
+                    var url = await _firebaseService.UploadFileAsync(imageFile, $"parts/{part.Id}", imageFile.FileName);
+                    imageFilesUrl.Add(url);
+                }
+            }
+            if (uploadMediaFileDto.AudioFiles != null && uploadMediaFileDto.AudioFiles.Count > 0)
+            {
+                foreach (var audioFile in uploadMediaFileDto.AudioFiles)
+                {
+                    var fileName = audioFile.FileName + "_" + part.Id;
+                    var url = await _firebaseService.UploadFileAsync(audioFile, $"parts/{part.Id}", audioFile.FileName);
+                    audioFilesUrl.Add(url);
+                }
+            }
+            part.ImageFilesUrl = imageFilesUrl;
+            part.AudioFilesUrl = audioFilesUrl;
+            var updatedPart = await _partRepository.UpdatePart(part);
+
+            return Ok(updatedPart);
         }
     }
 }

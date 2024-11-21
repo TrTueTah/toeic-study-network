@@ -12,5 +12,6 @@ namespace API.Interfaces
         Task<Part> GetPartById(string id);
         Task<Part> AddPart(Part part);
         Task<List<Part>> GetPartsByExamId(string examId);
+        Task<Part> UpdatePart(Part part);
     }
 }

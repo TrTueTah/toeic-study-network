@@ -35,5 +35,10 @@ public class ApplicationDbContext : DbContext
             .HasMany(p => p.Questions)
             .WithOne(q => q.Part)
             .HasForeignKey(q => q.PartId);
+        builder.Entity<Part>(entity =>
+        {
+            entity.Property(e => e.ImageFilesUrl).IsRequired(false);
+            entity.Property(e => e.AudioFilesUrl).IsRequired(false);
+        });
     }
 }
