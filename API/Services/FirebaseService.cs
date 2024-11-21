@@ -44,6 +44,18 @@ namespace API.Services
                 return fileUrl;
             }
         }
+
+        public async Task<string> UploadFileAsync(IFormFile file, string folderPath, string fileName)
+        {
+            using (var stream = file.OpenReadStream())
+            {
+                var fileUrl = await _firebaseStorage
+                    .Child(folderPath)
+                    .Child(fileName)
+                    .PutAsync(stream);
+                return fileUrl;
+            }
+        }
         public async Task DeleteFolderAsync(string folderPath)
         {
             try
