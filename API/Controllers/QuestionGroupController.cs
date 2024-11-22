@@ -3,6 +3,10 @@ using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using API.Dtos.QuestionGroupDto;
 using API.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -35,6 +39,7 @@ namespace API.Controllers
                 var questionGroup = new QuestionGroup
                 {
                     PartNumber = questionGroupDto.PartNumber,
+                    ExamId = questionGroupDto.ExamId,
                     Questions = questionGroupDto.Questions.Select(q => new Question
                     {
                         Title = q.Title,
@@ -49,7 +54,8 @@ namespace API.Controllers
                 
                 var imageUrls = new List<string>();
                 var audioUrls = new List<string>();
-                
+
+                // Handle image and audio file uploads
                 if (questionGroupDto.ImageFiles != null && questionGroupDto.ImageFiles.Count > 0)
                 {
                     foreach (IFormFile file in questionGroupDto.ImageFiles)
@@ -61,7 +67,7 @@ namespace API.Controllers
                         }
                     }
                 }
-                
+
                 if (questionGroupDto.AudioFiles != null && questionGroupDto.AudioFiles.Count > 0)
                 {
                     foreach (IFormFile file in questionGroupDto.AudioFiles)
@@ -76,7 +82,7 @@ namespace API.Controllers
                 
                 questionGroup.ImageFilesUrl = imageUrls;
                 questionGroup.AudioFilesUrl = audioUrls;
-                
+
                 var createdQuestionGroup = _questionGroupRepository.CreateQuestionGroup(questionGroup);
                 
                 return CreatedAtAction(nameof(GetQuestionGroupById), new { id = createdQuestionGroup.Id }, createdQuestionGroup);
@@ -93,7 +99,7 @@ namespace API.Controllers
             var questionGroup = _questionGroupRepository.GetQuestionGroupById(id);
             if (questionGroup == null)
             {
-                return NotFound();
+                return NotFound($"QuestionGroup with ID {id} not found.");
             }
 
             return Ok(questionGroup);
@@ -105,7 +111,7 @@ namespace API.Controllers
             var questionGroups = _questionGroupRepository.GetAllQuestionGroupsForExam(examId);
             if (questionGroups == null || !questionGroups.Any())
             {
-                return NotFound("No question groups found for the exam.");
+                return NotFound($"No question groups found for the exam with ID {examId}.");
             }
 
             return Ok(questionGroups);
@@ -132,6 +138,7 @@ namespace API.Controllers
             try
             {
                 existingQuestionGroup.PartNumber = questionGroupDto.PartNumber;
+                existingQuestionGroup.ExamId = questionGroupDto.ExamId;
                 existingQuestionGroup.Questions = questionGroupDto.Questions.Select(q => new Question
                 {
                     Title = q.Title,
