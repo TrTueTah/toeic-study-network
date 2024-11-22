@@ -1,96 +1,90 @@
 using API.Dtos.ExamDto;
-using API.Dtos.QuestionDto;
 using API.Interfaces;
 using API.Models;
-using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
     [Route("api/v1/exam")]
+    [ApiController]
     public class ExamController : ControllerBase
     {
         private readonly IExamRepository _examRepository;
-        private readonly IPartRepository _partRepository;
-        private readonly IQuestionRepository _questionRepository;
-        public ExamController(IExamRepository examRepository, IPartRepository partRepository, IQuestionRepository questionRepository)
+        private readonly IMapper _mapper;
+
+        public ExamController(IExamRepository examRepository, IMapper mapper)
         {
-            _partRepository = partRepository;
             _examRepository = examRepository;
-            _questionRepository = questionRepository;
+            _mapper = mapper;
         }
 
+        // GET: api/exam/getAllExams
         [HttpGet("getAllExams")]
-        public async Task<IActionResult> GetAllExams()
+        [ProducesResponseType(typeof(List<Exam>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<List<Exam>>> GetAllExams()
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest();
+                var exams = await _examRepository.GetAllExams();
+                return Ok(exams);
             }
-            var exams = await _examRepository.GetAllExams();
-
-            return Ok(exams);
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("createExam")]
-        public async Task<IActionResult> CreateExam(CreateExamRequestDto request)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-            var newExam = new Exam
-            {
-                Title = request.Title,
-            };
-            await _examRepository.CreateExam(newExam);
-            return Ok(newExam);
-        }
+        // GET: api/exam/getExamById/{id}
         [HttpGet("getExamById/{id}")]
-        public async Task<IActionResult> GetExamById(string id)
+        [ProducesResponseType(typeof(Exam), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<Exam>> GetExamById(string id)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest();
-            }
-            var exam = await _examRepository.GetExamById(id);
-            if (exam == null)
-            {
-                return NotFound();
-            }
-            var parts = await _partRepository.GetPartsByExamId(id);
-            var questions = new List<QuestionResponseDto>();
-            foreach (var part in parts)
-            {
-                var partQuestions = await _questionRepository.GetQuestionsByPartId(part.Id);
-                if (partQuestions != null)
+                var exam = await _examRepository.GetExamById(id);
+                
+                if (exam == null)
                 {
-                    questions.AddRange(partQuestions.Select(q => new QuestionResponseDto
-                    {
-                        Title = q.Title,
-                        AnswerA = q.AnswerA,
-                        AnswerB = q.AnswerB,
-                        AnswerC = q.AnswerC,
-                        AnswerD = q.AnswerD,
-                        CorrectAnswer = q.CorrectAnswer,
-                        QuestionNumber = q.QuestionNumber,
-                        PartId = q.PartId,
-                        PartNumber = part.PartNumber
-                    }));
+                    return NotFound($"Exam with ID {id} not found.");
                 }
+                
+                var examDto = _mapper.Map<Exam>(exam);
+                return Ok(examDto);
             }
-
-
-            return Ok(new GetAllExamDto
+            catch (Exception ex)
             {
-                Id = exam.Id,
-                Title = exam.Title,
-                CreatedAt = exam.CreatedAt,
-                Questions = questions
-            });
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // POST: api/exam/createExam
+        [HttpPost("createExam")]
+        [ProducesResponseType(typeof(CreateExamRequestDto), 201)] 
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<CreateExamRequestDto>> CreateExam([FromBody] CreateExamRequestDto examDto)
+        {
+            try
+            {
+                if (examDto == null)
+                {
+                    return BadRequest("Exam data is null.");
+                }
+                
+                var exam = _mapper.Map<Exam>(examDto);
+
+                var createdExam = await _examRepository.CreateExam(exam);
+                
+                return CreatedAtAction(nameof(GetExamById), new { id = createdExam.Id }, createdExam);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
     }
 }

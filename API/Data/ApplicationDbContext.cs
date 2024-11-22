@@ -17,8 +17,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Exam> Exams { get; set; }
-    public DbSet<Part> Parts { get; set; }
     public DbSet<Question> Questions { get; set; }
+    public DbSet<QuestionGroup> QuestionGroups { get; set; }
+    public DbSet<UserResult> UserResults { get; set; }
+    public DbSet<DetailResult> DetailResults { get; set; }
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -27,18 +29,36 @@ public class ApplicationDbContext : DbContext
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId);
+        
         builder.Entity<Exam>()
-            .HasMany(e => e.Parts)
-            .WithOne(p => p.Exam)
-            .HasForeignKey(p => p.ExamId);
-        builder.Entity<Part>()
-            .HasMany(p => p.Questions)
-            .WithOne(q => q.Part)
-            .HasForeignKey(q => q.PartId);
-        builder.Entity<Part>(entity =>
-        {
-            entity.Property(e => e.ImageFilesUrl).IsRequired(false);
-            entity.Property(e => e.AudioFilesUrl).IsRequired(false);
-        });
+            .HasMany(e => e.QuestionGroups)
+            .WithOne(qg => qg.Exam)
+            .HasForeignKey(qg => qg.ExamId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<QuestionGroup>()
+            .HasMany(qg => qg.Questions)
+            .WithOne(q => q.Group)
+            .HasForeignKey(q => q.GroupId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<DetailResult>()
+            .HasOne(dr => dr.UserResult)
+            .WithMany(ur => ur.DetailResults)
+            .HasForeignKey(dr => dr.UserResultId);
+        
+        builder.Entity<Question>()
+            .Property(q => q.GroupId)
+            .IsRequired();
+
+        builder.Entity<QuestionGroup>()
+            .Property(qg => qg.ExamId)
+            .IsRequired();
+        
+        builder.Entity<Question>()
+            .HasIndex(q => q.GroupId);
+
+        builder.Entity<QuestionGroup>()
+            .HasIndex(qg => qg.ExamId);
     }
 }

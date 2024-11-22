@@ -3,6 +3,8 @@ using API.Dtos.CommentDto;
 using API.Dtos.ExamDto;
 using API.Dtos.LikeDto;
 using API.Dtos.PostDto;
+using API.Dtos.QuestionDto;
+using API.Dtos.QuestionGroupDto;
 using API.Dtos.UserDto;
 using API.Models;
 using AutoMapper;
@@ -42,7 +44,15 @@ public class MappingProfiles : Profile
         CreateMap<UserRegisterResponseDto, User>();
 
         //Exam
-        CreateMap<Exam, CreateExamRequestDto>();
         CreateMap<CreateExamRequestDto, Exam>();
+        CreateMap<Exam, CreateExamRequestDto>();
+        
+        //QuestionGroup
+        CreateMap<CreateQuestionGroupDto, QuestionGroup>();
+        CreateMap<QuestionGroup, CreateQuestionGroupDto>();
+        
+        //Question
+        CreateMap<CreateQuestionDto, Question>();
+        CreateMap<Question, CreateQuestionDto>();
     }
 }

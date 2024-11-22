@@ -85,18 +85,15 @@ namespace API.Repository
 
             while (i < lines.Count)
             {
-                // Kiểm tra nếu dòng bắt đầu bằng một số có thể là questionNumber
-                var parts = lines[i].Split('.', 2); // Chỉ tách tại dấu '.' đầu tiên
+                var parts = lines[i].Split('.', 2);
                 if (parts.Length >= 2 && int.TryParse(parts[0], out int questionNumber) && questionNumber >= 32 && questionNumber <= 100)
                 {
-                    // Lưu questionNumber và tiêu đề câu hỏi
                     var question = new Question
                     {
                         QuestionNumber = questionNumber,
-                        Title = parts[1].Trim() // Lấy phần còn lại sau "32. " làm tiêu đề
+                        Title = parts[1].Trim()
                     };
-
-                    // Kiểm tra 4 dòng tiếp theo cho các lựa chọn (A), (B), (C), (D)
+                    
                     if (i + 4 < lines.Count)
                     {
                         if (lines[i + 1].StartsWith("(A)"))
@@ -107,21 +104,18 @@ namespace API.Repository
                             question.AnswerC = lines[i + 3][3..].Trim();
                         if (lines[i + 4].StartsWith("(D)"))
                             question.AnswerD = lines[i + 4][3..].Trim();
-
-                        // Thêm câu hỏi vào danh sách
+                        
                         questions.Add(question);
-                        i += 5; // Bỏ qua 5 dòng (câu hỏi + 4 lựa chọn)
+                        i += 5;
                     }
                     else
                     {
-                        // Nếu không đủ dòng, ghi log và bỏ qua câu hỏi này
                         Console.WriteLine($"Không đủ dữ liệu cho câu hỏi: {questionNumber}");
                         i++;
                     }
                 }
                 else
                 {
-                    // Nếu không tìm thấy questionNumber, bỏ qua dòng này
                     i++;
                 }
             }
@@ -139,9 +133,12 @@ namespace API.Repository
             return await _context.Questions.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<Question>> GetQuestionsByPartId(string partId)
+        public Task<List<Question>> GetQuestionsByPartNumber(string examId, int partNumber)
         {
-            return _context.Questions.Where(x => x.PartId == partId).ToListAsync();
+            return _context.Questions
+                .Where(q => q.Group.ExamId == examId && q.Group.PartNumber == partNumber)
+                .ToListAsync();
         }
+
     }
 }

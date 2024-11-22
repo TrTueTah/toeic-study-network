@@ -17,7 +17,8 @@ namespace API.Models
         public string? AnswerD { get; set; }
         public string CorrectAnswer { get; set; } = "";
         public int QuestionNumber { get; set; }
-        public string PartId { get; set; } = ""!;
-        public Part Part { get; set; } = null!;
+
+        public string GroupId { get; set; }
+        public QuestionGroup Group { get; set; }
     }
 }

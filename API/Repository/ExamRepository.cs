@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Data;
 using API.Interfaces;
 using API.Models;
@@ -25,12 +21,18 @@ namespace API.Repository
 
         public async Task<List<Exam>> GetAllExams()
         {
-            return await _context.Exams.ToListAsync();
+            return await _context.Exams.Include(e => e.QuestionGroups)
+                .ThenInclude(qg => qg.Questions)
+                .ToListAsync();
         }
 
         public async Task<Exam> GetExamById(string id)
         {
-            return await _context.Exams.FirstOrDefaultAsync(x => x.Id == id);
+            var exam = await _context.Exams.Include(e => e.QuestionGroups)
+                .ThenInclude(qg => qg.Questions)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return exam;
         }
     }
 }

@@ -64,8 +64,9 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IExamRepository, ExamRepository>();
-builder.Services.AddScoped<IPartRepository, PartRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IQuestionGroupRepository, QuestionGroupRepository>();
+builder.Services.AddScoped<IUserResultRepository, UserResultRepository>();
 builder.Services.AddScoped<FirebaseService>();
 
 builder.Services.AddAuthentication(options =>
