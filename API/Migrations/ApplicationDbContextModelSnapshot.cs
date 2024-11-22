@@ -54,6 +54,30 @@ namespace API.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("API.Models.DetailResult", b =>
+                {
+                    b.Property<string>("DetailResultId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("QuestionNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserAnswer")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserResultId")
+                        .HasColumnType("text");
+
+                    b.HasKey("DetailResultId");
+
+                    b.HasIndex("UserResultId");
+
+                    b.ToTable("DetailResults");
+                });
+
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
                     b.Property<string>("Id")
@@ -92,34 +116,6 @@ namespace API.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Likes");
-                });
-
-            modelBuilder.Entity("API.Models.Part", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<List<string>>("AudioFilesUrl")
-                        .HasColumnType("text[]");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ExamId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<List<string>>("ImageFilesUrl")
-                        .HasColumnType("text[]");
-
-                    b.Property<int>("PartNumber")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExamId");
-
-                    b.ToTable("Parts");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -170,9 +166,12 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PartId")
+                    b.Property<string>("GroupId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("PartNumber")
+                        .HasColumnType("integer");
 
                     b.Property<int>("QuestionNumber")
                         .HasColumnType("integer");
@@ -182,9 +181,33 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PartId");
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("API.Models.QuestionGroup", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<List<string>>("AudioFilesUrl")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("ExamId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<List<string>>("ImageFilesUrl")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("QuestionGroups");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -213,6 +236,34 @@ namespace API.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("API.Models.UserResult", b =>
+                {
+                    b.Property<string>("UserResultId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExamId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TimeTaken")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserResultId");
+
+                    b.ToTable("UserResults");
+                });
+
             modelBuilder.Entity("API.Models.Comment", b =>
                 {
                     b.HasOne("API.Models.Post", null)
@@ -222,6 +273,15 @@ namespace API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("API.Models.DetailResult", b =>
+                {
+                    b.HasOne("API.Models.UserResult", "UserResult")
+                        .WithMany("DetailResults")
+                        .HasForeignKey("UserResultId");
+
+                    b.Navigation("UserResult");
+                });
+
             modelBuilder.Entity("API.Models.Like", b =>
                 {
                     b.HasOne("API.Models.Post", null)
@@ -229,17 +289,6 @@ namespace API.Migrations
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Models.Part", b =>
-                {
-                    b.HasOne("API.Models.Exam", "Exam")
-                        .WithMany("Parts")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -255,23 +304,29 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Question", b =>
                 {
-                    b.HasOne("API.Models.Part", "Part")
+                    b.HasOne("API.Models.QuestionGroup", "Group")
                         .WithMany("Questions")
-                        .HasForeignKey("PartId")
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Part");
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("API.Models.QuestionGroup", b =>
+                {
+                    b.HasOne("API.Models.Exam", "Exam")
+                        .WithMany("QuestionGroups")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
                 });
 
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
-                    b.Navigation("Parts");
-                });
-
-            modelBuilder.Entity("API.Models.Part", b =>
-                {
-                    b.Navigation("Questions");
+                    b.Navigation("QuestionGroups");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
@@ -281,9 +336,19 @@ namespace API.Migrations
                     b.Navigation("Likes");
                 });
 
+            modelBuilder.Entity("API.Models.QuestionGroup", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
             modelBuilder.Entity("API.Models.User", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("API.Models.UserResult", b =>
+                {
+                    b.Navigation("DetailResults");
                 });
 #pragma warning restore 612, 618
         }

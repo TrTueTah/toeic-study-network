@@ -15,9 +15,5 @@ namespace API.Models
         public string ExamId { get; set; }
         public Exam Exam { get; set; }
         public List<Question> Questions { get; set; }
-        [AllowNull]
-        public List<string> ImageFilesUrl { get; set; }
-        [AllowNull]
-        public List<string> AudioFilesUrl { get; set; }
     }
 }
