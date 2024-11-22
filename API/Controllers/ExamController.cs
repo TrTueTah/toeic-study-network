@@ -1,10 +1,8 @@
+using API.Dtos.ExamDto;
 using API.Interfaces;
 using API.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -13,12 +11,12 @@ namespace API.Controllers
     public class ExamController : ControllerBase
     {
         private readonly IExamRepository _examRepository;
-        private readonly ILogger<ExamController> _logger;
+        private readonly IMapper _mapper;
 
-        public ExamController(IExamRepository examRepository, ILogger<ExamController> logger)
+        public ExamController(IExamRepository examRepository, IMapper mapper)
         {
             _examRepository = examRepository;
-            _logger = logger;
+            _mapper = mapper;
         }
 
         // GET: api/exam/getAllExams
@@ -54,7 +52,8 @@ namespace API.Controllers
                     return NotFound($"Exam with ID {id} not found.");
                 }
                 
-                return Ok(exam);
+                var examDto = _mapper.Map<Exam>(exam);
+                return Ok(examDto);
             }
             catch (Exception ex)
             {
@@ -64,19 +63,22 @@ namespace API.Controllers
 
         // POST: api/exam/createExam
         [HttpPost("createExam")]
-        [ProducesResponseType(typeof(Exam), 201)]
+        [ProducesResponseType(typeof(CreateExamRequestDto), 201)] 
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult<Exam>> CreateExam([FromBody] Exam exam)
+        public async Task<ActionResult<CreateExamRequestDto>> CreateExam([FromBody] CreateExamRequestDto examDto)
         {
             try
             {
-                if (exam == null)
+                if (examDto == null)
                 {
                     return BadRequest("Exam data is null.");
                 }
                 
+                var exam = _mapper.Map<Exam>(examDto);
+
                 var createdExam = await _examRepository.CreateExam(exam);
+                
                 return CreatedAtAction(nameof(GetExamById), new { id = createdExam.Id }, createdExam);
             }
             catch (Exception ex)
