@@ -14,6 +14,6 @@ namespace API.Dtos.QuestionDto
         public string AnswerD { get; set; }
         public string CorrectAnswer { get; set; }
         public int QuestionNumber { get; set; }
-        public string PartId { get; set; }
+        public int PartNumber { get; set; }
     }
 }

@@ -136,8 +136,9 @@ namespace API.Repository
         public Task<List<Question>> GetQuestionsByPartNumber(string examId, int partNumber)
         {
             return _context.Questions
-                .Where(q => q.Group.ExamId == examId && q.PartNumber == partNumber)
+                .Where(q => q.Group.ExamId == examId && q.Group.PartNumber == partNumber)
                 .ToListAsync();
         }
+
     }
 }

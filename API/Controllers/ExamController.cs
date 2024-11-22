@@ -1,96 +1,88 @@
-// using API.Dtos.ExamDto;
-// using API.Dtos.QuestionDto;
-// using API.Interfaces;
-// using API.Models;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace API.Controllers
-// {
-//     [ApiController]
-//     [Route("api/v1/exam")]
-//     public class ExamController : ControllerBase
-//     {
-//         private readonly IExamRepository _examRepository;
-//         private readonly IPartRepository _partRepository;
-//         private readonly IQuestionRepository _questionRepository;
-//         public ExamController(IExamRepository examRepository, IPartRepository partRepository, IQuestionRepository questionRepository)
-//         {
-//             _partRepository = partRepository;
-//             _examRepository = examRepository;
-//             _questionRepository = questionRepository;
-//         }
-//
-//         [HttpGet("getAllExams")]
-//         public async Task<IActionResult> GetAllExams()
-//         {
-//             if (!ModelState.IsValid)
-//             {
-//                 return BadRequest();
-//             }
-//             var exams = await _examRepository.GetAllExams();
-//
-//             return Ok(exams);
-//         }
-//
-//         [Authorize(Roles = "Admin")]
-//         [HttpPost("createExam")]
-//         public async Task<IActionResult> CreateExam(CreateExamRequestDto request)
-//         {
-//
-//             if (!ModelState.IsValid)
-//             {
-//                 return BadRequest();
-//             }
-//             var newExam = new Exam
-//             {
-//                 Title = request.Title,
-//             };
-//             await _examRepository.CreateExam(newExam);
-//             return Ok(newExam);
-//         }
-//         [HttpGet("getExamById/{id}")]
-//         public async Task<IActionResult> GetExamById(string id)
-//         {
-//             if (!ModelState.IsValid)
-//             {
-//                 return BadRequest();
-//             }
-//             var exam = await _examRepository.GetExamById(id);
-//             if (exam == null)
-//             {
-//                 return NotFound();
-//             }
-//             var parts = await _partRepository.GetPartsByExamId(id);
-//             var questions = new List<QuestionResponseDto>();
-//             foreach (var part in parts)
-//             {
-//                 var partQuestions = await _questionRepository.GetQuestionsByPartId(part.Id);
-//                 if (partQuestions != null)
-//                 {
-//                     questions.AddRange(partQuestions.Select(q => new QuestionResponseDto
-//                     {
-//                         Title = q.Title,
-//                         AnswerA = q.AnswerA,
-//                         AnswerB = q.AnswerB,
-//                         AnswerC = q.AnswerC,
-//                         AnswerD = q.AnswerD,
-//                         CorrectAnswer = q.CorrectAnswer,
-//                         QuestionNumber = q.QuestionNumber,
-//                         PartId = q.PartId,
-//                         PartNumber = part.PartNumber
-//                     }));
-//                 }
-//             }
-//
-//
-//             return Ok(new GetAllExamDto
-//             {
-//                 Id = exam.Id,
-//                 Title = exam.Title,
-//                 CreatedAt = exam.CreatedAt,
-//                 Questions = questions
-//             });
-//         }
-//     }
-// }
+using API.Interfaces;
+using API.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace API.Controllers
+{
+    [Route("api/v1/exam")]
+    [ApiController]
+    public class ExamController : ControllerBase
+    {
+        private readonly IExamRepository _examRepository;
+        private readonly ILogger<ExamController> _logger;
+
+        public ExamController(IExamRepository examRepository, ILogger<ExamController> logger)
+        {
+            _examRepository = examRepository;
+            _logger = logger;
+        }
+
+        // GET: api/exam/getAllExams
+        [HttpGet("getAllExams")]
+        [ProducesResponseType(typeof(List<Exam>), 200)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<List<Exam>>> GetAllExams()
+        {
+            try
+            {
+                var exams = await _examRepository.GetAllExams();
+                return Ok(exams);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // GET: api/exam/getExamById/{id}
+        [HttpGet("getExamById/{id}")]
+        [ProducesResponseType(typeof(Exam), 200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<Exam>> GetExamById(string id)
+        {
+            try
+            {
+                var exam = await _examRepository.GetExamById(id);
+                
+                if (exam == null)
+                {
+                    return NotFound($"Exam with ID {id} not found.");
+                }
+                
+                return Ok(exam);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // POST: api/exam/createExam
+        [HttpPost("createExam")]
+        [ProducesResponseType(typeof(Exam), 201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<Exam>> CreateExam([FromBody] Exam exam)
+        {
+            try
+            {
+                if (exam == null)
+                {
+                    return BadRequest("Exam data is null.");
+                }
+                
+                var createdExam = await _examRepository.CreateExam(exam);
+                return CreatedAtAction(nameof(GetExamById), new { id = createdExam.Id }, createdExam);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+    }
+}
