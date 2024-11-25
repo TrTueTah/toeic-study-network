@@ -1,75 +1,123 @@
 ﻿using API.Data;
 using API.Interfaces;
 using API.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace API.Repository;
-
-public class QuestionGroupRepository : IQuestionGroupRepository
+namespace API.Repository
 {
-    private readonly ApplicationDbContext _context;
-
-    public QuestionGroupRepository(ApplicationDbContext context)
+    public class QuestionGroupRepository : IQuestionGroupRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
 
-    public QuestionGroup CreateQuestionGroup(QuestionGroup questionGroup)
-    {
-        _context.QuestionGroups.Add(questionGroup);
-        _context.SaveChanges();
-        return questionGroup;
-    }
-
-    public QuestionGroup GetQuestionGroupById(string id)
-    {
-        return _context.QuestionGroups
-            .Where(qg => qg.Id == id)
-            .FirstOrDefault();
-    }
-
-    public List<QuestionGroup> GetAllQuestionGroupsForExam(string examId)
-    {
-        return _context.QuestionGroups
-            .Where(qg => qg.ExamId == examId)
-            .ToList();
-    }
-
-    public QuestionGroup UpdateQuestionGroup(QuestionGroup questionGroup)
-    {
-        var existingGroup = _context.QuestionGroups
-            .FirstOrDefault(qg => qg.Id == questionGroup.Id);
-
-        if (existingGroup == null)
+        public QuestionGroupRepository(ApplicationDbContext context)
         {
-            return null;
+            _context = context;
+        }
+        
+        public QuestionGroup CreateQuestionGroup(QuestionGroup questionGroup)
+        {
+            _context.QuestionGroups.Add(questionGroup);
+            _context.SaveChanges();
+            return questionGroup;
+        }
+        
+        public QuestionGroup GetQuestionGroupById(string id)
+        {
+            return _context.QuestionGroups
+                .Include(qg => qg.Questions)
+                .FirstOrDefault(qg => qg.Id == id);
+        }
+        
+        public List<QuestionGroup> GetAllQuestionGroupsForExam(string examId)
+        {
+            return _context.QuestionGroups
+                .Include(qg => qg.Questions)
+                .Where(qg => qg.ExamId == examId)
+                .ToList();
+        }
+        
+        public QuestionGroup UpdateQuestionGroup(QuestionGroup questionGroup)
+        {
+            var existingGroup = _context.QuestionGroups
+                .Include(qg => qg.Questions)
+                .FirstOrDefault(qg => qg.Id == questionGroup.Id);
+
+            if (existingGroup == null)
+            {
+                return null;
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    existingGroup.PartNumber = questionGroup.PartNumber;
+                    existingGroup.ImageFilesUrl = questionGroup.ImageFilesUrl;
+                    existingGroup.AudioFilesUrl = questionGroup.AudioFilesUrl;
+                    
+                    if (existingGroup.Questions != null)
+                    {
+                        _context.Questions.RemoveRange(existingGroup.Questions);
+                    }
+                    
+                    if (questionGroup.Questions != null)
+                    {
+                        foreach (var question in questionGroup.Questions)
+                        {
+                            question.GroupId = existingGroup.Id;
+                            _context.Questions.Add(question);
+                        }
+                    }
+
+                    _context.SaveChanges();
+                    
+                    transaction.Commit();
+                    return existingGroup;
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction if any error occurs
+                    transaction.Rollback();
+                    throw new Exception($"Error updating question group: {ex.Message}");
+                }
+            }
         }
 
-        existingGroup.PartNumber = questionGroup.PartNumber;
-        existingGroup.ImageFilesUrl = questionGroup.ImageFilesUrl;
-        existingGroup.AudioFilesUrl = questionGroup.AudioFilesUrl;
-        existingGroup.Questions = questionGroup.Questions;
-
-        _context.SaveChanges();
-        return existingGroup;
-    }
-
-    public bool DeleteQuestionGroup(string id)
-    {
-        var group = _context.QuestionGroups
-            .FirstOrDefault(qg => qg.Id == id);
-
-        if (group == null)
+        // Delete a QuestionGroup by its Id
+        public bool DeleteQuestionGroup(string id)
         {
-            return false;
+            var group = _context.QuestionGroups
+                .FirstOrDefault(qg => qg.Id == id);
+
+            if (group == null)
+            {
+                return false;  // Return false if the group does not exist
+            }
+
+            using (var transaction = _context.Database.BeginTransaction())  // Start a transaction
+            {
+                try
+                {
+                    _context.QuestionGroups.Remove(group);
+                    _context.SaveChanges();  // Save the deletion
+
+                    // Commit transaction
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction if any error occurs
+                    transaction.Rollback();
+                    throw new Exception($"Error deleting question group: {ex.Message}");
+                }
+            }
         }
 
-        _context.QuestionGroups.Remove(group);
-        _context.SaveChanges();
-        return true;
-    }
-
-    public bool QuestionGroupExists(string id)
-    {
-        return _context.QuestionGroups.Any(q => q.Id == id);
+        // Check if a QuestionGroup exists by its Id
+        public bool QuestionGroupExists(string id)
+        {
+            return _context.QuestionGroups.Any(q => q.Id == id);
+        }
     }
 }
