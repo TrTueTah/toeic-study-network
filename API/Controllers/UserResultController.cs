@@ -36,6 +36,7 @@ public class UserResultController : ControllerBase
                     examId = result.ExamId,
                     score = result.Score,
                     correctAnswerAmount = result.CorrectAnswerAmount,
+                    type = result.Type,
                     timeTaken = result.TimeTaken,
                     createdAt = result.CreatedAt
                 }

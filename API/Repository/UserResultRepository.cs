@@ -67,7 +67,7 @@ public class UserResultRepository : IUserResultRepository
                     QuestionNumber = question.QuestionNumber,
                     UserAnswer = userAnswer,
                     IsCorrect = isCorrect,
-                    CorrectAnswer = question.CorrectAnswer  // Save the correct answer
+                    CorrectAnswer = question.CorrectAnswer
                 });
             }
         }
@@ -81,7 +81,7 @@ public class UserResultRepository : IUserResultRepository
             Score = totalScore,
             TimeTaken = submission.TimeTaken,
             CorrectAnswerAmount = readingCorrect + listeningCorrect,
-            Type = "Toeic",
+            Type = submission.Type,
             DetailResults = detailResults
         };
 
@@ -142,20 +142,20 @@ public class UserResultRepository : IUserResultRepository
             UserId = userResult.UserId,
             ExamId = userResult.ExamId,
             Score = userResult.Score,
+            Type = userResult.Type,
             CorrectAnswerAmount = userResult.CorrectAnswerAmount,
             TimeTaken = userResult.TimeTaken,
             DetailResults = userResult.DetailResults
-                .OrderBy(dr => dr.QuestionNumber)  // Sort by QuestionNumber
+                .OrderBy(dr => dr.QuestionNumber)
                 .Select(dr => new DetailResultDto
                 {
                     QuestionNumber = dr.QuestionNumber,
                     UserAnswer = dr.UserAnswer,
                     IsCorrect = dr.IsCorrect,
-                    CorrectAnswer = dr.CorrectAnswer  // Include the correct answer in the DTO
+                    CorrectAnswer = dr.CorrectAnswer
                 }).ToList()
         };
 
         return resultDto;
     }
-
 }
