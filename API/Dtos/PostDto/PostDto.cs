@@ -13,4 +13,5 @@ public class PostDto
     public List<Comment> Comments { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
+    public string UserImageUrl { get; set; }
 }

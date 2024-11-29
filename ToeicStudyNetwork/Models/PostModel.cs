@@ -7,7 +7,7 @@ namespace ToeicStudyNetwork.Models
 {
     public class PostModel
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Content { get; set; }
         public ICollection<string> MediaUrls { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -15,7 +15,7 @@ namespace ToeicStudyNetwork.Models
         public ICollection<CommentModel> Comments { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
-        public AppUserModel User { get; set; }
         public int TotalLikes => Likes?.Count ?? 0;
+        public string UserImageUrl { get; set; }
     }
 }

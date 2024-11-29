@@ -4,6 +4,7 @@ namespace API.Interfaces;
 
 public interface IUserRepository
 {
+    string GetUserImageUrlById(string userId);
     User GetUserById(string userId);
     string GetUserNameById(string userId);
     User GetUserByUsername(string username);

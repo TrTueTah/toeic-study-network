@@ -28,7 +28,7 @@ namespace API.Controllers
         [HttpGet("getAllPosts")]
         [ProducesResponseType(typeof(List<PostDto>), 200)]
         [ProducesResponseType(500)]
-        public ActionResult<List<PostDto>> GetAllPosts() 
+        public ActionResult<List<PostDto>> GetAllPosts()
         {
             var posts = _postRepository.GetAllPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
@@ -37,6 +37,7 @@ namespace API.Controllers
             if (firstPost != null)
             {
                 firstPost.UserName = _userRepository.GetUserNameById(firstPost.UserId);
+                firstPost.UserImageUrl = _userRepository.GetUserImageUrlById(firstPost.UserId);
             }
 
             return Ok(postDtos);
@@ -60,7 +61,7 @@ namespace API.Controllers
 
         // GET: api/v1/post/getPostsByUserId/{userId}
         [HttpGet("getPostsByUserId/{userId}")]
-        [ProducesResponseType(typeof(List<PostDto>), 200)] 
+        [ProducesResponseType(typeof(List<PostDto>), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public ActionResult<List<PostDto>> GetPostsByUserId(string userId)
@@ -85,7 +86,7 @@ namespace API.Controllers
             {
                 return BadRequest("Post is null.");
             }
-            
+
             if (string.IsNullOrEmpty(createPostDto.UserId) || !_userRepository.UserExists(createPostDto.UserId))
             {
                 return BadRequest("Invalid user ID.");
@@ -169,7 +170,7 @@ namespace API.Controllers
             try
             {
                 await _firebaseService.DeleteFolderAsync($"posts/{id}/");
-                
+
                 if (!_postRepository.DeletePost(id))
                 {
                     return StatusCode(500, "A problem happened while handling your request.");

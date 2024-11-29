@@ -301,13 +301,14 @@
 
 .post-input {
     grid-column: 2 / span 2;
-    padding: 8px 14px;
     background-color: var(--white-200);
-    border: 1px solid var(--black-100);
-    border-radius: 8px;
     font-size: 1rem;
     color: var(--black-300);
     cursor: text;
+}
+
+.image-holder {
+    grid-column: 2 / span 2;
 }
 
 .action-bar {
