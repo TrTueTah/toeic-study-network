@@ -16,59 +16,6 @@ public class UserResultRepository : IUserResultRepository
 
     public UserResult CalculateAndSaveResult(SubmitResultDto submission)
     {
-        // var questions = _context.Questions
-        //     .Where(q => q.ExamId == submission.ExamId)
-        //     .ToList();
-
-        // if (!questions.Any())
-        //     throw new Exception("Exam questions not found.");
-        //
-        // int readingCorrect = 0;
-        // int listeningCorrect = 0;
-        //
-        // var detailResults = new List<DetailResult>();
-        //
-        // foreach (var question in questions)
-        // {
-        //     if (submission.Answers.TryGetValue(question.QuestionNumber, out string userAnswer))
-        //     {
-        //         bool isCorrect = string.Equals(userAnswer, question.CorrectAnswer, StringComparison.OrdinalIgnoreCase);
-        //         
-        //         if (question.QuestionNumber <= 100)
-        //         {
-        //             if (isCorrect) readingCorrect++;
-        //         }
-        //         else
-        //         {
-        //             if (isCorrect) listeningCorrect++;
-        //         }
-        //         
-        //         detailResults.Add(new DetailResult
-        //         {
-        //             UserResultId = submission.UserId,
-        //             QuestionNumber = question.QuestionNumber,
-        //             UserAnswer = userAnswer,
-        //             IsCorrect = isCorrect
-        //         });
-        //     }
-        // }
-        
-        // int totalScore = CalculateToeicScore(readingCorrect, listeningCorrect);
-        //
-        // var userResult = new UserResult
-        // {
-        //     UserId = submission.UserId,
-        //     ExamId = submission.ExamId,
-        //     Score = totalScore,
-        //     TimeTaken = submission.TimeTaken,
-        //     Type = "Toeic"
-        // };
-        //
-        // _context.UserResults.Add(userResult);
-        // _context.DetailResults.AddRange(detailResults);
-        // SaveChanges();
-        //
-        // return userResult;
         throw new NotImplementedException();
     }
 
