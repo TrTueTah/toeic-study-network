@@ -83,18 +83,40 @@ public class TestController : Controller
             Id = exam.Id,
             TestType = "Full Test",
             Title = exam.Title,
-            PartQuestions = new Dictionary<int, List<QuestionModel>>()
+            AudioFilesUrl = exam.AudioFilesUrl,
+            PartQuestions = new Dictionary<int, List<QuestionGroupModel>>(),
+            TimeLimit = new TimeSpan(2, 0, 0)
         };
 
-        foreach (var question in exam.Questions)
+        foreach (var questionGroup in exam.QuestionGroups)
         {
-            if (!takeTestModel.PartQuestions.ContainsKey(question.PartNumber))
+            if (!takeTestModel.PartQuestions.ContainsKey(questionGroup.PartNumber))
             {
-                takeTestModel.PartQuestions[question.PartNumber] = new List<QuestionModel>();
+                takeTestModel.PartQuestions[questionGroup.PartNumber] = new List<QuestionGroupModel>();
             }
-        
-            takeTestModel.PartQuestions[question.PartNumber].Add(question);
+
+            takeTestModel.PartQuestions[questionGroup.PartNumber].Add(new QuestionGroupModel
+            {
+                Id = questionGroup.Id,
+                ExamId = questionGroup.ExamId,
+                PartNumber = questionGroup.PartNumber,
+                ImageFilesUrl = questionGroup.ImageFilesUrl,
+                AudioFilesUrl = questionGroup.AudioFilesUrl,
+                Questions = questionGroup.Questions.Select(q => new QuestionModel
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    AnswerA = q.AnswerA,
+                    AnswerB = q.AnswerB,
+                    AnswerC = q.AnswerC,
+                    AnswerD = q.AnswerD,
+                    CorrectAnswer = q.CorrectAnswer,
+                    QuestionNumber = q.QuestionNumber,
+                    GroupId = q.GroupId
+                }).ToList()
+            });
         }
+
 
         return View("Start", takeTestModel);
     }

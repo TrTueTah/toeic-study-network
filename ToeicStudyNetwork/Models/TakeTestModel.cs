@@ -10,8 +10,10 @@ namespace ToeicStudyNetwork.Models
         public string Id { get; set; }
         public string Title { get; set; }
         public string TestType { get; set; }
-        public Dictionary<int, List<QuestionModel>> PartQuestions { get; set; }
         
-        public DateTime TimeLimit { get; set; } = DateTime.Now.AddMinutes(120);
+        public string? AudioFilesUrl { get; set; }
+        public Dictionary<int, List<QuestionGroupModel>> PartQuestions { get; set; }
+        
+        public TimeSpan TimeLimit { get; set; } = new TimeSpan(2, 0, 0);
     }
 }

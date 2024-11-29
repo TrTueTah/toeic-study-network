@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <div>
           <div style="position: relative">
             <label class="form-label" style="width: 350px">
-              <span class="label-text label-required">Question</span>
+              <span class="label-text label-required">Question ${i}</span>
               <input type="text" placeholder="Enter question here" required="" class="form-input" id="test-question-input-${i}" value="">
               <span id="error-message-${i}" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
             </label>
