@@ -7,5 +7,8 @@ namespace API.Interfaces
         Task<List<Exam>> GetAllExams();
         Task<Exam> CreateExam(Exam exam);
         Task<Exam?> GetExamById(string id);
+        bool UpdateExam(Exam exam);
+        bool DeleteExam(string id);
+        bool IsExamExist(string id);
     }
 }

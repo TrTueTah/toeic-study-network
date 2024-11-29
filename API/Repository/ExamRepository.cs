@@ -34,5 +34,33 @@ namespace API.Repository
 
             return exam;
         }
+
+        public bool UpdateExam(Exam exam)
+        {
+            _context.Exams.Update(exam);
+            return Save();
+        }
+
+        public bool DeleteExam(string id)
+        {
+            var exam = _context.Exams.FirstOrDefault(e => e.Id == id);
+            if (exam == null)
+            {
+                return false;
+            }
+
+            _context.Exams.Remove(exam);
+            return Save();
+        }
+
+        public bool IsExamExist(string id)
+        {
+            return _context.Exams.Any(e => e.Id == id);
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }
