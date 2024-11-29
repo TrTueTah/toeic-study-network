@@ -1,4 +1,4 @@
-@model List<ToeicStudyNetwork.Models.PostModel>
+@model ToeicStudyNetwork.Models.ForumModel
 @{
     ViewBag.Title = "Forum";
     Layout = "_LayoutForum";
@@ -58,7 +58,7 @@
     <div class="card">
         <div class="card-header">
             <div class="avatar">
-                <img src="https://via.placeholder.com/40x40" alt="Avatar" class="rounded-avatar">
+                <img src="@Model.User.ImageUrl" alt="Avatar" class="rounded-avatar">
             </div>
             <div role="button" class="post-text" data-mdb-toggle="modal" data-mdb-target="#postModal" tabindex="0">
                 <span>What's new?</span>
@@ -76,47 +76,53 @@
                                 style="font-weight: 600;">Bài viết mới</h6>
                         </div>
 
-                        <div class="modal-body">
-                            <div class="post-grid">
-                                <div class="avatar-section">
-                                    <img src="https://via.placeholder.com/36x36" class="avatar-img rounded-circle"
-                                        alt="Avatar">
-                                </div>
-                                <div class="user-info">
-                                    <span class="user-name">Tên người dùng</span>
-                                </div>
-
-                                <div class="post-input" role="button" tabindex="0">
-                                    <span>What's new?</span>
-                                </div>
-
-                                <div class="action-bar d-flex align-items-center">
-                                    <div class="action-item">
-                                        <button class="btn-action">
-                                            <i class="bi bi-images"></i>
-                                        </button>
+                        <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
+                            asp-action="CreatePost">
+                            <div class="modal-body">
+                                <div class="post-grid">
+                                    <div class="avatar-section">
+                                        <img src="@Model.User.ImageUrl" class="avatar-img rounded-circle" alt="Avatar">
+                                    </div>
+                                    <div class="user-info">
+                                        <span class="user-name">@Model.User.Username</span>
                                     </div>
 
-                                    <div class="action-item">
-                                        <button class="btn-action">
-                                            <i class="bi bi-text-left"></i>
-                                        </button>
+                                    <div class="post-input">
+                                        <textarea class="form-control" placeholder="What's new?" rows="3" name="Content"
+                                            id="postContent"></textarea>
+                                    </div>
+                                    <div id="image-holder" class="image-holder">
+
+                                    </div>
+                                    <input type="file" id="imageUploadInput" name="Image" accept="image/*"
+                                        style="display: none;">
+                                    <div class="action-bar d-flex align-items-center">
+                                        <div class="action-item">
+                                            <button type="button" class="btn-action" id="upload-image-button">
+                                                <i class="bi bi-images"></i>
+                                            </button>
+                                        </div>
+                                        <div class="action-item">
+                                            <button type="button" class="btn-action">
+                                                <i class="bi bi-text-left"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="post-button py-1 px-3" disabled>
-                                <span class="text-center">Đăng bài</span>
-                            </button>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="post-button py-1 px-3">
+                                    <span class="text-center">Đăng bài</span>
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        @foreach (var post in Model)
+        @foreach (var post in Model.Posts)
         {
             @await Html.PartialAsync("_MediaPost", post)
         }
