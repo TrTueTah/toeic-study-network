@@ -29,24 +29,25 @@ public class ApplicationDbContext : DbContext
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId);
-        
+    
         builder.Entity<Exam>()
             .HasMany(e => e.QuestionGroups)
             .WithOne(qg => qg.Exam)
             .HasForeignKey(qg => qg.ExamId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+    
         builder.Entity<QuestionGroup>()
             .HasMany(qg => qg.Questions)
             .WithOne(q => q.Group)
             .HasForeignKey(q => q.GroupId)
             .OnDelete(DeleteBehavior.Cascade);
-        
+    
         builder.Entity<DetailResult>()
             .HasOne(dr => dr.UserResult)
             .WithMany(ur => ur.DetailResults)
-            .HasForeignKey(dr => dr.UserResultId);
-        
+            .HasForeignKey(dr => dr.UserResultId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.Entity<Question>()
             .Property(q => q.GroupId)
             .IsRequired();
@@ -54,7 +55,7 @@ public class ApplicationDbContext : DbContext
         builder.Entity<QuestionGroup>()
             .Property(qg => qg.ExamId)
             .IsRequired();
-        
+    
         builder.Entity<Question>()
             .HasIndex(q => q.GroupId);
 

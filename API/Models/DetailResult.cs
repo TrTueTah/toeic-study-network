@@ -6,6 +6,7 @@ public class DetailResult
     public string? UserResultId { get; set; }
     public int QuestionNumber { get; set; }
     public string? UserAnswer { get; set; }
+    public string? CorrectAnswer { get; set; }
     public bool IsCorrect { get; set; }
     public UserResult? UserResult { get; set; }
 }

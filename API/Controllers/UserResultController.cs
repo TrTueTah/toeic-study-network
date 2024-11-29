@@ -35,6 +35,7 @@ public class UserResultController : ControllerBase
                     userId = result.UserId,
                     examId = result.ExamId,
                     score = result.Score,
+                    correctAnswerAmount = result.CorrectAnswerAmount,
                     timeTaken = result.TimeTaken,
                     createdAt = result.CreatedAt
                 }
@@ -43,6 +44,19 @@ public class UserResultController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest(new { message = ex.Message });
+        }
+    }
+    [HttpGet("getUserResult/{userResultId}")]
+    public async Task<ActionResult<UserResultDto>> GetDetailsResult(string userResultId)
+    {
+        try
+        {
+            var result = await _userResultRepository.GetDetailsResultAsync(userResultId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
         }
     }
 }
