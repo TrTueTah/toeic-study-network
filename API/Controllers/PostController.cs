@@ -33,11 +33,10 @@ namespace API.Controllers
             var posts = _postRepository.GetAllPosts();
             var postDtos = _mapper.Map<List<PostDto>>(posts);
 
-            var firstPost = postDtos.FirstOrDefault();
-            if (firstPost != null)
+            foreach (var post in postDtos)
             {
-                firstPost.UserName = _userRepository.GetUserNameById(firstPost.UserId);
-                firstPost.UserImageUrl = _userRepository.GetUserImageUrlById(firstPost.UserId);
+                post.UserName = _userRepository.GetUserNameById(post.UserId);
+                post.UserImageUrl = _userRepository.GetUserImageUrlById(post.UserId);
             }
 
             return Ok(postDtos);

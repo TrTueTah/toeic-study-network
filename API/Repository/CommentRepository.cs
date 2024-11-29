@@ -40,7 +40,7 @@ public class CommentRepository : ICommentRepository
         {
             return false;
         }
-        
+
         _context.Remove(comment);
         return Save();
     }
@@ -50,7 +50,7 @@ public class CommentRepository : ICommentRepository
         _context.Comments.Update(comment);
         return Save();
     }
-    
+
 
     public bool CommentExists(string id)
     {
@@ -60,5 +60,10 @@ public class CommentRepository : ICommentRepository
     {
         var saved = _context.SaveChanges();
         return saved > 0 ? true : false;
+    }
+
+    public List<Comment> GetCommentsByPostId(string id)
+    {
+        return _context.Comments.Where(c => c.PostId == id).ToList();
     }
 }

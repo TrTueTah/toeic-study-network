@@ -59,13 +59,50 @@
                 <button class="media-action-button">
                     <i class="bi bi-chat"></i>
                 </button>
-                <span class="total-text"></span>
+                <span class="total-text">@Model.Comments.Count</span>
             </div>
             <div class="media-action">
                 <button class="media-action-button">
                     <i class="bi bi-send"></i>
                 </button>
                 <span class="total-text">88</span>
+            </div>
+        </div>
+        <div class="media-content">
+            <form method="post" action="/Post/AddComment">
+                <div class="d-flex flex-row">
+                    <img src="@Model.UserImageUrl" alt="Avatar"
+                        style="width: 40px; height: 40px; border-radius: 100%; margin-right: 8px;" />
+                    <textarea name="commentContent" class="form-control" rows="2" style="margin-right: 32px;"
+                        placeholder="Add a comment..."></textarea>
+                </div>
+                <input type="hidden" name="postId" value="@Model.Id" />
+                <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+            </form>
+        </div>
+        <div>
+            <div class="media-comments">
+                @if (Model.Comments != null && Model.Comments.Count > 0)
+                {
+                    foreach (var comment in Model.Comments)
+                    {
+                        <div class="media-comment">
+                            <div class="avatar">
+                                <img src="@comment.UserImageUrl" alt="Avatar"
+                                    style="width: 30px; height: 30px; border-radius: 100%;" />
+                            </div>
+                            <div class="comment-content">
+                                <div class="comment-header">
+                                    <div class="username">@comment.Username</div>
+                                    <div class="timestamp">@comment.CreatedAt</div>
+                                </div>
+                                <div class="comment-text">
+                                    <span>@comment.Content</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

@@ -36,6 +36,14 @@ namespace ToeicStudyNetwork.Controllers
             var posts = JsonConvert.DeserializeObject<List<PostModel>>(responseString);
             var user = new UserModel();
 
+            foreach (var post in posts)
+            {
+                var comments = await _httpClient.GetAsync($"http://localhost:5112/api/v1/comment/getCommentsByPostId/{post.Id}");
+                comments.EnsureSuccessStatusCode();
+                var commentsString = await comments.Content.ReadAsStringAsync();
+                post.Comments = JsonConvert.DeserializeObject<List<CommentModel>>(commentsString);
+            }
+
             var token = Request.Cookies["token"];
             if (!string.IsNullOrEmpty(token))
             {
