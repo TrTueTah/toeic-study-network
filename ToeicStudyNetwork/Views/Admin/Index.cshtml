@@ -57,6 +57,7 @@
                 <div class="section-header">QUESTION LIST</div>
                 <div class="section-divider"></div>
                 <div id="test-question-list">
+                    
                     <div id="test-question-1" class="pb-2">
                         <div class="section-content-container" style="display: none">
                             <div class="d-flex flex-column">
@@ -78,7 +79,7 @@
                             <div>
                                 <div style="position: relative">
                                     <label class="form-label" style="width: 350px">
-                                        <span class="label-text label-required">Question</span>
+                                        <span class="label-text label-required">Question 1</span>
                                         <input type="text" placeholder="Enter question here" required=""
                                                class="form-input" id="test-question-input-1" value="">
                                         <span id="error-message-1" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
@@ -88,14 +89,14 @@
                                         <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard"
                                             id="test-answer-input-1"></textarea>
                                     </label>
-                                    
+
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="form-controls">
-                    <button class="button add-more-button" onclick="addMoreQuestion(event)">+ Add more</button>
+                    @* <button class="button add-more-button" onclick="addMoreQuestion(event)">+ Add more</button> *@
                     <button class="button save-button" type="button" onclick="saveQuestions()">
                         <span style="display: inline-block; width: 73px;">Save</span>
                     </button>

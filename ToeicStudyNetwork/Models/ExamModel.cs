@@ -10,6 +10,8 @@ namespace ToeicStudyNetwork.Models
         public string Id;
         public string Title;
         public DateTime CreatedAt;
-        public List<QuestionModel> Questions { get; set; }
+        
+        public string? AudioFilesUrl { get; set; }
+        public List<QuestionGroupModel> QuestionGroups { get; set; }
     }
 }

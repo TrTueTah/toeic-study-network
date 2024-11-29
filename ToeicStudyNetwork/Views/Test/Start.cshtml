@@ -14,9 +14,8 @@
     <!-- Header -->
     <div class="header" style="background-color: transparent">
       <h1 class="text-center" id="new-economy-toeic-test-1-thoát">
-        New Economy TOEIC Test 1
-
-        <a type="button" class="btn btn-sky btn-sm" href="/tests/224/new-economy-toeic-test-1/">Thoát</a>
+        @Model.Title
+        <a type="button" class="btn btn-sky btn-sm" id="exit-button" href="#">Thoát</a>
       </h1>
     </div>
 
@@ -27,14 +26,14 @@
           <div class="context-content context-audio">
             <div tabindex="0" class="plyr plyr--full-ui plyr--audio plyr--html5 plyr--paused plyr--stopped">
               <audio id="player" controls>
-                <source src="~/assets/audio/Test_01.mp3" type="audio/mp3" />
+                <source src="@Model.AudioFilesUrl" type="audio/mp3" />
               </audio>
             </div>
           </div>
         </div>
 
         <ul class="nav nav-pills nav-horizontal mb-4" id="testTabs" role="tablist">
-          @foreach (var part in Model.PartQuestions)
+          @foreach (var part in Model.PartQuestions.OrderBy(p => p.Key))
           {
           <li class="nav-item" role="presentation">
             <a class="nav-link @(part.Key == 1 ? "active" : "")" id="part@(part.Key)-tab" data-bs-toggle="tab" data-bs-target="#part@(part.Key)" role="tab" aria-controls="part@part.Key" aria-selected="false" type="button" asp-controller="Test">
@@ -46,55 +45,72 @@
         
         <!-- Question -->
         <div class="tab-content" id="pills-tabContent">
-          @foreach (var part in Model.PartQuestions)
+          @foreach (var part in Model.PartQuestions.OrderBy(p => p.Key))
           {
           <div class="tab-pane @(part.Key == 1 ? "active show" : "")" id="part@(part.Key)" role="tabpanel" aria-labelledby="part@(part.Key)-tab">
             <div class="test-questions-wrapper">
-              @foreach (var question in part.Value)
+              @foreach (var questionGroup in part.Value.OrderBy(g => g.Questions.FirstOrDefault()?.QuestionNumber ?? 0))
               {
-              <div class="question-group-wrapper">
-                @* <div class="context-wrapper"> *@
-                @*   <div class="context-content context-image"> *@
-                @*     <img class="lazyel entered loaded" src="https://s4-media1.study4.com/media/tez_media/img/eco_toeic_1000_test_1_eco_toeic_1000_test_1_1.png" /> *@
-                @*   </div> *@
-                @* </div> *@
-                <div class="question-wrapper" data-qid="@(question.QuestionNumber)" id="question-wrapper-@(question.QuestionNumber)">
-                  <div class="question-number" data-qid="@(question.QuestionNumber)" data-markable="true">
-                    <strong>@(question.QuestionNumber)</strong>
+                <div class="question-group-wrapper">
+                  <div class="context-wrapper">
+                    @if (questionGroup.AudioFilesUrl.Any() && @Model.TestType != "Full Test")
+                    {
+                      <audio controls>
+                        <source src="@questionGroup.AudioFilesUrl.First()" type="audio/mp3" />
+                        Your browser does not support the audio element.
+                      </audio>
+                    }
+                    @if (questionGroup.ImageFilesUrl.Any())
+                    {
+                      <div class="context-content context-image">
+                        <img class="lazyel entered loaded" src="@questionGroup.ImageFilesUrl.First()"/>
+                      </div>
+                    }
                   </div>
-                  <div class="question-content text-highlightable">
-                    <div class="question-text">
-                      @question.Title
+                  @foreach (var question in questionGroup.Questions.OrderBy(q => q.QuestionNumber))
+                  {
+
+
+                    <div class="question-wrapper" data-qid="@(question.QuestionNumber)" id="question-wrapper-@(question.QuestionNumber)">
+                      <div class="question-number" data-qid="@(question.QuestionNumber)" data-markable="true">
+                        <strong>@(question.QuestionNumber)</strong>
+                      </div>
+                      <div class="question-content text-highlightable">
+                        <div class="question-text">
+                          @question.Title
+                        </div>
+                        <div class="question-answers">
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-A" value="A"/>
+                            <label class="form-check-label" for="question-@(question.QuestionNumber)-A">
+                              A. @question.AnswerA
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-B" value="B"/>
+                            <label class="form-check-label" for="question-@(question.QuestionNumber)-B">
+                              B. @question.AnswerB
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-C" value="C"/>
+                            <label class="form-check-label" for="question-@(question.QuestionNumber)-C">
+                              C. @question.AnswerC
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-D" value="D"/>
+                            <label class="form-check-label" for="question-@(question.QuestionNumber)-D">
+                              D. @question.AnswerD
+                            </label>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="question-answers">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-A" value="A"/>
-                        <label class="form-check-label" for="question-@(question.QuestionNumber)-A">
-                          A. @question.AnswerA
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-B" value="B"/>
-                        <label class="form-check-label" for="question-@(question.QuestionNumber)-B">
-                          B. @question.AnswerB
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-C" value="C"/>
-                        <label class="form-check-label" for="question-@(question.QuestionNumber)-C">
-                          C. @question.AnswerC
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-D" value="D"/>
-                        <label class="form-check-label" for="question-@(question.QuestionNumber)-D">
-                          D. @question.AnswerD
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                  }
                 </div>
-              </div>
+               
+              
               }
             </div>
           </div>
@@ -108,7 +124,7 @@
           <div>
             <div class="timeleft-wrapper mb-2">
               Thời gian còn lại:
-              <span data-totaltime="120.0" data-timeleft-value="118.3" id="timeleft" class="timeleft">118:18</span>
+              <span data-totaltime="120.0" id="timeleft" class="timeleft">@Model.TimeLimit.ToString(@"hh\:mm")</span>
             </div>
 
             <button class="btn btn-outline-primary btn-block mb-3 mt-3" id="submit-test">
@@ -116,17 +132,19 @@
             </button>
 
             <div class="test-questions-list">
-              @foreach (var part in Model.PartQuestions)
+              @foreach (var part in Model.PartQuestions.OrderBy(p => p.Key))
               {
                 <div class="test-questions-list-part">
-                  <h6 id="part-@part.Key">Part @part.Key 
-                  </h6>
+                  <h6 id="part-@part.Key">Part @part.Key</h6>
                   <div class="test-questions-list-wrapper">
-                    @foreach (var question in part.Value)
+                    @foreach (var questionGroup in part.Value.OrderBy(g => g.Questions.FirstOrDefault()?.QuestionNumber ?? 0))
                     {
-                      <span class="test-questions-listitem" data-qid="@question.QuestionNumber" id="test-questions-lisitem-@question.QuestionNumber">
-                        @(question.QuestionNumber)
-                      </span>
+                      @foreach (var question in questionGroup.Questions.OrderBy(q => q.QuestionNumber))
+                      {
+                        <span class="test-questions-listitem" data-qid="@question.QuestionNumber" id="test-questions-lisitem-@question.QuestionNumber">
+                          @(question.QuestionNumber)
+                        </span>
+                      }
                     }
                   </div>
                 </div>
