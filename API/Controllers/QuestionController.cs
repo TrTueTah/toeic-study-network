@@ -85,6 +85,7 @@
 //                             linesFromQuestion.Add(line);
 //                         }
 //                     }
+
 //                 }
 //
 //                 var linesFromAnswer = new List<string>();
