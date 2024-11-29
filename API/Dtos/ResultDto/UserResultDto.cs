@@ -8,5 +8,6 @@ public class UserResultDto
     public int Score { get; set; }
     public int CorrectAnswerAmount { get; set; }
     public int TimeTaken { get; set; }
+    public string Type { get; set; }
     public List<DetailResultDto> DetailResults { get; set; }
 }
