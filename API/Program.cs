@@ -9,6 +9,8 @@ using System.Text;
 using API.Repository;
 using Microsoft.OpenApi.Models;
 using API.Middleware;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,16 +100,26 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.Configure<IISServerOptions>(options =>
 {
-    options.MaxRequestBodySize = int.MaxValue;
+    options.MaxRequestBodySize = 1073741824;
+});
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 1073741824; // 1 GB
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 1073741824;
 });
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
+    options.AddPolicy("AllowAnyOrigin", builder =>
     {
         builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -119,6 +131,9 @@ using (var scope = app.Services.CreateScope())
     dbContext.Database.EnsureCreated();
 }
 
+app.UseHttpsRedirection();
+app.UseHsts();
+app.UseCors("AllowAnyOrigin");
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -128,10 +143,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<CustomAuthorizationMiddleware>();
-app.UseCors("AllowAll");
-app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 app.Run();

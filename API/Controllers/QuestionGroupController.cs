@@ -43,14 +43,12 @@ namespace API.Controllers
 
             try
             {
-                // Parse `QuestionsJson` thành danh sách các đối tượng câu hỏi
                 var questions = JsonConvert.DeserializeObject<List<CreateQuestionDto>>(questionGroupDto.QuestionsJson);
                 if (questions == null || !questions.Any())
                 {
                     return BadRequest("Questions list is empty or invalid.");
                 }
-
-                // Upload image files
+                
                 var imageUrls = new List<string>();
                 if (questionGroupDto.ImageFiles != null)
                 {
@@ -64,7 +62,6 @@ namespace API.Controllers
                     }
                 }
 
-                // Upload audio files
                 var audioUrls = new List<string>();
                 if (questionGroupDto.AudioFiles != null)
                 {
@@ -78,7 +75,6 @@ namespace API.Controllers
                     }
                 }
 
-                // Create a new QuestionGroup
                 var questionGroup = new QuestionGroup
                 {
                     PartNumber = questionGroupDto.PartNumber,
@@ -97,7 +93,6 @@ namespace API.Controllers
                     }).ToList()
                 };
 
-                // Save to database
                 _questionGroupRepository.CreateQuestionGroup(questionGroup);
 
                 return CreatedAtAction(nameof(GetQuestionGroupById), new { id = questionGroup.Id }, questionGroup);
