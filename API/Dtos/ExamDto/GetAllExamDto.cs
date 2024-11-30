@@ -10,11 +10,11 @@ namespace API.Dtos.ExamDto
 {
     public class GetAllExamDto
     {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
         public string Title { get; set; }
         public string? AudioFilesUrl { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now.ToUniversalTime();
-        public List<QuestionGroup> QuestionGroups { get; set; } = new();
+        public DateTime CreatedAt { get; set; }
+        public List<QuestionGroup> QuestionGroups { get; set; }
         public GetExamSeriesDto ExamSeries { get; set; }
     }
 }

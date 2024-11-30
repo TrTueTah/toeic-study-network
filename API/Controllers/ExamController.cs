@@ -33,8 +33,7 @@ namespace API.Controllers
             try
             {
                 var exams = await _examRepository.GetAllExams();
-                var examDtos = _mapper.Map<List<GetAllExamDto>>(exams);
-                return Ok(examDtos);
+                return Ok(exams);
             }
             catch (Exception ex)
             {
@@ -57,9 +56,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Exam with ID {id} not found.");
                 }
-
-                var examDto = _mapper.Map<GetAllExamDto>(exam);
-                return Ok(examDto);
+                return Ok(exam);
             }
             catch (Exception ex)
             {
@@ -122,7 +119,8 @@ namespace API.Controllers
 
                 // Save the URL to the exam record
                 existingExam.AudioFilesUrl = audioUrl;
-                _examRepository.UpdateExam(existingExam);
+                var exam = _mapper.Map<Exam>(existingExam);
+                _examRepository.UpdateExam(exam);
 
                 return Ok(audioUrl);
             }
