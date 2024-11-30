@@ -3,6 +3,31 @@ function updateDropdownButtonText(dropdownButtonId, text) {
   if (button) button.textContent = text;
 }
 
+function createDropdownItem(text, value, onClickHandler) {
+  const item = document.createElement("li");
+  const anchor = document.createElement("a");
+  anchor.className = "dropdown-item";
+  anchor.href = "#";
+  anchor.textContent = text;
+  anchor.dataset.value = value;
+  anchor.addEventListener("click", onClickHandler);
+  item.appendChild(anchor);
+  return item;
+}
+
+function handleFetchError(error) {
+  console.error("Lỗi khi gọi API:", error);
+}
+
+function renderDropdownMenu(data, containerId, onClickHandler) {
+  const dropdownMenu = document.getElementById(containerId);
+  dropdownMenu.innerHTML = ""; 
+  data.forEach(item => {
+    const listItem = createDropdownItem(item.name, item.id, onClickHandler);
+    dropdownMenu.appendChild(listItem);
+  });
+}
+
 function fetchAndRenderExams(apiUrl, containerId) {
   fetch(apiUrl)
     .then(response => response.json())
@@ -13,17 +38,11 @@ function fetchAndRenderExams(apiUrl, containerId) {
         return;
       }
 
-      container.innerHTML = '';
-
-      if (Array.isArray(data) && data.length > 0) {
-        data.forEach(test => {
-          container.innerHTML += createTestCard(test);
-        });
-      } else {
-        container.innerHTML = "<p>Không có đề thi nào.</p>";
-      }
+      container.innerHTML = data && data.length > 0
+        ? data.map(test => createTestCard(test)).join('')
+        : "<p>Không có đề thi nào.</p>";
     })
-    .catch(error => console.error('Lỗi khi gọi API:', error));
+    .catch(handleFetchError);
 }
 
 function createTestCard(test) {
@@ -59,37 +78,35 @@ function createTestCard(test) {
 
 function saveNewTest(apiUrl, modal, getAllExams) {
   const testName = document.getElementById('testName').value.trim();
-  const testType = document.getElementById('testType').value;
+  const testType = document.getElementById('testTypeDropdown').getAttribute('data-value');
 
   if (!testName || !testType) {
     alert('Vui lòng nhập đầy đủ thông tin.');
     return;
   }
 
+  const requestBody = {
+    title: testName,       
+    examSeriesId: testType
+  };
+
+
   fetch(apiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ title: testName, type: testType }),
+    body: JSON.stringify(requestBody),
   })
     .then(response => response.json())
     .then(data => {
-      if (data.success) {
-        alert('Đề thi đã được tạo thành công!');
-        modal.hide();
-        getAllExams(); 
-      } else {
-        alert('Có lỗi xảy ra khi tạo đề thi.');
-      }
+      alert('Đề thi đã được tạo thành công!');
+      modal.hide();
+      getAllExams();
     })
-    .catch(error => {
-      console.error('Lỗi khi tạo đề thi:', error);
-      alert('Không thể tạo đề thi. Vui lòng thử lại sau.');
-    });
+    .catch(handleFetchError);
 }
 
 function addTestType(newType, dropdownMenu) {
-  const newItem = document.createElement('li');
-  newItem.innerHTML = `<a class="dropdown-item" href="#" data-value="${newType}">${newType}</a>`;
+  const newItem = createDropdownItem(newType, newType, () => updateDropdownButtonText('testTypeDropdown', newType));
   dropdownMenu.appendChild(newItem);
 }
 
@@ -124,8 +141,9 @@ document.addEventListener('DOMContentLoaded', function () {
   testTypeDropdownMenu.addEventListener('click', function (event) {
     const item = event.target.closest('.dropdown-item');
     if (item) {
-      const selectedTestType = item.getAttribute('data-value');
+      const selectedTestType = item.textContent.trim();
       updateDropdownButtonText('testTypeDropdown', selectedTestType);
+      document.getElementById('testTypeDropdown').setAttribute('data-value', item.dataset.value);
     }
   });
 
@@ -148,4 +166,52 @@ document.addEventListener('DOMContentLoaded', function () {
   addTestTypeModal._element.addEventListener('hidden.bs.modal', function () {
     createTestModal.show();
   });
+});
+
+document.getElementById("testTypeDropdown").addEventListener("click", function () {
+  fetch("http://localhost:5112/api/v1/examSeries/getAllExamSeries", {
+    method: "GET",
+    headers: {
+      "Accept": "text/plain"
+    }
+  })
+    .then(response => response.json())
+    .then(data => renderDropdownMenu(data, "testTypeDropdownMenu", function (event) {
+      updateDropdownButtonText('testTypeDropdown', event.target.textContent);
+    }))
+    .catch(handleFetchError);
+});
+
+function loadTestList() {
+  fetch('/api/v1/exam/getTestList')
+    .then(response => response.json())
+    .then(data => {
+      // Update the test list container with the data
+      var testListContainer = document.getElementById('test-list-container');
+      testListContainer.innerHTML = ''; // Clear previous list
+
+      data.tests.forEach(test => {
+        var testElement = document.createElement('div');
+        testElement.classList.add('test-item');
+        testElement.textContent = test.title;
+        testListContainer.appendChild(testElement);
+      });
+    })
+    .catch(error => console.error('Error loading test list:', error));
+}
+
+document.getElementById("testTypeDropdown").addEventListener("click", function () {
+  fetch("http://localhost:5112/api/v1/examSeries/getAllExamSeries", {
+    method: "GET",
+    headers: {
+      "Accept": "application/json"
+    }
+  })
+    .then(response => response.json())
+    .then(data => renderDropdownMenu(data, "testTypeDropdownMenu", function (event) {
+      updateDropdownButtonText('testTypeDropdown', event.target.textContent);
+      // Store the selected test type's ID
+      document.getElementById('testTypeDropdown').setAttribute('data-value', event.target.dataset.value);
+    }))
+    .catch(handleFetchError);
 });

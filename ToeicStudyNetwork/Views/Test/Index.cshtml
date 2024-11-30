@@ -1,4 +1,4 @@
-@model List<ToeicStudyNetwork.Models.ExamModel>
+@model List<ExamSeriesModel>
 @{
     ViewBag.Title = "Test";
     Layout = "_Layout";
@@ -11,104 +11,34 @@
 }
 
 <section class="test">
-    <!-- Hero Section with Breadcrumb -->
     <div class="hero-section">
         <div class="container">
             <h2 class="page-title">Đề thi online</h2>
         </div>
     </div>
 
-    <!-- Main Section -->
     <div class="container py-5">
-        <!-- Accordion Section -->
         <div class="accordion" id="testAccordion">
+            @foreach (var series in Model)
+            {
             <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        <span>Test Đầu Vào</span>
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                    data-bs-parent="#testAccordion">
-                    <div id="accordion-body" class="accordion-body">
-                        @foreach (var exam in Model)
-                        {
-                            @await Html.PartialAsync("_TestItem", exam)
-                        }
-                    </div>
-                </div>
-            </div>
-
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingTwo">
+                <h2 class="accordion-header" id="heading-@series.Id">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        <span>Hacker TOEIC</span>
+                            data-bs-target="#collapse-@series.Id" aria-expanded="false" aria-controls="collapse-@series.Id">
+                        <span>@series.Name</span>
                     </button>
                 </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
-                    data-bs-parent="#testAccordion">
+                <div id="collapse-@series.Id" class="accordion-collapse collapse" aria-labelledby="heading-@series.Id"
+                     data-bs-parent="#testAccordion">
                     <div class="accordion-body">
-                        @foreach (var exam in Model)
+                        @foreach (var exam in series.Exams)
                         {
-                            @await Html.PartialAsync("_TestItem", exam)
+                        @await Html.PartialAsync("_TestItem", exam)
                         }
                     </div>
                 </div>
             </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingThree">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        <span>ETS 2024</span>
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
-                    data-bs-parent="#testAccordion">
-                    <div class="accordion-body">
-                        @foreach (var exam in Model)
-                        {
-                            @await Html.PartialAsync("_TestItem", exam)
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFour">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                        <span>ETS 2023</span>
-                    </button>
-                </h2>
-                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
-                    data-bs-parent="#testAccordion">
-                    <div class="accordion-body">
-                        @foreach (var exam in Model)
-                        {
-                            @await Html.PartialAsync("_TestItem", exam)
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingFive">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                        <span>ETS 2022</span>
-                    </button>
-                </h2>
-                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
-                    data-bs-parent="#testAccordion">
-                    <div class="accordion-body">
-                        @foreach (var exam in Model)
-                        {
-                            @await Html.PartialAsync("_TestItem", exam)
-                        }
-                    </div>
-                </div>
-            </div>
-
+            }
         </div>
     </div>
 </section>

@@ -12,7 +12,7 @@ Layout = "_LayoutAdmin";
 <div class="container p-3 d-flex gap-4">
     <div class="main-container p-3">
         <div id="test-builder-scrollable" class="scrollable-container">
-            <div id="test-info-section" class="section edit-mode d-none">
+            <div id="test-info-section" class="section">
                 <div class="section-header">TEST INFORMATION</div>
                 <div class="section-divider"></div>
                 <div>
@@ -20,37 +20,8 @@ Layout = "_LayoutAdmin";
                         <div class="d-flex flex-column">
                             <b id="test-info-title"></b>
                             <span id="test-info-description"></span>
-                            <div class="button-group button-group-absolute">
-                                <button class="button-group-item" id="edit-info-button-1">
-                                    <i class="fa fa-edit"
-                                       style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
-
-                    <form class="edit-form" style="display: block;">
-                        <div>
-                            <div style="position: relative">
-                                <label class="form-label" style="width: 350px">
-                                    <span class="label-text label-required">Title</span>
-                                    <input type="text" placeholder="Enter test title" required="" class="form-input"
-                                           id="test-info-title-input" value="">
-                                </label>
-                                <label class="form-label">
-                                    <span class="label-text label-required">Description</span>
-                                    <textarea placeholder="Enter test description" required="" class="form-textarea"
-                                              id="test-info-description-input"></textarea>
-                                </label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="form-controls">
-                    <button class="button cancel-button">Cancel</button>
-                    <button class="button save-button" type="button" onclick="saveTestInfo()">
-                        <span style="display: inline-block; width: 73px;">Save</span>
-                    </button>
                 </div>
             </div>
             <div id="test-question-section" class="section edit-mode">
