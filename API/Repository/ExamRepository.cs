@@ -23,6 +23,7 @@ namespace API.Repository
         {
             return await _context.Exams.Include(e => e.QuestionGroups)
                 .ThenInclude(qg => qg.Questions)
+                .Include(es => es.ExamSeries)
                 .ToListAsync();
         }
 
@@ -30,6 +31,7 @@ namespace API.Repository
         {
             var exam = await _context.Exams.Include(e => e.QuestionGroups)
                 .ThenInclude(qg => qg.Questions)
+                .Include(es => es.ExamSeries)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return exam;
