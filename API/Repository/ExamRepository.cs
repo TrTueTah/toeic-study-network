@@ -1,4 +1,6 @@
 using API.Data;
+using API.Dtos.ExamDto;
+using API.Dtos.ExamSeriesDto;
 using API.Interfaces;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,19 +21,47 @@ namespace API.Repository
             return exam;
         }
 
-        public async Task<List<Exam>> GetAllExams()
+        public async Task<List<GetAllExamDto>> GetAllExams()
         {
-            return await _context.Exams.Include(e => e.QuestionGroups)
+            var exams = _context.Exams
+                .Include(e => e.QuestionGroups)
                 .ThenInclude(qg => qg.Questions)
                 .Include(es => es.ExamSeries)
-                .ToListAsync();
+                .Select(e => new GetAllExamDto
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    CreatedAt = e.CreatedAt,
+                    AudioFilesUrl = e.AudioFilesUrl,
+                    QuestionGroups = e.QuestionGroups,
+                    ExamSeries = new GetExamSeriesDto
+                    {
+                        Id = e.ExamSeries.Id,
+                        Name = e.ExamSeries.Name
+                    },
+                })
+                .ToList();
+            return exams;
         }
 
-        public async Task<Exam> GetExamById(string id)
+        public async Task<GetAllExamDto> GetExamById(string id)
         {
             var exam = await _context.Exams.Include(e => e.QuestionGroups)
                 .ThenInclude(qg => qg.Questions)
                 .Include(es => es.ExamSeries)
+                .Select(e => new GetAllExamDto
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    CreatedAt = e.CreatedAt,
+                    AudioFilesUrl = e.AudioFilesUrl,
+                    QuestionGroups = e.QuestionGroups,
+                    ExamSeries = new GetExamSeriesDto
+                    {
+                        Id = e.ExamSeries.Id,
+                        Name = e.ExamSeries.Name
+                    },
+                })
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return exam;
