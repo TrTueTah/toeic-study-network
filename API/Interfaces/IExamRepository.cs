@@ -1,12 +1,13 @@
+using API.Dtos.ExamDto;
 using API.Models;
 
 namespace API.Interfaces
 {
     public interface IExamRepository
     {
-        Task<List<Exam>> GetAllExams();
+        Task<List<GetAllExamDto>> GetAllExams();
         Task<Exam> CreateExam(Exam exam);
-        Task<Exam?> GetExamById(string id);
+        Task<GetAllExamDto?> GetExamById(string id);
         List<Exam> GetExamsByExamSeries(string examSeriesId);
         bool UpdateExam(Exam exam);
         bool DeleteExam(string id);
