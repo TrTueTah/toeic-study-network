@@ -8,5 +8,6 @@ namespace API.Dtos.ExamDto
     public class CreateExamRequestDto
     {
         public string Title { get; set; }
+        public string ExamSeriesId { get; set; }
     }
 }

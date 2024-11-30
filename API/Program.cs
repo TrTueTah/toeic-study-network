@@ -69,6 +69,8 @@ builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IQuestionGroupRepository, QuestionGroupRepository>();
 builder.Services.AddScoped<IUserResultRepository, UserResultRepository>();
+builder.Services.AddScoped<IExamSeriesRepository, ExamSeriesRepository>();
+
 builder.Services.AddScoped<FirebaseService>();
 
 builder.Services.AddAuthentication(options =>

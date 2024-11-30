@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241129084039_updateUserResult")]
-    partial class updateUserResult
+    [Migration("20241130040441_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,6 @@ namespace API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<List<string>>("MediaUrls")
-                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<string>("PostId")
@@ -95,13 +94,37 @@ namespace API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("ExamSeriesId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExamSeriesId");
+
                     b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("API.Models.ExamSeries", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExamSeries");
                 });
 
             modelBuilder.Entity("API.Models.Like", b =>
@@ -228,6 +251,10 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -295,6 +322,17 @@ namespace API.Migrations
                     b.Navigation("UserResult");
                 });
 
+            modelBuilder.Entity("API.Models.Exam", b =>
+                {
+                    b.HasOne("API.Models.ExamSeries", "ExamSeries")
+                        .WithMany("Exams")
+                        .HasForeignKey("ExamSeriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamSeries");
+                });
+
             modelBuilder.Entity("API.Models.Like", b =>
                 {
                     b.HasOne("API.Models.Post", null)
@@ -340,6 +378,11 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
                     b.Navigation("QuestionGroups");
+                });
+
+            modelBuilder.Entity("API.Models.ExamSeries", b =>
+                {
+                    b.Navigation("Exams");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>

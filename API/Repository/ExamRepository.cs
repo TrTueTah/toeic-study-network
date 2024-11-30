@@ -35,6 +35,11 @@ namespace API.Repository
             return exam;
         }
 
+        public List<Exam> GetExamsByExamSeries(string examSeriesId)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool UpdateExam(Exam exam)
         {
             _context.Exams.Update(exam);

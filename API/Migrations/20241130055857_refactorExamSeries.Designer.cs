@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241122120138_UpdateDB")]
-    partial class UpdateDB
+    [Migration("20241130055857_refactorExamSeries")]
+    partial class refactorExamSeries
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,6 @@ namespace API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<List<string>>("MediaUrls")
-                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<string>("PostId")
@@ -60,6 +59,9 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.DetailResult", b =>
                 {
                     b.Property<string>("DetailResultId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CorrectAnswer")
                         .HasColumnType("text");
 
                     b.Property<bool>("IsCorrect")
@@ -86,8 +88,15 @@ namespace API.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
+                    b.Property<string>("AudioFilesUrl")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExamSeriesId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -95,7 +104,27 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExamSeriesId");
+
                     b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("API.Models.ExamSeries", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExamSeries");
                 });
 
             modelBuilder.Entity("API.Models.Like", b =>
@@ -173,9 +202,6 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("PartNumber")
-                        .HasColumnType("integer");
-
                     b.Property<int>("QuestionNumber")
                         .HasColumnType("integer");
 
@@ -206,6 +232,9 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
+                    b.Property<int>("PartNumber")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ExamId");
@@ -219,6 +248,10 @@ namespace API.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -243,6 +276,9 @@ namespace API.Migrations
                 {
                     b.Property<string>("UserResultId")
                         .HasColumnType("text");
+
+                    b.Property<int>("CorrectAnswerAmount")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -280,9 +316,21 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.UserResult", "UserResult")
                         .WithMany("DetailResults")
-                        .HasForeignKey("UserResultId");
+                        .HasForeignKey("UserResultId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("UserResult");
+                });
+
+            modelBuilder.Entity("API.Models.Exam", b =>
+                {
+                    b.HasOne("API.Models.ExamSeries", "ExamSeries")
+                        .WithMany("Exams")
+                        .HasForeignKey("ExamSeriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExamSeries");
                 });
 
             modelBuilder.Entity("API.Models.Like", b =>
@@ -330,6 +378,11 @@ namespace API.Migrations
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
                     b.Navigation("QuestionGroups");
+                });
+
+            modelBuilder.Entity("API.Models.ExamSeries", b =>
+                {
+                    b.Navigation("Exams");
                 });
 
             modelBuilder.Entity("API.Models.Post", b =>
