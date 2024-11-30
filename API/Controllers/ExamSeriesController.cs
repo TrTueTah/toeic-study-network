@@ -29,9 +29,9 @@ namespace API.Controllers
         {
             try
             {
-                Console.WriteLine("GetAllExamSeries()");
                 var examSeries = _examSeriesRepository.GetAllExamSeries();
-                return Ok(examSeries);
+                var examSeriesDto = _mapper.Map<List<GetExamSeriesDto>>(examSeries);
+                return Ok(examSeriesDto);
             }
             catch (System.Exception ex)
             {
@@ -53,6 +53,7 @@ namespace API.Controllers
                 {
                     return NotFound($"Exam series with ID {id} not found.");
                 }
+                var examSeriesDto = _mapper.Map<GetExamSeriesDto>(examSeries);
 
                 return Ok(examSeries);
             }

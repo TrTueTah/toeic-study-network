@@ -33,7 +33,8 @@ namespace API.Controllers
             try
             {
                 var exams = await _examRepository.GetAllExams();
-                return Ok(exams);
+                var examDtos = _mapper.Map<List<GetAllExamDto>>(exams);
+                return Ok(examDtos);
             }
             catch (Exception ex)
             {
@@ -57,7 +58,7 @@ namespace API.Controllers
                     return NotFound($"Exam with ID {id} not found.");
                 }
 
-                var examDto = _mapper.Map<Exam>(exam);
+                var examDto = _mapper.Map<GetAllExamDto>(exam);
                 return Ok(examDto);
             }
             catch (Exception ex)

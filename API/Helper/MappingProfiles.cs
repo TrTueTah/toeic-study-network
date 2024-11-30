@@ -49,6 +49,8 @@ public class MappingProfiles : Profile
         //Exam
         CreateMap<CreateExamRequestDto, Exam>();
         CreateMap<Exam, CreateExamRequestDto>();
+        CreateMap<Exam, GetAllExamDto>();
+        CreateMap<GetAllExamDto, Exam>();
         
         //QuestionGroup
         CreateMap<CreateQuestionGroupDto, QuestionGroup>();
@@ -76,6 +78,7 @@ public class MappingProfiles : Profile
         CreateMap<CreateExamSeriesDto, ExamSeries>();
         CreateMap<ExamSeries, UpdateExamSeriesDto>();
         CreateMap<UpdateExamSeriesDto, ExamSeries>();
-
+        CreateMap<ExamSeries, GetExamSeriesDto>();
+        CreateMap<GetExamSeriesDto, ExamSeries>();
     }
 }
