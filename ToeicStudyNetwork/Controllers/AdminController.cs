@@ -9,4 +9,9 @@ public class AdminController : Controller
     {
         return View();
     }
+
+    public IActionResult CreateTest()
+    {
+        return View();
+    }
 }

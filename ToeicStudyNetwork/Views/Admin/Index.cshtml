@@ -20,7 +20,7 @@
             <span class="create-new-test-text">Tạo mới</span>
         </button>
 
-        <div class="dropdown">
+        <div class="dropdown filter-dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Gần đây nhất
             </button>
@@ -32,9 +32,84 @@
     </div>
     <div id="test-list-container" class="test-list-container">
     </div>
+    
+    <div class="modal fade" id="createTestModal" tabindex="-1" aria-labelledby="createTestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createTestModalLabel">Tạo đề thi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createTestForm">
+                        <div class="mb-3">
+                            <label for="testName" class="form-label">Tên đề thi</label>
+                            <input type="text" class="form-control test-name-input" id="testName" placeholder="Nhập tên đề thi" required aria-describedby="testNameHelp">
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testTypeDropdown" class="form-label">Loại đề thi</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown test-type-dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="testTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Chọn loại đề thi
+                                    </button>
+                                    <ul class="dropdown-menu" id="testTypeDropdownMenu" aria-labelledby="testTypeDropdown">
+                                        <li><a class="dropdown-item" href="#" data-value="ETS 2024">ETS 2024</a></li>
+                                        <li><a class="dropdown-item" href="#" data-value="ETS 2023">ETS 2023</a></li>
+                                        <li><a class="dropdown-item" href="#" data-value="ETS 2022">ETS 2022</a></li>
+                                        <li><a class="dropdown-item" href="#" data-value="HACKER TOEIC">HACKER TOEIC</a></li>
+                                    </ul>
+                                </div>
+                                <button type="button" class="btn btn-primary create-new-test-type-button" id="addTestTypeBtn"
+                                        data-bs-toggle="tooltip" title="Thêm loại đề thi mới">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveTestBtn">Tạo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTestTypeModal" tabindex="-1" aria-labelledby="addTestTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTestTypeModalLabel">Thêm loại đề thi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTestTypeForm">
+                        <div class="mb-3">
+                            <label for="newTestType" class="form-label">Tên loại đề thi</label>
+                            <input type="text" class="form-control test-name-input" id="newTestType" placeholder="Nhập tên loại đề thi" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveTestTypeBtn">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
 @section scripts {
     <script src="~/js/admin_index.js" asp-append-version="true"></script>
+    <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
 }

@@ -43,7 +43,7 @@
 }
 
 .create-new-test-button {
-    background-color: var(--black-900); !important;
+    background-color: var(--primary-500); !important;
     color: var(--white-500);
     border-radius: 100px;
     transition: all 0.3s ease;
@@ -52,7 +52,7 @@
 }
 
 .create-new-test-button:hover {
-    transform: scale(1.05);
+    box-shadow: 0 0 0 0.25rem rgba(56, 141, 168, 0.25);
 }
 
 .create-new-test-button:active {
@@ -61,6 +61,19 @@
 
 .create-new-test-text {
     font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.modal-header {
+    padding: 1rem;
+}
+
+.modal-title {
+    color: var(--black-900);
+}
+
+.form-label {
+    color: var(--black-400) !important;
     font-weight: 500;
 }
 
@@ -73,7 +86,7 @@
     color: var(--black-900);
     padding: 0.2rem 1.5rem;
     border-radius: 50px;
-    background-color: transparent;
+    background-color: var(--white-100);
     font-weight: 500;
     font-size: 0.875rem;
     transition: all 0.3s ease;
@@ -82,18 +95,17 @@
 }
 
 .dropdown .btn-primary:hover {
-    background-color: var(--gray-100);
     color: var(--black-900);
     border-color: var(--black-200);
-    box-shadow: none;
+    box-shadow: 0 0 0 0.25rem rgba(158, 158, 158, 0.25);
 }
 
 .dropdown .btn-primary:focus,
 .dropdown .btn-primary:active {
     background-color: transparent;
-    border-color: var(--black-900);
+    border-color: var(--black-200);
     color: var(--black-900);
-    box-shadow: none; 
+    box-shadow: 0 0 0 0.25rem rgba(158, 158, 158, 0.25);
     outline: none;
 }
 
@@ -204,4 +216,121 @@
 .test-card #filterDropdown:hover {
     background-color: var(--gray-100);
 }
+
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+.test-type-dropdown {
+    width: 100%;
+}
+
+.test-type-dropdown .btn-primary {
+    flex: 1;
+    border: 1px solid var(--black-200);
+    color: var(--black-900);
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    text-transform: none;
+    width: 100%;
+}
+
+.test-type-dropdown .dropdown-menu {
+    position: static; 
+    width: 100%;
+}
+
+.create-new-test-type-button {
+    background-color: var(--black-900) !important;
+    color: var(--white-500); 
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.create-new-test-type-button:hover {
+    transform: scale(1.05);
+}
+
+.create-new-test-type-button:active {
+    opacity: 0.8;
+}
+
+.test-name-input {
+    flex: 1;
+    border: 1px solid var(--black-200);
+    color: var(--black-900);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background-color: transparent;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    text-transform: none;
+    width: 100%;
+}
+
+.test-name-input:focus {
+    border-color: var(--gray-100); 
+    box-shadow: 0 0 0 0.25rem rgba(63, 63, 63, 0.25);
+    outline: none;
+}
+
+.test-name-input::placeholder {
+    color: var(--black-300);
+    font-weight: 400;
+    font-size: 0.875rem;
+}
+
+.test-name-input.is-invalid {
+    border-color: var(--red-600); 
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25); 
+}
+
+.modal-footer .btn-secondary {
+    background-color: var(--black-100);
+    color: var(--black-500);
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: var(--gray-300);
+}
+
+.modal-footer .btn-secondary:focus {
+    background-color: var(--black-100);
+    color: var(--black-500);
+}
+
+.modal-footer .btn-primary,
+.modal-footer .btn-primary:hover
+{
+    background-color: var(--black-900);
+    color: var(--white-100);
+    box-shadow: none;
+}
+.modal-footer .btn-primary:hover {
+    background-color: var(--black-600);
+    color: var(--white-100);
+}
+
 

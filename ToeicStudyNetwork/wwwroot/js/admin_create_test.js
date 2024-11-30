@@ -18,11 +18,6 @@ document.addEventListener('DOMContentLoaded', function () {
           <span>
             <ul id="test-answer-options-${i}" style="padding-left: 1rem; list-style: none"></ul>
           </span>
-          <div class="button-group button-group-absolute">
-            <button class="button-group-item" id="edit-question-button-${i}">
-              <i class="fa fa-edit" style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-            </button>
-          </div>
         </div>
       </div>
       <form class="edit-form" style="display: block;">
@@ -78,7 +73,6 @@ document.addEventListener('scroll', function () {
 function toggleEditMode(section, isEditMode) {
   const form = section.querySelector('.edit-form');
   const contentContainer = section.querySelector('.section-content-container');
-
   if (isEditMode) {
     section.classList.add('edit-mode');
     form.style.display = 'block';
@@ -102,18 +96,9 @@ function saveTestInfo() {
 }
 
 function saveQuestions() {
-  console.log(questions);
-  let isValid = true;
-
   questions.forEach((question) => {
     const questionText = document.getElementById(`test-question-input-${question.id}`).value;
     const optionsText = document.getElementById(`test-answer-input-${question.id}`).value;
-
-    if (!questionText.trim()) {
-      isValid = false;
-      // alert(`Question ${question.id} is missing required fields.`);
-      return;
-    }
 
     question.title = questionText;
     question.description = optionsText;
@@ -127,10 +112,8 @@ function saveQuestions() {
     toggleEditMode(questionSection, false);
   });
 
-  if (isValid) {
-    const testQuestionSection = document.getElementById('test-question-section');
-    toggleEditMode(testQuestionSection, false);
-  }
+  const testQuestionSection = document.getElementById('test-question-section');
+  toggleEditMode(testQuestionSection, false);
 }
 
 function deleteQuestion(event, id) {
@@ -267,7 +250,6 @@ document.getElementById('edit-question-button-1').addEventListener('click', func
   toggleEditMode(testQuestionSection, true);
 
   questions.map((question) => {
-    console.log(question)
     if (question.id > 1) {
       const questionSection = document.getElementById(`test-question-${question.id}`);
       toggleEditMode(questionSection, true);
@@ -275,22 +257,5 @@ document.getElementById('edit-question-button-1').addEventListener('click', func
   })
 });
 
-document.getElementById('edit-info-button-1').addEventListener('click', function () {
-  const testInfoSection = document.getElementById('test-info-section');
-  toggleEditMode(testInfoSection, true);
-});
-
-document.getElementById('edit-question-button-1').addEventListener('click', function () {
-  const testQuestionSection = document.getElementById('test-question-section');
-  toggleEditMode(testQuestionSection, true);
-
-  questions.map((question) => {
-    console.log(question)
-    if (question.id > 1) {
-      const questionSection = document.getElementById(`test-question-${question.id}`);
-      toggleEditMode(questionSection, true);
-    }
-  })
-});
 
 
