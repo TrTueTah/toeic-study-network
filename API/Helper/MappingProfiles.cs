@@ -1,13 +1,16 @@
 ﻿using API.Dtos.Account;
 using API.Dtos.CommentDto;
 using API.Dtos.ExamDto;
+using API.Dtos.ExamSeriesDto;
 using API.Dtos.LikeDto;
 using API.Dtos.PostDto;
 using API.Dtos.QuestionDto;
 using API.Dtos.QuestionGroupDto;
+using API.Dtos.ResultDto;
 using API.Dtos.UserDto;
 using API.Models;
 using AutoMapper;
+using Sprache;
 
 namespace API.Helper;
 
@@ -54,5 +57,25 @@ public class MappingProfiles : Profile
         //Question
         CreateMap<CreateQuestionDto, Question>();
         CreateMap<Question, CreateQuestionDto>();
+
+        CreateMap<UserResult, DetailResultDto>();
+        CreateMap<UserResult, UserResultDto>();
+        CreateMap<UserResult, SubmitResultDto>();
+        CreateMap<DetailResult, DetailResultDto>();
+        CreateMap<DetailResult, UserResultDto>();
+        CreateMap<DetailResult, SubmitResultDto>();
+
+        CreateMap<DetailResultDto, UserResult>();
+        CreateMap<UserResultDto, UserResult>();
+        CreateMap<SubmitResultDto, UserResult>();
+        CreateMap<DetailResultDto, DetailResult>();
+        CreateMap<UserResultDto, DetailResult>();
+        CreateMap<SubmitResultDto, DetailResult>();
+
+        CreateMap<ExamSeries, CreateExamSeriesDto>();
+        CreateMap<CreateExamSeriesDto, ExamSeries>();
+        CreateMap<ExamSeries, UpdateExamSeriesDto>();
+        CreateMap<UpdateExamSeriesDto, ExamSeries>();
+
     }
 }

@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Exam> Exams { get; set; }
+    public DbSet<ExamSeries> ExamSeries { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<QuestionGroup> QuestionGroups { get; set; }
     public DbSet<UserResult> UserResults { get; set; }
@@ -46,6 +47,12 @@ public class ApplicationDbContext : DbContext
             .HasOne(dr => dr.UserResult)
             .WithMany(ur => ur.DetailResults)
             .HasForeignKey(dr => dr.UserResultId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Entity<Exam>()
+            .HasOne(e => e.ExamSeries)
+            .WithMany(es => es.Exams)
+            .HasForeignKey(e => e.ExamSeriesId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<Question>()

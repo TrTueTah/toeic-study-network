@@ -7,5 +7,7 @@ namespace API.Models
         public string? AudioFilesUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now.ToUniversalTime();
         public List<QuestionGroup> QuestionGroups { get; set; } = new();
+        public string ExamSeriesId { get; set; }
+        public ExamSeries ExamSeries { get; set; }
     }
 }
