@@ -71,7 +71,7 @@ function createTestCard(test) {
       <div class="test-card-subtitle">
         <span class="test-card-subtitle-part">${createdDate}</span>
         <span class="test-card-subtitle-middle-dot">·</span>
-        <span class="test-card-subtitle-part">ETS 2024</span>
+        <span class="test-card-subtitle-part">${test.examSeries.name}</span>
       </div>
     </div>`;
 }
@@ -98,7 +98,8 @@ function saveNewTest(apiUrl, modal, getAllExams) {
   })
     .then(response => response.json())
     .then(data => {
-      alert('Đề thi đã được tạo thành công!');
+      localStorage.setItem('newTestData', JSON.stringify(data));
+      window.location.href = '/Admin/CreateTest';
       modal.hide();
       getAllExams();
     })
@@ -124,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const saveTestTypeButton = document.getElementById('saveTestTypeBtn');
   const addTestTypeModal = new bootstrap.Modal(document.getElementById('addTestTypeModal'));
   const newTestTypeInput = document.getElementById('newTestType');
-  const testTypeDropdownButton = document.getElementById('testTypeDropdown');
 
   fetchAndRenderExams(apiUrlGetExams, testListContainerId);
 
@@ -182,24 +182,6 @@ document.getElementById("testTypeDropdown").addEventListener("click", function (
     .catch(handleFetchError);
 });
 
-function loadTestList() {
-  fetch('/api/v1/exam/getTestList')
-    .then(response => response.json())
-    .then(data => {
-      // Update the test list container with the data
-      var testListContainer = document.getElementById('test-list-container');
-      testListContainer.innerHTML = ''; // Clear previous list
-
-      data.tests.forEach(test => {
-        var testElement = document.createElement('div');
-        testElement.classList.add('test-item');
-        testElement.textContent = test.title;
-        testListContainer.appendChild(testElement);
-      });
-    })
-    .catch(error => console.error('Error loading test list:', error));
-}
-
 document.getElementById("testTypeDropdown").addEventListener("click", function () {
   fetch("http://localhost:5112/api/v1/examSeries/getAllExamSeries", {
     method: "GET",
@@ -210,7 +192,6 @@ document.getElementById("testTypeDropdown").addEventListener("click", function (
     .then(response => response.json())
     .then(data => renderDropdownMenu(data, "testTypeDropdownMenu", function (event) {
       updateDropdownButtonText('testTypeDropdown', event.target.textContent);
-      // Store the selected test type's ID
       document.getElementById('testTypeDropdown').setAttribute('data-value', event.target.dataset.value);
     }))
     .catch(handleFetchError);

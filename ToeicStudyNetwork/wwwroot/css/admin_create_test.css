@@ -3,7 +3,6 @@
     width: 100%;
     border: 1px solid var(--gray-200);
     height: fit-content;
-    padding: 24px;
     border-radius: 8px;
     background-color: var(--white-100);
 }
@@ -22,7 +21,7 @@
 
 .sticky {
     position: sticky;
-    top: 15vh;
+    
 }
 
 .scrollable-container {
@@ -39,7 +38,9 @@
 }
 
 #test-info-section,
-#test-question-section {
+#test-question-section,
+#upload-image-test-question-section,
+#upload-audio-test-question-section{
     padding: 1rem;
     position: relative;
     transition: 0.2s;
