@@ -43,6 +43,11 @@ namespace ToeicStudyNetwork.Controllers
                 comments.EnsureSuccessStatusCode();
                 var commentsString = await comments.Content.ReadAsStringAsync();
                 post.Comments = JsonConvert.DeserializeObject<List<CommentModel>>(commentsString);
+
+                var likes = await _httpClient.GetAsync($"http://localhost:5112/api/v1/like/getLikesByPostId/{post.Id}");
+                likes.EnsureSuccessStatusCode();
+                var likesString = await likes.Content.ReadAsStringAsync();
+                post.Likes = JsonConvert.DeserializeObject<List<LikeModel>>(likesString);
             }
 
             var token = Request.Cookies["token"];
@@ -164,5 +169,45 @@ namespace ToeicStudyNetwork.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> ToggleLike([FromBody] ToggleLikeRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.PostId))
+            {
+                return BadRequest("Invalid PostId");
+            }
+
+            var token = Request.Cookies["token"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            var userEmail = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
+            userIdResponse.EnsureSuccessStatusCode();
+            var userId = await userIdResponse.Content.ReadAsStringAsync();
+
+            var likeData = new { UserId = userId, PostId = request.PostId };
+
+            var response = await _httpClient.PostAsync("http://localhost:5112/api/v1/like/toggleLike",
+                new StringContent(JsonConvert.SerializeObject(likeData), Encoding.UTF8, "application/json"));
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return BadRequest($"Error: {errorMessage}");
+            }
+
+            return Ok(new { Success = true });
+        }
+
+    }
+    public class ToggleLikeRequest
+    {
+        public string PostId { get; set; }
     }
 }

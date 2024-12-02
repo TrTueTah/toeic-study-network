@@ -63,7 +63,6 @@ namespace API.Controllers
             else
             {
                 var like = _mapper.Map<Like>(likeDto);
-                like.LikedAt = DateTime.Now;
 
                 if (!_likeRepository.CreateLike(like))
                 {
@@ -103,6 +102,28 @@ namespace API.Controllers
             }
 
             return Ok(userDtos);
+        }
+        [HttpGet("getLikesByPostId/{postId}")]
+        public ActionResult GetLikesByPostId(string postId)
+        {
+            var likes = _likeRepository.GetLikesByPostId(postId);
+            if (likes == null)
+            {
+                return NotFound("No likes found for this post.");
+            }
+            var likeResponse = new List<LikeResponseDto>();
+            foreach (var like in likes)
+            {
+                likeResponse.Add(new LikeResponseDto
+                {
+                    Id = like.Id,
+                    UserId = like.UserId,
+                    PostId = like.PostId,
+                    LikedAt = like.LikedAt,
+                    Username = _userRepository.GetUserNameById(like.UserId),
+                });
+            }
+            return Ok(likeResponse);
         }
     }
 }
