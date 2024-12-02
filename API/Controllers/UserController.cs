@@ -38,5 +38,16 @@ namespace API.Controllers
             var userDto = _mapper.Map<UserDto>(user);
             return Ok(userDto);
         }
+
+        [HttpGet("getUserIdByEmail/{email}")]
+        public ActionResult<string> GetUserIdByEmail(string email)
+        {
+            var userId = _userRepository.GetUserIdByEmail(email);
+            if (userId == null)
+            {
+                return NotFound("User not found.");
+            }
+            return Ok(userId);
+        }
     }
 }
