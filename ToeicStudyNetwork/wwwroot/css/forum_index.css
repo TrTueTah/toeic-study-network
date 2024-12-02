@@ -355,3 +355,14 @@
     opacity: 0.6;
 }
 
+.media-image img,
+.comment-image img {
+    cursor: pointer; /* Thay đổi con trỏ chuột */
+    transition: transform 0.2s ease-in-out; /* Hiệu ứng hover */
+}
+
+.media-image img:hover,
+.comment-image img:hover {
+    transform: scale(1.05); /* Phóng to nhẹ khi hover */
+}
+
