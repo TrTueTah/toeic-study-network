@@ -12,4 +12,5 @@ public interface IUserRepository
     Task<User> GetUserByEmail(string email);
     User CreateUser(User user);
     string HashPassword(string password);
+    string GetUserIdByEmail(string email);
 }

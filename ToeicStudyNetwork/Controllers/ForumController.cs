@@ -5,6 +5,7 @@ using ToeicStudyNetwork.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Net.Http.Headers;
 
 namespace ToeicStudyNetwork.Controllers
@@ -62,6 +63,55 @@ namespace ToeicStudyNetwork.Controllers
             };
 
             return forumModel;
+        }
+        public async Task<IActionResult> CreatePost([FromForm] string content, [FromForm] List<IFormFile> files)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return BadRequest("Content cannot be empty.");
+            }
+
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest("At least one file is required.");
+            }
+
+            var token = Request.Cookies["token"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            var userEmail = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
+            userIdResponse.EnsureSuccessStatusCode();
+            var userId = await userIdResponse.Content.ReadAsStringAsync();
+
+            using var formData = new MultipartFormDataContent();
+            formData.Add(new StringContent(userId), "UserId");
+            formData.Add(new StringContent(content), "Content");
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var fileContent = new StreamContent(file.OpenReadStream());
+                    fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+                    formData.Add(fileContent, "MediaFiles", file.FileName); // Use "MediaFiles" as the key
+                }
+            }
+
+            var response = await _httpClient.PostAsync("http://localhost:5112/api/v1/post/createPost", formData);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                return BadRequest($"Error: {errorMessage}");
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
