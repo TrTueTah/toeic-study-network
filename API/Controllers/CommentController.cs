@@ -62,7 +62,6 @@ namespace API.Controllers
                 };
                 commentDtos.Add(commentDto);
             }
-            Console.WriteLine(commentDtos);
             return Ok(commentDtos);
         }
 

@@ -51,7 +51,7 @@
         <div class=" media-action-container">
             <div class="media-action">
                 <button class="media-action-button">
-                    <i class="bi bi-heart"></i>
+                    <i id="likeIcon" class="bi bi-heart"></i>
                 </button>
                 <span class="total-text">@Model.Post.TotalLikes</span>
             </div>
@@ -154,6 +154,63 @@
             console.error(`Container với ID "${containerId}" không tồn tại.`);
             return;
         }
+
+        // Lấy danh sách likes từ Razor
+        const likes = @Html.Raw(Json.Serialize(Model.Post.Likes));
+        const currentUsername = "@Model.User.Username";
+
+        // Kiểm tra trạng thái đã thích
+        const likeIcon = container.querySelector("#likeIcon");
+        const userHasLiked = likes.some(like => like.username === currentUsername);
+
+        console.log(likes, currentUsername, userHasLiked);
+
+        if (userHasLiked) {
+            likeIcon.classList.add("text-danger"); // Đổi màu trái tim thành đỏ
+            likeIcon.classList.remove("bi-heart");
+            likeIcon.classList.add("bi-heart-fill"); // Đổi icon thành trái tim đầy
+        }
+
+        // Xử lý sự kiện click vào biểu tượng trái tim
+        likeIcon.addEventListener("click", async function () {
+            const isLiked = likeIcon.classList.contains("text-danger");
+            const postId = containerId;
+
+            try {
+                const response = await fetch(`/Forum/ToggleLike`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ postId: "@Model.Post.Id" }),
+                });
+
+                if (response.ok) {
+                    // Cập nhật giao diện dựa trên trạng thái mới
+                    if (isLiked) {
+                        likeIcon.classList.remove("text-danger");
+                        likeIcon.classList.remove("bi-heart-fill");
+                        likeIcon.classList.add("bi-heart");
+                    } else {
+                        likeIcon.classList.add("text-danger");
+                        likeIcon.classList.remove("bi-heart");
+                        likeIcon.classList.add("bi-heart-fill");
+                    }
+
+                    // Cập nhật số lượt thích
+                    const totalLikesSpan = container.querySelector(".total-text");
+                    const totalLikes = await response.json(); // Giả sử API trả về tổng số lượt thích
+                    totalLikesSpan.textContent = totalLikes;
+                } else {
+                    console.error("Không thể cập nhật trạng thái thích.");
+                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                }
+            } catch (error) {
+                console.error("Lỗi kết nối:", error);
+                alert("Có lỗi xảy ra trong khi cập nhật trạng thái thích.");
+            }
+        });
+
         container.querySelectorAll(".media-image img, .comment-image img").forEach(img => {
             img.addEventListener("click", function () {
                 const modalImage = document.getElementById("modalImage");

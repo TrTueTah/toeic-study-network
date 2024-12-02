@@ -20,7 +20,8 @@ public class LikeRepository : ILikeRepository
             return false;
         }
         _context.Likes.Add(like);
-        return Save();
+        _context.SaveChanges();
+        return true;
     }
 
     public bool DeleteLike(string postId, string userId)
@@ -32,7 +33,8 @@ public class LikeRepository : ILikeRepository
         }
 
         _context.Likes.Remove(like);
-        return Save();
+        _context.SaveChanges();
+        return true;
     }
 
     public List<Like> GetLikesByPostId(string postId)
@@ -43,10 +45,5 @@ public class LikeRepository : ILikeRepository
     public bool UserHasLikedPost(string postId, string userId)
     {
         return _context.Likes.Any(l => l.PostId == postId && l.UserId == userId);
-    }
-    public bool Save()
-    {
-        var saved = _context.SaveChanges();
-        return saved > 0 ? true : false;
     }
 }
