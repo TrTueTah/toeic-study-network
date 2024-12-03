@@ -1,3 +1,43 @@
 .hover-pointer:hover {
       cursor: pointer;
     }
+/* Container bọc hình ảnh */
+    .image-container {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+    }
+
+    /* Hình ảnh gốc */
+    .image-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    /* Hiệu ứng sẫm màu */
+    .image-container:hover img {
+      transform: scale(1.1); /* Phóng to nhẹ */
+      filter: brightness(50%); /* Làm tối ảnh */
+    }
+
+    /* Chữ xuất hiện */
+    .image-container .overlay-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 0.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Hiển thị chữ khi hover */
+    .image-container:hover .overlay-text {
+      opacity: 1;
+    }

@@ -12,15 +12,16 @@
     <div class="container py-5 text-center"
         style="background-image: url(https://firebasestorage.googleapis.com/v0/b/toeicstudynetwork.appspot.com/o/userBackground%2Fuser_background_6.jpg?alt=media&token=5e1ff5ee-7c91-4413-b4be-9c728f407da4); width: 100%; height: 50vh; background-repeat: no-repeat; background-size: cover;">
         <div class="d-flex justify-content-center flex-column align-items-center">
-            <a id="choose-image-button" class="hover-pointer">
+            <a id="choose-image-button" class="image-container p-2 hover-pointer">
                 <img src="@Model.ImageUrl" alt="Profile Picture" class="rounded-circle"
                     style="height: 100px; width: 100px; background-color: white;">
+                <div class="overlay-text">Thay đổi hình ảnh</div>
             </a>
             <div>
-                <div class="d-flex flex-row justify-content-center align-items-center">
-                    <h2 class="mt-4 text-black fw-bold">@Model.Username</h2>
+                <div class="d-flex flex-row justify-content-center align-items-center" id="username-wrapper">
+                    <h2 class="mt-4 text-black fw-bold" id="username">@Model.Username</h2>
                     <a class="hover-pointer justify-content-between align-items-center ms-2 mt-3">
-                        <i class="bi bi-pencil"></i>
+                        <i class="bi bi-pencil" id="change-name-button"></i>
                     </a>
                 </div>
                 <h5 class="text-black fw-bold">@Model.Email</h2>
@@ -76,3 +77,80 @@
         </table>
     </div>
 </div>
+
+<script>
+    const usernameWrapper = document.getElementById("username-wrapper");
+    const usernameElement = document.getElementById("username");
+    const changeNameButton = document.getElementById("change-name-button");
+
+    // Sự kiện khi bấm nút "Sửa tên"
+    changeNameButton.addEventListener("click", () => {
+        // Lấy giá trị username hiện tại
+        const currentUsername = usernameElement.textContent;
+
+        // Thay thế toàn bộ nội dung trong username-wrapper
+        usernameWrapper.innerHTML = `
+            <input type="text" id="username-input" class="form-control my-2" value="${currentUsername}">
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-success me-2" id="confirm-button">Xác nhận</button>
+                <button class="btn btn-secondary" id="cancel-button">Huỷ</button>
+            </div>
+        `;
+
+        // Gán sự kiện cho nút "Xác nhận"
+        const confirmButton = document.getElementById("confirm-button");
+        confirmButton.addEventListener("click", () => {
+            const newUsername = document.getElementById("username-input").value;
+
+            // Gọi API để cập nhật tên người dùng
+            fetch('/api/username', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: newUsername })
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Tên người dùng đã được cập nhật thành công!");
+
+                        // Khôi phục nội dung username-wrapper
+                        usernameWrapper.innerHTML = `
+                        <h2 class="mt-4 text-black fw-bold" id="username">${newUsername}</h2>
+                        <a class="hover-pointer justify-content-between align-items-center ms-2 mt-3">
+                            <i class="bi bi-pencil" id="change-name-button"></i>
+                        </a>
+                    `;
+
+                        // Gán lại sự kiện cho nút sửa tên
+                        document.getElementById("change-name-button").addEventListener("click", () => {
+                            changeNameButton.click();
+                        });
+                    } else {
+                        alert("Cập nhật thất bại. Vui lòng thử lại.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi:", error);
+                    alert("Đã xảy ra lỗi khi cập nhật tên người dùng.");
+                });
+        });
+
+        // Gán sự kiện cho nút "Huỷ"
+        const cancelButton = document.getElementById("cancel-button");
+        cancelButton.addEventListener("click", () => {
+            // Khôi phục nội dung username-wrapper về trạng thái ban đầu
+            usernameWrapper.innerHTML = `
+                <h2 class="mt-4 text-black fw-bold" id="username">${currentUsername}</h2>
+                <a class="hover-pointer justify-content-between align-items-center ms-2 mt-3">
+                    <i class="bi bi-pencil" id="change-name-button"></i>
+                </a>
+            `;
+
+            // Gán lại sự kiện cho nút sửa tên
+            document.getElementById("change-name-button").addEventListener("click", () => {
+                changeNameButton.click();
+            });
+        });
+    });
+</script>

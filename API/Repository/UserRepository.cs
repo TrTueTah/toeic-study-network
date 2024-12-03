@@ -72,4 +72,11 @@ public class UserRepository : IUserRepository
     {
         return _context.Users.FirstOrDefault(u => u.Email == email).Id;
     }
+
+    public User UpdateUser(User user)
+    {
+        _context.Users.Update(user);
+        _context.SaveChanges();
+        return user;
+    }
 }

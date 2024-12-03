@@ -49,5 +49,31 @@ namespace API.Controllers
             }
             return Ok(userId);
         }
+        [HttpPost("UpdateUser/{userId}")]
+        public ActionResult<UserDto> UpdateUser([FromRoute] string userId, [FromBody] UpdateUserDto userDto)
+        {
+            var user = _userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            if (userDto.Username != null)
+            {
+                user.Username = userDto.Username;
+            }
+            if (userDto.ImageUrl != null)
+            {
+                user.ImageUrl = userDto.ImageUrl;
+            }
+            var updatedUser = _userRepository.UpdateUser(user);
+            var userResponse = new ResponseUserDto
+            {
+                Id = updatedUser.Id,
+                Username = updatedUser.Username,
+                Email = updatedUser.Email,
+                ImageUrl = updatedUser.ImageUrl
+            };
+            return Ok(userResponse);
+        }
     }
 }
