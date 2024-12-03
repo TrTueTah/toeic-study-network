@@ -32,32 +32,11 @@ Layout = "_LayoutAdmin";
             </div>
         </div>
     </div>
-    <div class="main-container p-3">
-        <div id="test-builder-scrollable" class="scrollable-container">
-            <div id="upload-image-test-question-section"  class="section edit-mode">
-                <div class="section-header">UPLOAD IMAGE SECTION</div>
-                <div class="section-divider"></div>
-                <div class="d-flex gap-2">
-                    <div id="upload-image-list"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="main-container p-3">
-        <div id="test-builder-scrollable" class="scrollable-container">
-            <div id="upload-audio-test-question-section" class="section edit-mode">
-                <div class="section-header">UPLOAD AUDIO SECTION</div>
-                <div class="section-divider"></div>
-                <div class="d-flex gap-2">
-                    <div id="upload-audio-list"></div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="sub-container p-2">
-        <button class="btn btn-outline-primary btn-block mb-3" id="submit-test">
+        <button class="btn btn-outline-primary btn-block mb-3" id="import-button">
             Import
         </button>
+        <input type="file" id="file-input" accept=".txt" style="display:none;" />
 
         <div class="test-questions-list">
             <div class="test-questions-list-part">
@@ -66,7 +45,7 @@ Layout = "_LayoutAdmin";
             </div>
         </div>
         <div class="form-controls d-flex align-items-center flex-column">
-            <button class="edit-button" id="edit-question-button-1" onclick="handleEdit()">
+            <button class="edit-button" id="edit-question-button-1">
                 <i class="fa fa-edit"></i>
                 <span>Edit</span>
             </button>
@@ -79,5 +58,53 @@ Layout = "_LayoutAdmin";
 </div>
 
 @section scripts {
-<script src="~/js/admin_create_test.js" asp-append-version="true"></script>
+    <script src="~/js/admin_create_test.js" asp-append-version="true"></script>
+    <script>
+   $('#import-button').click(function() {
+    $('#file-input').click();
+});
+   $('#file-input').change(function(event) {
+       var file = event.target.files[0];
+       if (file) {
+           var reader = new FileReader();
+           reader.onload = function(e) {
+               var fileContent = e.target.result;
+
+               const questionRegex = /(\d+\..*?)(?=\n\(A\))/s; 
+               const answerRegex = /\(A\)(.*?)\(B\)(.*?)\(C\)(.*?)\(D\)(.*?)(?=\n|\r|\Z)/s; 
+
+               let questionMatch = fileContent.match(questionRegex);
+               let answerMatch = fileContent.match(answerRegex);
+
+               let questionIndex = 0;
+
+               while (questionMatch && answerMatch) {
+                   const questionText = questionMatch[1].trim();
+                   const answers = [
+                       answerMatch[1].trim(),
+                       answerMatch[2].trim(),
+                       answerMatch[3].trim(),
+                       answerMatch[4].trim()
+                   ];
+
+                   $(`#test-question-input-${questionIndex + 1}`).val(questionText); 
+                   $(`#test-answer-input-${questionIndex + 1}`).val(answers.join('\n'));  
+
+                   questionIndex++;
+
+                   fileContent = fileContent.replace(questionMatch[0], ''); 
+                   fileContent = fileContent.replace(answerMatch[0], '');  
+
+                   questionMatch = fileContent.match(questionRegex);
+                   answerMatch = fileContent.match(answerRegex);
+               }
+           };
+           reader.readAsText(file);
+       }
+});
+
+
+
+
+    </script>
 }

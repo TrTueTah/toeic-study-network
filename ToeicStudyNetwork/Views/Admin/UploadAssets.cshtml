@@ -1,0 +1,62 @@
+@{
+ViewBag.Title = "Tạo Đề Thi TOEIC";
+Layout = "_LayoutAdmin";
+}
+
+@section customHead {
+<link rel="stylesheet" href="~/css/admin_upload_assets.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/test_start.css" asp-append-version="true" />
+}
+
+<div class="container-fluid d-flex gap-2 p-4">
+    <div class="main-container p-3">
+        <div class="scrollable-container">
+            <div id="upload-image-test-question-section"  class="section edit-mode">
+                <div class="section-header">UPLOAD IMAGE SECTION</div>
+                <div class="section-divider"></div>
+                <div class="d-flex gap-2">
+                    <div id="upload-image-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-container p-3">
+        <div class="scrollable-container">
+            <div id="upload-audio-test-question-section" class="section edit-mode">
+                <div class="section-header">UPLOAD AUDIO SECTION</div>
+                <div class="section-divider"></div>
+                <div class="d-flex gap-2">
+                    <div id="upload-audio-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sub-container p-2">
+        <button class="btn btn-outline-primary btn-block mb-3" id="import-button">
+            Import
+            <input type="file" id="file-import" style="display:none" accept=".txt" />
+        </button>
+
+        <div class="test-questions-list">
+            <div class="test-questions-list-part">
+                <div class="test-questions-list-wrapper">
+                </div>
+            </div>
+        </div>
+        <div class="form-controls d-flex align-items-center flex-column">
+            <button class="edit-button" id="edit-question-button-1">
+                <i class="fa fa-edit"></i>
+                <span>Edit</span>
+            </button>
+            <button class="button save-button" type="button" onclick="saveQuestions()">
+                <i class="fa fa-save"></i>
+                <span>Save</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+<script src="~/js/admin_upload_assets.js" asp-append-version="true"></script>
+}

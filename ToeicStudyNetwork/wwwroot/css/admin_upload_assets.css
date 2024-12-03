@@ -1,6 +1,5 @@
 .main-container {
-    flex: 1;
-    width: 100%;
+    width: fit-content;
     border: 1px solid var(--gray-200);
     height: fit-content;
     border-radius: 8px;
@@ -9,7 +8,7 @@
 
 .sub-container {
     position: static;
-    flex: 0.5;
+    flex: 1;
     width: 100%;
     border: 1px solid var(--gray-200);
     height: fit-content;
@@ -21,7 +20,7 @@
 
 .sticky {
     position: sticky;
-    
+
 }
 
 .scrollable-container {
@@ -244,6 +243,8 @@
     font-style: italic;
     text-transform: uppercase;
 }
+
+
 
 @media (max-width: 600px) {
     .edit-button {

@@ -108,108 +108,8 @@ const questionGroups = [
   { groupId: 105, questions: [196, 197, 198, 199, 200], media: 'image' }
 ];
 
-function renderUploadMediaSection(group) {
-  const uploadImageList = document.getElementById('upload-image-list');
-  const uploadAudioList = document.getElementById('upload-audio-list');
-
-  const fragmentImage = document.createDocumentFragment();
-  const fragmentAudio = document.createDocumentFragment();
-
-  group.questions.forEach((questionId, index) => {
-    const questionImageElement = document.createElement('div');
-    questionImageElement.id = `upload-question-image-${questionId}`;
-    questionImageElement.className = 'pb-2';
-
-    const questionAudioElement = document.createElement('div');
-    questionAudioElement.id = `upload-question-audio-${questionId}`;
-    questionAudioElement.className = 'pb-2';
-
-    let imageUploadField = '';
-    let audioUploadField = '';
-    
-    if (group.questions.length > 1) {
-      if (group.media === 'image' || group.media === 'both') {
-        imageUploadField = index === 0 ?
-          `<label class="form-label">
-            <span class="label-text">Question ${group.questions.join('-')}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
-          </label>`:
-          `
-      `;
-      } else {
-        imageUploadField = index === 0 ?
-          `<label class="form-label">
-            <span class="label-text" style="text-decoration: line-through">Question ${group.questions.join('-')}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
-          </label>` :
-          ``;
-      }
-    } else {
-      if (group.media === 'image' || group.media === 'both') {
-        imageUploadField = 
-          `<label class="form-label">
-            <span class="label-text">Question ${questionId}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
-          </label>
-      `;
-      } else {
-        imageUploadField = 
-          `<label class="form-label">
-            <span class="label-text" style="text-decoration: line-through">Question ${questionId}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
-          </label>`;
-      }
-    }
-
-    if (group.questions.length > 1) {
-      if (group.media === 'audio' || group.media === 'both') {
-        audioUploadField = index === 0 ?
-          `<label class="form-label">
-            <span class="label-text"> Question ${group.questions.join('-')}</span>
-            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
-          </label>`:
-          `
-      `;
-      } else {
-        audioUploadField = index === 0 ?
-          `<label class="form-label">
-            <span class="label-text" style="text-decoration: line-through"> Question ${group.questions.join('-')}</span>
-            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
-          </label>` :
-          ``;
-      }
-    } else {
-      if (group.media === 'audio' || group.media === 'both') {
-        audioUploadField = `
-        <label class="form-label">
-          <span class="label-text"> Question ${questionId}</span>
-          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
-        </label>
-      `;
-      } else {
-        audioUploadField = `
-        <label class="form-label">
-          <span class="label-text" style="text-decoration: line-through"> Question ${questionId}</span>
-          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
-        </label>
-      `;
-      }
-    }
-    
-    questionImageElement.innerHTML = imageUploadField;
-    questionAudioElement.innerHTML = audioUploadField;
-
-    fragmentImage.appendChild(questionImageElement);
-    fragmentAudio.appendChild(questionAudioElement);
-  });
-
-  uploadImageList.appendChild(fragmentImage);
-  uploadAudioList.appendChild(fragmentAudio);
-}
-
 document.addEventListener('DOMContentLoaded', function () {
   questionGroups.forEach(group => {
-    renderUploadMediaSection(group);
     group.questions.forEach((questionId, index) => {
       const questionElement = document.createElement('div');
       questionElement.id = `test-question-${questionId}`;
@@ -229,11 +129,11 @@ document.addEventListener('DOMContentLoaded', function () {
         <form class="edit-form" style="display: block;">
           <div>          
             <label class="form-label">
-              <span class="label-text label-required">Question ${questionId}</span>
+              <span for="test-question-input" class="label-text label-required">Question ${questionId}</span>
               <input type="text" placeholder="Enter question here" required="" class="form-input" id="test-question-input-${questionId}" value="">
             </label>
             <label class="form-label">
-              <span class="label-text label-required">Answer options</span>
+              <span for="test-answer-input" class="label-text label-required">Answer options</span>
               <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard" id="test-answer-input-${questionId}"></textarea>
             </label>
           </div>
@@ -241,29 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
 
       document.getElementById('test-question-list').appendChild(questionElement);
-
-      if (index === 0) {
-        const imageUploadElement = document.getElementById(`test-image-upload-${questionId}`);
-        const audioUploadElement = document.getElementById(`test-audio-upload-${questionId}`);
-
-        if (imageUploadElement) {
-          imageUploadElement.addEventListener('change', function (event) {
-            handleFileUpload(event, questionId, 'image');
-          });
-        } else {
-          console.error(`Element test-image-upload-${questionId} not found.`);
-        }
-
-        if (audioUploadElement) {
-          audioUploadElement.addEventListener('change', function (event) {
-            handleFileUpload(event, questionId, 'audio');
-          });
-        } else {
-          console.error(`Element test-audio-upload-${questionId} not found.`);
-        }
-      }
-
-
+      
       const questionListItem = `
         <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>
       `;
@@ -271,13 +149,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-function handleFileUpload(event, questionId, fileType) {
-  const file = event.target.files[0];
-  if (file) {
-    console.log(`Uploaded ${fileType} for Question ${questionId}:`, file);
-  }
-}
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.test-questions-listitem').forEach(item => {
@@ -297,7 +168,7 @@ document.addEventListener('scroll', function () {
 
   if (window.scrollY > scrollThreshold) {
     subContainer.classList.add('sticky');
-    subContainer.style.top = '12vh';
+    subContainer.style.top = '15vh';
   } else {
     subContainer.classList.remove('sticky');
     subContainer.style.top = '12vh';

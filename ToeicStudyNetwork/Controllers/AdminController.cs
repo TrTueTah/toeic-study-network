@@ -14,4 +14,9 @@ public class AdminController : Controller
     {
         return View();
     }
+    
+    public IActionResult UploadAssets()
+    {
+        return View();
+    }
 }
