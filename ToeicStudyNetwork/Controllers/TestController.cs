@@ -17,7 +17,18 @@ public class TestController : Controller
     public async Task<IActionResult> Index()
     {
         var exams = await FetchExamsAsync();
-        return View(exams);
+
+        var examSeries = exams
+            .GroupBy(e => e.ExamSeries.Id)
+            .Select(group => new ExamSeriesModel()
+            {
+                Id = group.Key,
+                Name = group.First().ExamSeries.Name,
+                Exams = group.ToList()
+            })
+            .ToList();
+
+        return View(examSeries);
     }
     [NonAction]
     private async Task<List<ExamModel>> FetchExamsAsync()
@@ -41,19 +52,7 @@ public class TestController : Controller
 
         return exam;
     }
-
-    [NonAction]
-    public async Task<List<PartModel>> FetchPartsAsync(string id)
-    {
-        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/part/getPartsByExamId/{id}");
-        response.EnsureSuccessStatusCode();
-
-        var responseString = await response.Content.ReadAsStringAsync();
-        var parts = JsonConvert.DeserializeObject<List<PartModel>>(responseString);
-
-        return parts;
-    }
-
+    
     [NonAction]
     public async Task<List<QuestionModel>> FetchQuestionsAsync(string id)
     {

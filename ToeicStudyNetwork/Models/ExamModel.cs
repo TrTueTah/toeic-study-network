@@ -13,5 +13,6 @@ namespace ToeicStudyNetwork.Models
         
         public string? AudioFilesUrl { get; set; }
         public List<QuestionGroupModel> QuestionGroups { get; set; }
+        public ExamSeriesModel ExamSeries { get; set; }
     }
 }

@@ -1,0 +1,110 @@
+@{
+ViewBag.Title = "Tạo Đề Thi TOEIC";
+Layout = "_LayoutAdmin";
+}
+
+@section customHead {
+<link rel="stylesheet" href="~/css/admin_create_test.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/test_start.css" asp-append-version="true" />
+}
+
+<div class="container-fluid d-flex gap-2 p-4">
+    <div class="main-container p-3">
+        <div id="test-builder-scrollable" class="scrollable-container">
+            <div id="test-info-section" class="section">
+                <div class="section-header">TEST INFORMATION</div>
+                <div class="section-divider"></div>
+                <div>
+                    <div class="section-content-container">
+                        <div class="d-flex flex-column">
+                            <b id="test-info-title"></b>
+                            <span id="test-info-description"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="test-question-section" class="section edit-mode">
+                <div class="section-header">QUESTION LIST</div>
+                <div class="section-divider"></div>
+                <div id="test-question-list">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sub-container p-2">
+        <button class="btn btn-outline-primary btn-block mb-3" id="import-button">
+            Import
+        </button>
+        <input type="file" id="file-input" accept=".txt" style="display:none;" />
+
+        <div class="test-questions-list">
+            <div class="test-questions-list-part">
+                <div class="test-questions-list-wrapper">
+                </div>
+            </div>
+        </div>
+        <div class="form-controls d-flex align-items-center flex-column">
+            <button class="edit-button" id="edit-question-button-1">
+                <i class="fa fa-edit"></i>
+                <span>Edit</span>
+            </button>
+            <button class="button save-button" type="button" onclick="saveQuestions()">
+                <i class="fa fa-save"></i>
+                <span>Save</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/js/admin_create_test.js" asp-append-version="true"></script>
+    <script>
+   $('#import-button').click(function() {
+    $('#file-input').click();
+});
+   $('#file-input').change(function(event) {
+       var file = event.target.files[0];
+       if (file) {
+           var reader = new FileReader();
+           reader.onload = function(e) {
+               var fileContent = e.target.result;
+
+               const questionRegex = /(\d+\..*?)(?=\n\(A\))/s; 
+               const answerRegex = /\(A\)(.*?)\(B\)(.*?)\(C\)(.*?)\(D\)(.*?)(?=\n|\r|\Z)/s; 
+
+               let questionMatch = fileContent.match(questionRegex);
+               let answerMatch = fileContent.match(answerRegex);
+
+               let questionIndex = 0;
+
+               while (questionMatch && answerMatch) {
+                   const questionText = questionMatch[1].trim();
+                   const answers = [
+                       answerMatch[1].trim(),
+                       answerMatch[2].trim(),
+                       answerMatch[3].trim(),
+                       answerMatch[4].trim()
+                   ];
+
+                   $(`#test-question-input-${questionIndex + 1}`).val(questionText); 
+                   $(`#test-answer-input-${questionIndex + 1}`).val(answers.join('\n'));  
+
+                   questionIndex++;
+
+                   fileContent = fileContent.replace(questionMatch[0], ''); 
+                   fileContent = fileContent.replace(answerMatch[0], '');  
+
+                   questionMatch = fileContent.match(questionRegex);
+                   answerMatch = fileContent.match(answerRegex);
+               }
+           };
+           reader.readAsText(file);
+       }
+});
+
+
+
+
+    </script>
+}

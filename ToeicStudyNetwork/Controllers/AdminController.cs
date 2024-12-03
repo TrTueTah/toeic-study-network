@@ -9,4 +9,14 @@ public class AdminController : Controller
     {
         return View();
     }
+
+    public IActionResult CreateTest()
+    {
+        return View();
+    }
+    
+    public IActionResult UploadAssets()
+    {
+        return View();
+    }
 }

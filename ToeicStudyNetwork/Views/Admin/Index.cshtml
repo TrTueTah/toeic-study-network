@@ -1,125 +1,111 @@
 @{
-    ViewBag.Title = "Tạo Đề Thi TOEIC";
+    ViewBag.Title = "Trang chủ";
     Layout = "_LayoutAdmin";
 }
 
 @section customHead {
     <link rel="stylesheet" href="~/css/admin_index.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/test_start.css" asp-append-version="true" />
 }
 
-<div class="container p-3 d-flex gap-4">
-    <div class="main-container p-3">
-        <div id="test-builder-scrollable" class="scrollable-container">
-            <div id="test-info-section" class="section edit-mode">
-                <div class="section-header">TEST INFORMATION</div>
-                <div class="section-divider"></div>
-                <div>
-                    <div class="section-content-container">
-                        <div class="d-flex flex-column">
-                            <b id="test-info-title"></b>
-                            <span id="test-info-description"></span>
-                            <div class="button-group button-group-absolute">
-                                <button class="button-group-item" id="edit-info-button-1">
-                                    <i class="fa fa-edit"
-                                       style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+<div class="container welcome-page-container">
+    <h1 class="welcome-title">Chào mừng bạn đến với StuX</h1>
+    <div class="welcome-header-container d-flex justify-content-between align-items-center">
+        <span class="welcome-header-text">Danh sách đề thi của bạn</span>
+    </div>
 
-                    <form class="edit-form" style="display: block;">
-                        <div>
-                            <div style="position: relative">
-                                <label class="form-label" style="width: 350px">
-                                    <span class="label-text label-required">Title</span>
-                                    <input type="text" placeholder="Enter test title" required="" class="form-input"
-                                           id="test-info-title-input" value="">
-                                </label>
-                                <label class="form-label">
-                                    <span class="label-text label-required">Description</span>
-                                    <textarea placeholder="Enter test description" required="" class="form-textarea"
-                                        id="test-info-description-input"></textarea>
-                                </label>
+    <div class="action-container d-flex align-items-center justify-content-between py-3">
+        <button id="create-new-test" class="create-new-test-button" type="button">
+            <i class="fas fa-plus me-2"></i> 
+            <span class="create-new-test-text">Tạo mới</span>
+        </button>
+
+        <div class="dropdown filter-dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Gần đây nhất
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                <li><a class="dropdown-item" href="#" data-value="recent">Gần đây nhất</a></li>
+                <li><a class="dropdown-item" href="#" data-value="title">Tiêu đề</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="test-list-container" class="test-list-container">
+    </div>
+    
+    <div class="modal fade" id="createTestModal" tabindex="-1" aria-labelledby="createTestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createTestModalLabel">Tạo đề thi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createTestForm">
+                        <div class="mb-3">
+                            <label for="testName" class="form-label">Tên đề thi</label>
+                            <input type="text" class="form-control test-name-input" id="testName" placeholder="Nhập tên đề thi" required aria-describedby="testNameHelp">
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testTypeDropdown" class="form-label">Loại đề thi</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="dropdown test-type-dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" id="testTypeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Chọn loại đề thi
+                                    </button>
+                                    <ul class="dropdown-menu" id="testTypeDropdownMenu" aria-labelledby="testTypeDropdown">
+                                    </ul>
+                                </div>
+                                <button type="button" class="btn btn-primary create-new-test-type-button" id="addTestTypeBtn"
+                                        data-bs-toggle="tooltip" title="Thêm loại đề thi mới">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="form-controls">
-                    <button class="button cancel-button">Cancel</button>
-                    <button class="button save-button" type="button" onclick="saveTestInfo()">
-                        <span style="display: inline-block; width: 73px;">Save</span>
-                    </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveTestBtn">Tạo</button>
                 </div>
             </div>
-            <div id="test-question-section" class="section edit-mode">
-                <div class="section-header">QUESTION LIST</div>
-                <div class="section-divider"></div>
-                <div id="test-question-list">
-                    
-                    <div id="test-question-1" class="pb-2">
-                        <div class="section-content-container" style="display: none">
-                            <div class="d-flex flex-column">
-                                <b id="test-question-title-1"></b>
-                                <span>
-                                    <ul id="test-answer-options-1" style="padding-left: 1rem; list-style: none">
-                                    </ul>
-                                </span>
-                                <div class="button-group button-group-absolute">
-                                    <button class="button-group-item" id="edit-question-button-1">
-                                        <i class="fa fa-edit"
-                                           style="margin-top: -2px; padding-right: 1px; color: var(--black-500);"></i>
-                                    </button>
-                                </div>
-                            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addTestTypeModal" tabindex="-1" aria-labelledby="addTestTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTestTypeModalLabel">Thêm loại đề thi mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addTestTypeForm">
+                        <div class="mb-3">
+                            <label for="newTestType" class="form-label">Tên loại đề thi</label>
+                            <input type="text" class="form-control test-name-input" id="newTestType" placeholder="Nhập tên loại đề thi" required>
                         </div>
-
-                        <form class="edit-form" style="display: block;">
-                            <div>
-                                <div style="position: relative">
-                                    <label class="form-label" style="width: 350px">
-                                        <span class="label-text label-required">Question 1</span>
-                                        <input type="text" placeholder="Enter question here" required=""
-                                               class="form-input" id="test-question-input-1" value="">
-                                        <span id="error-message-1" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
-                                    </label>
-                                    <label class="form-label">
-                                        <span class="label-text label-required">Answer options</span>
-                                        <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard"
-                                            id="test-answer-input-1"></textarea>
-                                    </label>
-
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
-                <div class="form-controls">
-                    @* <button class="button add-more-button" onclick="addMoreQuestion(event)">+ Add more</button> *@
-                    <button class="button save-button" type="button" onclick="saveQuestions()">
-                        <span style="display: inline-block; width: 73px;">Save</span>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <div class="sub-container p-2">
-        <button class="btn btn-outline-primary btn-block mb-3" id="submit-test">
-            Import
-        </button>
-
-        <div class="test-questions-list">
-            <div class="test-questions-list-part">
-                <div class="test-questions-list-wrapper">
-                    <span class="test-questions-listitem" data-qid="1" id="test-questions-lisitem-1">1</span>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="saveTestTypeBtn">Lưu</button>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
 
 @section scripts {
     <script src="~/js/admin_index.js" asp-append-version="true"></script>
+    <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
 }
