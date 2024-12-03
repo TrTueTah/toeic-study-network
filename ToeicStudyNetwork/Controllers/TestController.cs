@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ToeicStudyNetwork.Models;
@@ -12,6 +13,7 @@ public class TestController : Controller
     {
         _httpClient = httpClient;
     }
+    
     // GET
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -30,6 +32,7 @@ public class TestController : Controller
 
         return View(examSeries);
     }
+    
     [NonAction]
     private async Task<List<ExamModel>> FetchExamsAsync()
     {
@@ -41,6 +44,7 @@ public class TestController : Controller
 
         return exams;
     }
+    
     [NonAction]
     private async Task<ExamModel> FetchExamAsync(string id)
     {
@@ -116,10 +120,8 @@ public class TestController : Controller
             });
         }
 
-
         return View("Start", takeTestModel);
     }
-
 
     [HttpGet("{id}/tabs/{activeTab}")]
     public async Task<IActionResult> DetailExamTab(string id, string activeTab = "practice")
