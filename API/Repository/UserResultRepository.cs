@@ -158,4 +158,11 @@ public class UserResultRepository : IUserResultRepository
 
         return resultDto;
     }
+
+    public List<UserResult> GetAllUserResultsByUserId(string userId)
+    {
+        return _context.UserResults
+            .Where(ur => ur.UserId == userId)
+            .ToList();
+    }
 }

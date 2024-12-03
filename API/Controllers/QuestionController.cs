@@ -1,27 +1,25 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using API.Dtos.QuestionDto;
-// using API.Interfaces;
-// using API.Models;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace API.Controllers
-// {
-//     [ApiController]
-//     [Route("api/v1/question")]
-//     public class QuestionController : ControllerBase
-//     {
-//         private readonly IQuestionRepository _questionRepository;
-//         private readonly IPartRepository _partRepository;
-//         public QuestionController(IQuestionRepository questionRepository, IPartRepository partRepository)
-//         {
-//             _questionRepository = questionRepository;
-//             _partRepository = partRepository;
-//         }
-//
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using API.Dtos.QuestionDto;
+using API.Interfaces;
+using API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/v1/question")]
+    public class QuestionController : ControllerBase
+    {
+        private readonly IQuestionRepository _questionRepository;
+        public QuestionController(IQuestionRepository questionRepository)
+        {
+            _questionRepository = questionRepository;
+        }
+
 //         [HttpGet("getAllQuestions")]
 //         public async Task<IActionResult> GetAllQuestions()
 //         {
@@ -278,5 +276,5 @@
 //
 //             return correctAnswers;
 //         }
-//     }
-// }
+     }
+}
