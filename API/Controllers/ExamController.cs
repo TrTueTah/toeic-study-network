@@ -50,7 +50,7 @@ namespace API.Controllers
         {
             try
             {
-                var exam = await _examRepository.GetExamById(id);
+                var exam = _examRepository.GetExamById(id);
 
                 if (exam == null)
                 {
@@ -108,7 +108,7 @@ namespace API.Controllers
                     return BadRequest("Invalid file type. Please upload an MP3 file.");
                 }
 
-                var existingExam = await _examRepository.GetExamById(updateExamDto.ExamId);
+                var existingExam = _examRepository.GetExamById(updateExamDto.ExamId);
                 if (existingExam == null)
                 {
                     return NotFound($"Exam with ID {updateExamDto.ExamId} not found.");

@@ -44,11 +44,12 @@ namespace API.Repository
             return exams;
         }
 
-        public async Task<GetAllExamDto> GetExamById(string id)
+        public GetAllExamDto GetExamById(string id)
         {
-            var exam = await _context.Exams.Include(e => e.QuestionGroups)
+            var exam = _context.Exams
+                .Include(e => e.QuestionGroups)
                 .ThenInclude(qg => qg.Questions)
-                .Include(es => es.ExamSeries)
+                .Include(e => e.ExamSeries)
                 .Select(e => new GetAllExamDto
                 {
                     Id = e.Id,
@@ -62,7 +63,7 @@ namespace API.Repository
                         Name = e.ExamSeries.Name
                     },
                 })
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefault(x => x.Id == id);
 
             return exam;
         }
