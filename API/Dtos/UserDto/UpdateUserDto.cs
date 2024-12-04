@@ -8,6 +8,7 @@ namespace API.Dtos.UserDto
 {
     public class UpdateUserDto
     {
+        public string UserId { get; set; }
         [AllowNull]
         public string? Username { get; set; }
         [AllowNull]

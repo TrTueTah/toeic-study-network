@@ -89,11 +89,14 @@
         const currentUsername = usernameElement.textContent;
 
         // Thay thế toàn bộ nội dung trong username-wrapper
+        usernameWrapper.classList.remove("flex-row");
+        usernameWrapper.classList.remove("justify-content-center");
+        usernameWrapper.classList.add("flex-column");
         usernameWrapper.innerHTML = `
-            <input type="text" id="username-input" class="form-control my-2" value="${currentUsername}">
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-success me-2" id="confirm-button">Xác nhận</button>
-                <button class="btn btn-secondary" id="cancel-button">Huỷ</button>
+            <input type="text" id="username-input" class="form-control me-2" value="${currentUsername}">
+            <div class="d-flex justify-content-between mt-2 w-100">
+                <a class="btn btn-success btn-sm me-2" id="confirm-button">Xác nhận</a>
+                <a class="btn btn-danger btn-sm" id="cancel-button">Huỷ</a>
             </div>
         `;
 
@@ -103,7 +106,7 @@
             const newUsername = document.getElementById("username-input").value;
 
             // Gọi API để cập nhật tên người dùng
-            fetch('/api/username', {
+            fetch('/Personal/UpdateUsername', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -140,6 +143,9 @@
         const cancelButton = document.getElementById("cancel-button");
         cancelButton.addEventListener("click", () => {
             // Khôi phục nội dung username-wrapper về trạng thái ban đầu
+            usernameWrapper.classList.add("flex-row");
+            usernameWrapper.classList.add("justify-content-center");
+            usernameWrapper.classList.remove("flex-column");
             usernameWrapper.innerHTML = `
                 <h2 class="mt-4 text-black fw-bold" id="username">${currentUsername}</h2>
                 <a class="hover-pointer justify-content-between align-items-center ms-2 mt-3">

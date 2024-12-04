@@ -49,10 +49,10 @@ namespace API.Controllers
             }
             return Ok(userId);
         }
-        [HttpPost("UpdateUser/{userId}")]
-        public ActionResult<UserDto> UpdateUser([FromRoute] string userId, [FromBody] UpdateUserDto userDto)
+        [HttpPut("updateUser")]
+        public ActionResult<UserDto> UpdateUser([FromBody] UpdateUserDto userDto)
         {
-            var user = _userRepository.GetUserById(userId);
+            var user = _userRepository.GetUserById(userDto.UserId);
             if (user == null)
             {
                 return NotFound("User not found.");
