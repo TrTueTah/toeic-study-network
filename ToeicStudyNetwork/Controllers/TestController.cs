@@ -157,6 +157,7 @@ public class TestController : Controller
     public async Task<IActionResult> Result(string examId, string resultId)
     {
         var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResult/{resultId}");
+        
         if (!response.IsSuccessStatusCode)
         {
             return BadRequest("Failed to fetch result data.");

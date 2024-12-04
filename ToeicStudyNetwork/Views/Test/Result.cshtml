@@ -5,15 +5,628 @@ ViewBag.Title = "Result";
 Layout = "_Layout";
 }
 
-<h2>Exam Result</h2>
+@section customHead {
+<link rel="stylesheet" href="~/css/test_result.css" asp-append-version="true" />
+}
 
-<div>
-    <p><strong>Result ID:</strong> @Model.ResultId</p>
-    <p><strong>User ID:</strong> @Model.UserId</p>
-    <p><strong>Exam ID:</strong> @Model.ExamId</p>
-    <p><strong>Score:</strong> @Model.Score</p>
-    <p><strong>Correct Answers:</strong> @Model.CorrectAnswerAmount</p>
-    <p><strong>Time Taken:</strong> @Model.TimeTaken</p>
-    <p><strong>Exam Type:</strong> @Model.Type</p>
-    <p><strong>Created At:</strong> @Model.CreatedAt</p>
+<div class="lg-container">
+    <div class="col-md-9">
+        <div class="contentblock">
+            <h1 class="h2 mb-3">Kết quả thi: @Model.UserResultId</h1>
+            <div class="mb-3">
+                <a href="#result-answer" class="btn btn-sm btn-primary">Xem đáp án</a>
+                <a href="/tests/224/new-economy-toeic-test-1/" class="btn btn-sm btn-sky">Quay về trang đề thi</a>
+            </div>
+            <div class="result-score-details">
+                <div class="row">
+                    <div class="col-12 col-md-3">
+                        <div class="result-stats-box">
+                            <div class="result-stats-item">
+                                <span class="result-stats-icon bi bi-check-lg"></span>
+                                <span class="result-stats-label">Kết quả làm bài</span>
+                                <span class="result-stats-text">0/200</span>
+                            </div>
+                            <br>
+                            <div class="result-stats-item">
+                                <span class="result-stats-icon bi bi-bullseye"></span>
+                                <span class="result-stats-label">Độ chính xác (#đúng/#tổng)</span>
+                                <span class="result-stats-text">0.0%</span>
+                            </div>
+                            <br>
+                            <div class="result-stats-item">
+                                <span class="result-stats-icon bi bi-clock"></span>
+                                <span class="result-stats-label">Thời gian hoàn thành</span>
+                                <span class="result-stats-text">0:00:06</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <div class="row">
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icon text-correct"><span class="fas fa-check-circle"></span></div>
+                                    <div class="result-score-icontext text-correct">Trả lời đúng</div>
+                                    <div class="result-score-text">0</div>
+                                    <div class="result-score-sub"><span>câu hỏi</span></div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icon text-wrong"><span class="fas fa-times-circle"></span></div>
+                                    <div class="result-score-icontext text-wrong">Trả lời sai</div>
+                                    <div class="result-score-text">1</div>
+                                    <div class="result-score-sub"><span>câu hỏi</span></div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icon text-unanswered"><span class="fas fa-minus-circle"></span></div>
+                                    <div class="result-score-icontext text-unanswered">Bỏ qua</div>
+                                    <div class="result-score-text">199</div>
+                                    <div class="result-score-sub"><span>câu hỏi</span></div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icon text-score"><span class="bi bi-flag-fill"></span></div>
+                                    <div class="result-score-icontext text-score">Điểm</div>
+                                    <div class="result-score-text text-score">30</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icontext text-score">Listening</div>
+                                    <div class="result-score-text">30/495</div>
+                                    <div class="result-score-sub">Trả lời đúng: 4/100</div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="result-score-box">
+                                    <div class="result-score-icontext text-score">Reading</div>
+                                    <div class="result-score-text">0/495</div>
+                                    <div class="result-score-sub">Trả lời đúng: 0/100</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="answer-section">
+                <div class="answer-header-section">
+                    <h4 class="answer-header-label">Đáp án</h4>
+                    <br/>
+                    <h5 id="part-1">Part 1</h5>
+                    <div class="result-answers-list">
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>1</strong></span>
+                            <span>
+                                <span class="text-answerkey">A</span>:
+                                <i class="mr-1">A</i>
+                                <span class="text-correct bi bi-check-lg"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>2</strong></span>
+                            <span>
+                                <span class="text-answerkey">A</span>:
+                                <i class="mr-1">A</i>
+                                <span class="text-correct bi bi-check-lg"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8593/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>3</strong></span>
+                            <span>
+                                <span class="text-answerkey">A</span>:
+                                <i class="mr-1">A</i>
+                                <span class="text-correct bi bi-check-lg"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8594/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>4</strong></span>
+                            <span>
+                            
+                                <span class="text-answerkey">B</span>:
+                                <i class="text-line-through mr-1">A</i>
+                                <span class="text-wrong bi bi-x"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8595/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>5</strong></span>
+                            <span>
+                                <span class="text-answerkey">A</span>:
+                                <i class="mr-1">A</i>
+                                <span class="text-correct bi bi-check-lg"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8596/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+
+                        <div class="result-answers-item">
+                            <span class="question-number"><strong>6</strong></span>
+                            <span>
+                                <span class="text-answerkey">D</span>:
+                                <i class="text-line-through mr-1">A</i>
+                                <span class="text-wrong bi bi-x"></span>
+                            </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8597/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                    </div>
+                    <h5 id="part-2">Part 2</h5>
+                    <div class="result-answers-list">
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>7</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8598/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>8</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8599/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>9</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8600/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>10</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8601/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>11</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8602/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>12</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8603/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>13</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8604/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>14</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8605/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>15</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8606/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>16</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8607/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>17</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8608/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>18</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8609/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>19</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8610/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>20</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8611/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>21</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8612/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>22</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8613/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>23</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8614/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>24</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8615/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>25</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8616/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>26</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8617/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>27</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8618/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>28</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8619/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>29</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">B</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8620/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>30</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">C</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8621/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+
+                    <div class="result-answers-item">
+                        <span class="question-number"><strong>31</strong></span>
+                        <span>
+                            
+                            <span class="text-answerkey">A</span>:
+                            
+
+                            
+                            <i class="mr-1">chưa trả lời</i>
+                            <span class="text-unanswer bi bi-dash"></span>
+                            
+                        </span>
+                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8622/?view=embed" href="#">[Chi tiết]</a>
+                    </div>
+
+                    </div>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-block btn-round btn-primary" href="/tests/analytics/">
+            <span class="bi bi-bar-chart-line mr-2"></span>
+            Kết quả luyện thi
+        </a>
+        <br/>
+        <div class="user-target-info-box">
+            <div class="user-target-user">
+                <div>
+                        <span class="account-profile-img md">
+                            <img src="/static/img/user_icon.png" alt="tai606760"/>
+                        </span>
+                </div>
+                <div class="text-center">
+                    tai606760
+                </div>
+            </div>
+            <div class="divider sm"></div>
+            <div class="user-target-info">
+                <div class="user-target-text-sm">
+                    <b>TOEIC</b>
+                </div>
+                <table class="user-target-info-table table table-borderless table-sm table-xs mb-0">
+                    <tbody>
+                        <tr class="user-target-text-sm">
+                            <td>Ngày dự thi:</td>
+                            <td>
+                                <span class="user-target-text-value">09/09/2024</span>
+                            </td>
+                        </tr>
+                        <tr class="user-target-text-sm">
+                            <td>Tới kỳ thi:</td>
+                            <td>
+                                <span class="user-target-text-value">0 ngày</span>
+                            </td>
+                        </tr>
+                        <tr class="user-target-text-sm">
+                            <td>Điểm mục tiêu:</td>
+                            <td>
+                                <span class="user-target-text-value">850</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+@section scripts {
+<script src="~/js/test_result.js" asp-append-version="true"></script>
+}
+
+
+
+

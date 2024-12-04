@@ -1,6 +1,6 @@
 @model ToeicStudyNetwork.Models.TakeTestModel
 @{
-  ViewBag.Title = @Model.Title;
+  ViewBag.Title = "Start Exam";
   Layout = "_Layout";
 }
 
@@ -155,7 +155,10 @@
 
 <input type="hidden" id="exam-id" value="@Model.Id" />
 
+@section scripts {
+  <script src="~/js/test_start.js" asp-append-version="true"></script>
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+}
 
-<script src="~/js/test_start.js" asp-append-version="true"></script>
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+
 
