@@ -36,54 +36,12 @@ namespace API.Repository
                 .ToList();
         }
         
-        public QuestionGroup UpdateQuestionGroup(QuestionGroup questionGroup)
+        public bool UpdateQuestionGroup(QuestionGroup questionGroup)
         {
-            var existingGroup = _context.QuestionGroups
-                .Include(qg => qg.Questions)
-                .FirstOrDefault(qg => qg.Id == questionGroup.Id);
-
-            if (existingGroup == null)
-            {
-                return null;
-            }
-
-            using (var transaction = _context.Database.BeginTransaction())
-            {
-                try
-                {
-                    existingGroup.PartNumber = questionGroup.PartNumber;
-                    existingGroup.ImageFilesUrl = questionGroup.ImageFilesUrl;
-                    existingGroup.AudioFilesUrl = questionGroup.AudioFilesUrl;
-                    
-                    if (existingGroup.Questions != null)
-                    {
-                        _context.Questions.RemoveRange(existingGroup.Questions);
-                    }
-                    
-                    if (questionGroup.Questions != null)
-                    {
-                        foreach (var question in questionGroup.Questions)
-                        {
-                            question.GroupId = existingGroup.Id;
-                            _context.Questions.Add(question);
-                        }
-                    }
-
-                    _context.SaveChanges();
-                    
-                    transaction.Commit();
-                    return existingGroup;
-                }
-                catch (Exception ex)
-                {
-                    // Rollback transaction if any error occurs
-                    transaction.Rollback();
-                    throw new Exception($"Error updating question group: {ex.Message}");
-                }
-            }
+            _context.QuestionGroups.Update(questionGroup);
+            return Save();
         }
-
-        // Delete a QuestionGroup by its Id
+        
         public bool DeleteQuestionGroup(string id)
         {
             var group = _context.QuestionGroups
@@ -118,6 +76,11 @@ namespace API.Repository
         public bool QuestionGroupExists(string id)
         {
             return _context.QuestionGroups.Any(q => q.Id == id);
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

@@ -55,6 +55,8 @@ public class MappingProfiles : Profile
         //QuestionGroup
         CreateMap<CreateQuestionGroupDto, QuestionGroup>();
         CreateMap<QuestionGroup, CreateQuestionGroupDto>();
+        CreateMap<QuestionGroup, UploadFileQuestionGroupDto>();
+        CreateMap<UploadFileQuestionGroupDto, QuestionGroup>();
         
         //Question
         CreateMap<CreateQuestionDto, Question>();
