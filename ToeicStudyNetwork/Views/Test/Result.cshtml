@@ -1,0 +1,19 @@
+@model ToeicStudyNetwork.Models.UserResultResponse
+
+@{
+ViewBag.Title = "Result";
+Layout = "_Layout";
+}
+
+<h2>Exam Result</h2>
+
+<div>
+    <p><strong>Result ID:</strong> @Model.ResultId</p>
+    <p><strong>User ID:</strong> @Model.UserId</p>
+    <p><strong>Exam ID:</strong> @Model.ExamId</p>
+    <p><strong>Score:</strong> @Model.Score</p>
+    <p><strong>Correct Answers:</strong> @Model.CorrectAnswerAmount</p>
+    <p><strong>Time Taken:</strong> @Model.TimeTaken</p>
+    <p><strong>Exam Type:</strong> @Model.Type</p>
+    <p><strong>Created At:</strong> @Model.CreatedAt</p>
+</div>
