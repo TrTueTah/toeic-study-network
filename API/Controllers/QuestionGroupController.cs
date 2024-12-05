@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Dtos.QuestionGroupDto;
 using API.Services;
 using API.Dtos.QuestionDto;
+using AutoMapper;
 using Newtonsoft.Json;
 
 namespace API.Controllers
@@ -15,12 +16,14 @@ namespace API.Controllers
         private readonly IQuestionGroupRepository _questionGroupRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly FirebaseService _firebaseService;
+        private readonly IMapper _mapper;
 
-        public QuestionGroupController(IQuestionGroupRepository questionGroupRepository, FirebaseService firebaseService, IQuestionRepository questionRepository)
+        public QuestionGroupController(IQuestionGroupRepository questionGroupRepository, FirebaseService firebaseService, IQuestionRepository questionRepository, IMapper mapper)
         {
             _questionGroupRepository = questionGroupRepository;
             _firebaseService = firebaseService;
             _questionRepository = questionRepository;
+            _mapper = mapper;
         }
         
         [HttpPost("createQuestionGroup")]
@@ -130,6 +133,107 @@ namespace API.Controllers
 
             return Ok(questionGroups);
         }
+
+        [HttpPost("uploadQuestionGroupAudio")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> UploadQuestionGroupAudio([FromForm] UploadFileQuestionGroupDto updateFileQuestionGroupDto)
+        {
+            try
+            {
+                if (updateFileQuestionGroupDto.Files == null)
+                {
+                    return BadRequest("Audio file is missing or empty.");
+                }
+
+
+                var existingQG = _questionGroupRepository.GetQuestionGroupById(updateFileQuestionGroupDto.QuestionGroupId);
+                if (existingQG == null)
+                {
+                    return NotFound($"Question Group with ID {updateFileQuestionGroupDto.QuestionGroupId} not found.");
+                }
+                var audioUrls = new List<string>();
+                if (updateFileQuestionGroupDto.Files != null)
+                {
+                    foreach (var file in updateFileQuestionGroupDto.Files)
+                    {
+                                        
+                        var contentType = file.ContentType;
+                        if (!contentType.StartsWith("audio/"))
+                        {
+                            return BadRequest("Invalid file type. Please upload a valid audio file.");
+                        }
+                        if (file.Length > 0)
+                        {
+                            var audioUrl = await _firebaseService.UploadFileAsync(file, $"questionGroups/{existingQG.ExamId}/audio");
+                            audioUrls.Add(audioUrl);
+                        }
+                    }
+                }
+                // Save the URL to the exam record
+                existingQG.AudioFilesUrl = audioUrls;
+                var questionGr = _mapper.Map<QuestionGroup>(existingQG);
+                _questionGroupRepository.UpdateQuestionGroup(questionGr);
+
+                return Ok(audioUrls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+        [HttpPost("uploadQuestionGroupImage")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult> UploadQuestionGroupImage([FromForm] UploadFileQuestionGroupDto updateFileQuestionGroupDto)
+        {
+            try
+            {
+                if (updateFileQuestionGroupDto.Files == null || updateFileQuestionGroupDto.Files.Count == 0)
+                {
+                    return BadRequest("Image file is missing or empty.");
+                }
+
+                var existingQG = _questionGroupRepository.GetQuestionGroupById(updateFileQuestionGroupDto.QuestionGroupId);
+                if (existingQG == null)
+                {
+                    return NotFound($"Question Group with ID {updateFileQuestionGroupDto.QuestionGroupId} not found.");
+                }
+
+                var imageUrls = new List<string>();
+
+                foreach (var file in updateFileQuestionGroupDto.Files)
+                {
+                    var contentType = file.ContentType;
+
+                    if (!contentType.StartsWith("image/"))
+                    {
+                        return BadRequest("Invalid file type. Please upload a valid image file.");
+                    }
+
+                    if (file.Length > 0)
+                    {
+                        var imageUrl = await _firebaseService.UploadFileAsync(file, $"questionGroups/{existingQG.ExamId}/images");
+                        imageUrls.Add(imageUrl);
+                    }
+                }
+
+                existingQG.ImageFilesUrl = imageUrls;
+
+                var questionGr = _mapper.Map<QuestionGroup>(existingQG);
+                _questionGroupRepository.UpdateQuestionGroup(questionGr);
+
+                return Ok(imageUrls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         
         // [HttpPut("updateQuestionGroup/{id}")]
         // [ProducesResponseType(204)]

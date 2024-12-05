@@ -45,7 +45,7 @@ public class MappingProfiles : Profile
         CreateMap<UserLoginResponseDto, User>();
         CreateMap<User, UserRegisterResponseDto>();
         CreateMap<UserRegisterResponseDto, User>();
-
+ 
         //Exam
         CreateMap<CreateExamRequestDto, Exam>();
         CreateMap<Exam, CreateExamRequestDto>();
@@ -55,6 +55,8 @@ public class MappingProfiles : Profile
         //QuestionGroup
         CreateMap<CreateQuestionGroupDto, QuestionGroup>();
         CreateMap<QuestionGroup, CreateQuestionGroupDto>();
+        CreateMap<QuestionGroup, UploadFileQuestionGroupDto>();
+        CreateMap<UploadFileQuestionGroupDto, QuestionGroup>();
         
         //Question
         CreateMap<CreateQuestionDto, Question>();
@@ -63,9 +65,11 @@ public class MappingProfiles : Profile
         CreateMap<UserResult, DetailResultDto>();
         CreateMap<UserResult, UserResultDto>();
         CreateMap<UserResult, SubmitResultDto>();
+        CreateMap<UserResult, GetAllUserResultDto>();
         CreateMap<DetailResult, DetailResultDto>();
         CreateMap<DetailResult, UserResultDto>();
         CreateMap<DetailResult, SubmitResultDto>();
+        CreateMap<GetAllUserResultDto, UserResult>();
 
         CreateMap<DetailResultDto, UserResult>();
         CreateMap<UserResultDto, UserResult>();

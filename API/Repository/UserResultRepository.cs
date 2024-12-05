@@ -44,7 +44,7 @@ public class UserResultRepository : IUserResultRepository
         var detailResults = new List<DetailResult>();
 
         var questions = questionGroups.SelectMany(qg => qg.Questions).ToList();
-
+ 
         foreach (var question in questions)
         {
             if (submission.Answers.TryGetValue(question.QuestionNumber, out string userAnswer))
@@ -60,13 +60,23 @@ public class UserResultRepository : IUserResultRepository
                     if (isCorrect) listeningCorrect++;
                 }
 
-                // Ensure CorrectAnswer is stored in DetailResult
                 detailResults.Add(new DetailResult
                 {
                     UserResultId = submission.UserId,
                     QuestionNumber = question.QuestionNumber,
                     UserAnswer = userAnswer,
                     IsCorrect = isCorrect,
+                    CorrectAnswer = question.CorrectAnswer
+                });
+            }
+            else
+            {
+                detailResults.Add(new DetailResult
+                {
+                    UserResultId = submission.UserId,
+                    QuestionNumber = question.QuestionNumber,
+                    UserAnswer = null,
+                    IsCorrect = false,
                     CorrectAnswer = question.CorrectAnswer
                 });
             }
@@ -157,5 +167,12 @@ public class UserResultRepository : IUserResultRepository
         };
 
         return resultDto;
+    }
+
+    public List<UserResult> GetAllUserResultsByUserId(string userId)
+    {
+        return _context.UserResults
+            .Where(ur => ur.UserId == userId)
+            .ToList();
     }
 }
