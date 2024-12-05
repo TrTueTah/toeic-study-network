@@ -1,3 +1,15 @@
+@model ToeicStudyNetwork.Models.TestAnalyticsModel
+@{
+    var time = 0.0;
+    var score = 0.0;
+    foreach (var result in Model.UserResults)
+    {
+        time += result.TimeTaken;
+        score += result.Score;
+    }
+    time = Math.Round(time / 60, 2);
+    score = Math.Round(score / Model.UserResults.Count, 2);
+}
 @section customHead {
     <link rel="stylesheet" href="~/css/test_analytics.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -15,13 +27,15 @@
         <div class="result-score-box">
             <div class="result-score-icon text-gray"><i class="bi bi-book"></i></span></div>
             <div class="result-score-icontext text-gray">Số đề đã làm</div>
-            <div class="result-score-text">1</div>
+            <div class="result-score-text">@Model.UserResults.Count</div>
             <div class="result-score-sub"><span>đề thi</span></div>
         </div>
         <div class="result-score-box">
             <div class="result-score-icon text-gray"><i class="bi bi-clock"></i></div>
             <div class="result-score-icontext text-gray">Thời gian luyện thi</div>
-            <div class="result-score-text">1</div>
+            <div class="result-score-text">
+                @time
+            </div>
             <div class="result-score-sub"><span>phút</span></div>
         </div>
 
@@ -129,35 +143,24 @@
                     <span class="result-badge-practice">Luyện tập</span>
 
                     <span class="result-badge-practice">Part 2</span>
-
-
-
                 </td>
                 <td>
                     8/25
-
                 </td>
                 <td>0:00:32</td>
                 <td><a target="_blank" href="/tests/224/results/20633309/">
                         Xem chi tiết</a>
                 </td>
             </tr>
-
             <tr>
                 <td>11/11/2024</td>
                 <td>
                     New Economy TOEIC Test 1
-
                     <span class="result-badge-practice">Luyện tập</span>
-
                     <span class="result-badge-practice">Part 1</span>
-
-
-
                 </td>
                 <td>
                     4/6
-
                 </td>
                 <td>0:00:17</td>
                 <td><a target="_blank" href="/tests/224/results/20632102/">

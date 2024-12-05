@@ -15,9 +15,18 @@ public class TestController : Controller
     }
 
     [HttpGet("Analytics")]
-    public IActionResult Analytics()
+    public async Task<IActionResult> Analytics()
     {
-        return View();
+        var userId = Request.Cookies["userId"];
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
+        response.EnsureSuccessStatusCode();
+        var responseString = await response.Content.ReadAsStringAsync();
+        var userResults = JsonConvert.DeserializeObject<List<UserResultResponse>>(responseString);
+        var testAnalyticsModel = new TestAnalyticsModel
+        {
+            UserResults = userResults
+        };
+        return View(testAnalyticsModel);
     }
     // GET
     [HttpGet]
@@ -175,4 +184,5 @@ public class TestController : Controller
         ViewBag.Username = username;
         return View("Result", resultData);
     }
+
 }
