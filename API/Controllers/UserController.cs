@@ -15,11 +15,13 @@ namespace API.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IMapper mapper, ITokenService tokenService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         // GET: api/v1/users/{userId}
@@ -49,10 +51,10 @@ namespace API.Controllers
             }
             return Ok(userId);
         }
-        [HttpPut("updateUser")]
-        public ActionResult<UserDto> UpdateUser([FromBody] UpdateUserDto userDto)
+        [HttpPut("updateUser/{id}")]
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserDto userDto)
         {
-            var user = _userRepository.GetUserById(userDto.UserId);
+            var user = _userRepository.GetUserById(id);
             if (user == null)
             {
                 return NotFound("User not found.");
@@ -66,14 +68,16 @@ namespace API.Controllers
                 user.ImageUrl = userDto.ImageUrl;
             }
             var updatedUser = _userRepository.UpdateUser(user);
-            var userResponse = new ResponseUserDto
+            if (updatedUser.Username != null)
             {
-                Id = updatedUser.Id,
-                Username = updatedUser.Username,
-                Email = updatedUser.Email,
-                ImageUrl = updatedUser.ImageUrl
-            };
-            return Ok(userResponse);
+                user.Username = updatedUser.Username;
+            }
+            if (updatedUser.ImageUrl != null)
+            {
+                user.ImageUrl = updatedUser.ImageUrl;
+            }
+            var token = _tokenService.CreateToken(user, "AccessToken");
+            return Ok(token);
         }
     }
 }

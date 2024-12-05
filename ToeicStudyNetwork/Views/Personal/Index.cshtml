@@ -106,7 +106,7 @@
             const newUsername = document.getElementById("username-input").value;
 
             // Gọi API để cập nhật tên người dùng
-            fetch('/Personal/UpdateUsername', {
+            fetch('/Personal/UpdateUserInfor', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -118,6 +118,10 @@
                         alert("Tên người dùng đã được cập nhật thành công!");
 
                         // Khôi phục nội dung username-wrapper
+                        usernameWrapper.classList.add("flex-row");
+                        usernameWrapper.classList.add("justify-content-center");
+                        usernameWrapper.classList.remove("flex-column");
+
                         usernameWrapper.innerHTML = `
                         <h2 class="mt-4 text-black fw-bold" id="username">${newUsername}</h2>
                         <a class="hover-pointer justify-content-between align-items-center ms-2 mt-3">
