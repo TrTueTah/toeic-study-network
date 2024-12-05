@@ -166,10 +166,10 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var readingCorrect = userResult.DetailResults
-            .Count(dr => dr.QuestionNumber <= 100 && dr.IsCorrect);
+            .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
 
         var listeningCorrect = userResult.DetailResults
-            .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
+            .Count(dr => dr.QuestionNumber <= 100 && dr.IsCorrect);
 
         var unansweredCount = userResult.DetailResults
             .Count(dr => string.IsNullOrEmpty(dr.UserAnswer));
