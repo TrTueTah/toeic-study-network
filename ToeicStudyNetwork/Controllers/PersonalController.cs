@@ -31,9 +31,9 @@ namespace ToeicStudyNetwork.Controllers
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
-                user.ImageUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value;
-                user.Email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
-                user.Username = jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value;
+                user.ImageUrl = Request.Cookies["userImage"];
+                user.Email = Request.Cookies["email"];
+                user.Username = Request.Cookies["given_name"];
             }
             return View(user);
         }
@@ -45,7 +45,7 @@ namespace ToeicStudyNetwork.Controllers
             {
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-                var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+                var userId = Request.Cookies["userId"];
                 object data;
                 if (user.Username == null && user.ImageUrl != null)
                 {
@@ -70,6 +70,10 @@ namespace ToeicStudyNetwork.Controllers
                 {
                     // Save the token to cookies
                     Response.Cookies.Append("token", responseContent);
+                    jwtToken = handler.ReadToken(responseContent) as JwtSecurityToken;
+                    Response.Cookies.Append("userImage", jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value);
+                    Response.Cookies.Append("email", jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value);
+                    Response.Cookies.Append("given_name", jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value);
                 }
             }
             return RedirectToAction("Index");

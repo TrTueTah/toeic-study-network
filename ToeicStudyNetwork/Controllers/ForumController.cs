@@ -56,9 +56,9 @@ namespace ToeicStudyNetwork.Controllers
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
-                user.ImageUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value;
-                user.Email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
-                user.Username = jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value;
+                user.ImageUrl = Request.Cookies["userImage"];
+                user.Email = Request.Cookies["email"];
+                user.Username = Request.Cookies["given_name"];
             }
 
             var forumModel = new ForumModel
@@ -90,7 +90,7 @@ namespace ToeicStudyNetwork.Controllers
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            var userEmail = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var userEmail = Request.Cookies["email"];
             var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
             userIdResponse.EnsureSuccessStatusCode();
             var userId = await userIdResponse.Content.ReadAsStringAsync();
@@ -140,7 +140,7 @@ namespace ToeicStudyNetwork.Controllers
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            var userEmail = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var userEmail = Request.Cookies["email"];
             var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
             userIdResponse.EnsureSuccessStatusCode();
             var userId = await userIdResponse.Content.ReadAsStringAsync();
@@ -186,7 +186,7 @@ namespace ToeicStudyNetwork.Controllers
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
-            var userEmail = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var userEmail = Request.Cookies["email"];
             var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
             userIdResponse.EnsureSuccessStatusCode();
             var userId = await userIdResponse.Content.ReadAsStringAsync();
