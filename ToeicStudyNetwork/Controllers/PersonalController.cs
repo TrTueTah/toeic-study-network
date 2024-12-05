@@ -21,10 +21,11 @@ namespace ToeicStudyNetwork.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var token = Request.Cookies["token"];
             var user = new UserModel();
+            var personalModel = new PersonalModel();
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -34,8 +35,19 @@ namespace ToeicStudyNetwork.Controllers
                 user.ImageUrl = Request.Cookies["userImage"];
                 user.Email = Request.Cookies["email"];
                 user.Username = Request.Cookies["given_name"];
+
+                var userId = Request.Cookies["userId"];
+
+                var userResultsResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
+                userResultsResponse.EnsureSuccessStatusCode();
+                var userResultsString = await userResultsResponse.Content.ReadAsStringAsync();
+                var userResults = JsonConvert.DeserializeObject<List<UserResultModel>>(userResultsString);
+
+                personalModel.User = user;
+                personalModel.UserResults = userResults;
             }
-            return View(user);
+
+            return View(personalModel);
         }
         [HttpPost]
         public async Task<IActionResult> UpdateUserInfor([FromBody] UpdateUser user)

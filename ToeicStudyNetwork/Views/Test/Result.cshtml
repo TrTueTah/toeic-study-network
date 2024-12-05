@@ -1,12 +1,12 @@
 @model ToeicStudyNetwork.Models.UserResultResponse
 
 @{
-ViewBag.Title = "Result";
-Layout = "_Layout";
+    ViewBag.Title = "Result";
+    Layout = "_Layout";
 }
 
 @section customHead {
-<link rel="stylesheet" href="~/css/test_result.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/test_result.css" asp-append-version="true" />
 }
 
 <section>
@@ -39,7 +39,8 @@ Layout = "_Layout";
                             <div class="row">
                                 <div class="col">
                                     <div class="result-score-box">
-                                        <div class="result-score-icon text-correct"><span class="fas fa-check-circle"></span></div>
+                                        <div class="result-score-icon text-correct"><span
+                                                class="fas fa-check-circle"></span></div>
                                         <div class="result-score-icontext text-correct">Trả lời đúng</div>
                                         <div class="result-score-text">@Model.CorrectAnswerAmount</div>
                                         <div class="result-score-sub"><span>câu hỏi</span></div>
@@ -47,7 +48,8 @@ Layout = "_Layout";
                                 </div>
                                 <div class="col">
                                     <div class="result-score-box">
-                                        <div class="result-score-icon text-wrong"><span class="fas fa-times-circle"></span></div>
+                                        <div class="result-score-icon text-wrong"><span
+                                                class="fas fa-times-circle"></span></div>
                                         <div class="result-score-icontext text-wrong">Trả lời sai</div>
                                         <div class="result-score-text">@Model.IncorrectAnswerAmount</div>
                                         <div class="result-score-sub"><span>câu hỏi</span></div>
@@ -55,7 +57,8 @@ Layout = "_Layout";
                                 </div>
                                 <div class="col">
                                     <div class="result-score-box">
-                                        <div class="result-score-icon text-unanswered"><span class="fas fa-minus-circle"></span></div>
+                                        <div class="result-score-icon text-unanswered"><span
+                                                class="fas fa-minus-circle"></span></div>
                                         <div class="result-score-icontext text-unanswered">Bỏ qua</div>
                                         <div class="result-score-text">@Model.WithoutAnswerAmount</div>
                                         <div class="result-score-sub"><span>câu hỏi</span></div>
@@ -63,7 +66,8 @@ Layout = "_Layout";
                                 </div>
                                 <div class="col">
                                     <div class="result-score-box">
-                                        <div class="result-score-icon text-score"><span class="bi bi-flag-fill"></span></div>
+                                        <div class="result-score-icon text-score"><span class="bi bi-flag-fill"></span>
+                                        </div>
                                         <div class="result-score-icontext text-score">Điểm</div>
                                         <div class="result-score-text text-score">@Model.Score</div>
                                     </div>
@@ -74,7 +78,8 @@ Layout = "_Layout";
                                     <div class="result-score-box">
                                         <div class="result-score-icontext text-score">Listening</div>
                                         <div class="result-score-text">@Model.ListeningScore/495</div>
-                                        <div class="result-score-sub">Trả lời đúng: @Model.ListeningCorrectAnswerAmount/100</div>
+                                        <div class="result-score-sub">Trả lời đúng:
+                                            @Model.ListeningCorrectAnswerAmount/100</div>
                                     </div>
                                 </div>
 
@@ -82,7 +87,8 @@ Layout = "_Layout";
                                     <div class="result-score-box">
                                         <div class="result-score-icontext text-score">Reading</div>
                                         <div class="result-score-text">@Model.ReadingScore/495</div>
-                                        <div class="result-score-sub">Trả lời đúng: @Model.ReadingCorrectAnswerAmount/100</div>
+                                        <div class="result-score-sub">Trả lời đúng:
+                                            @Model.ReadingCorrectAnswerAmount/100</div>
                                     </div>
                                 </div>
 
@@ -96,218 +102,239 @@ Layout = "_Layout";
                         <div class="divider sm"></div>
                         <h5 id="part-1">Part 1</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 1 && q.QuestionNumber <= 6))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 1 &&
+                            q.QuestionNumber <= 6))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-2">Part 2</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 7 && q.QuestionNumber <= 31))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 7 &&
+                            q.QuestionNumber <= 31))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-3">Part 3</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 32 && q.QuestionNumber <= 70))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 32 &&
+                            q.QuestionNumber <= 70))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-4">Part 4</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 71 && q.QuestionNumber <= 100))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 71 &&
+                            q.QuestionNumber <= 100))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-5">Part 5</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 101 && q.QuestionNumber <= 130))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 101 &&
+                            q.QuestionNumber <= 130))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-6">Part 6</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 131 && q.QuestionNumber <= 146))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 131 &&
+                            q.QuestionNumber <= 146))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
-                        <br/>
+                        <br />
                         <h5 id="part-7">Part 7</h5>
                         <div class="result-answers-list">
-                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 147 && q.QuestionNumber <= 200))
+                            @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 147 &&
+                            q.QuestionNumber <= 200))
                             {
-                            <div class="result-answers-item">
-                                <span class="question-number">
-                                    <strong>@item.QuestionNumber</strong>
-                                </span>
-                                <span>
-                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
-                                    @if (@item.IsCorrect)
-                                    {
-                                    <i class="mr-1">@item.UserAnswer</i>
-                                        <span class="text-correct bi bi-check-lg"></span>
-                                    }
-                                    else if (@item.UserAnswer == null)
-                                    {
-                                    <i class="mr-1">chưa trả lời</i>
-                                        <span class="text-unanswer bi bi-dash"></span>
-                                    }
-                                    else
-                                    {
-                                    <i class="text-line-through mr-1">@item.UserAnswer</i>
-                                        <span class="text-wrong bi bi-x"></span>
-                                    }
-                                </span>
-                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                            </div>
+                                <div class="result-answers-item">
+                                    <span class="question-number">
+                                        <strong>@item.QuestionNumber</strong>
+                                    </span>
+                                    <span>
+                                        <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                        @if (@item.IsCorrect)
+                                        {
+                                            <i class="mr-1">@item.UserAnswer</i>
+                                            <span class="text-correct bi bi-check-lg"></span>
+                                        }
+                                        else if (@item.UserAnswer == null)
+                                        {
+                                            <i class="mr-1">chưa trả lời</i>
+                                            <span class="text-unanswer bi bi-dash"></span>
+                                        }
+                                        else
+                                        {
+                                            <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                            <span class="text-wrong bi bi-x"></span>
+                                        }
+                                    </span>
+                                    <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
+                                        onclick="window.load_jqiframe(this, '#result-modal-content');"
+                                        data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                </div>
                             }
                         </div>
                     </div>
@@ -315,16 +342,16 @@ Layout = "_Layout";
             </div>
         </div>
         <div class="col-md-3">
-            <a class="btn btn-block btn-round btn-primary" href="/tests/analytics/">
+            <a class="btn btn-block btn-round btn-primary" asp-action="Analytics" asp-controller="Test">
                 <span class="bi bi-bar-chart-line mr-2"></span>
                 Kết quả luyện thi
             </a>
-            <br/>
+            <br />
             <div class="user-target-info-box">
                 <div class="user-target-user">
                     <div>
                         <span class="account-profile-img md">
-                            <img src="@ViewBag.UserImage" alt="User Profile Image"/>
+                            <img src="@ViewBag.UserImage" alt="User Profile Image" />
                         </span>
                     </div>
                     <div class="text-center" style="font-weight: 600">
@@ -338,24 +365,24 @@ Layout = "_Layout";
                     </div>
                     <table class="user-target-info-table table table-borderless table-sm table-xs mb-0">
                         <tbody>
-                        <tr class="user-target-text-sm">
-                            <td>Ngày dự thi:</td>
-                            <td>
-                                <span class="user-target-text-value">09/09/2024</span>
-                            </td>
-                        </tr>
-                        <tr class="user-target-text-sm">
-                            <td>Tới kỳ thi:</td>
-                            <td>
-                                <span class="user-target-text-value">0 ngày</span>
-                            </td>
-                        </tr>
-                        <tr class="user-target-text-sm">
-                            <td>Điểm mục tiêu:</td>
-                            <td>
-                                <span class="user-target-text-value">850</span>
-                            </td>
-                        </tr>
+                            <tr class="user-target-text-sm">
+                                <td>Ngày dự thi:</td>
+                                <td>
+                                    <span class="user-target-text-value">09/09/2024</span>
+                                </td>
+                            </tr>
+                            <tr class="user-target-text-sm">
+                                <td>Tới kỳ thi:</td>
+                                <td>
+                                    <span class="user-target-text-value">0 ngày</span>
+                                </td>
+                            </tr>
+                            <tr class="user-target-text-sm">
+                                <td>Điểm mục tiêu:</td>
+                                <td>
+                                    <span class="user-target-text-value">850</span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -369,7 +396,3 @@ Layout = "_Layout";
 @section scripts {
     <script src="~/js/test_result.js" asp-append-version="true"></script>
 }
-
-
-
-
