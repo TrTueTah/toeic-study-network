@@ -95,7 +95,6 @@ namespace ToeicStudyNetwork.Controllers
         public IActionResult SignIn()
         {
             var token = Request.Cookies["token"];
-            Console.WriteLine(token);
             if (!string.IsNullOrEmpty(token))
             {
                 if (IsTokenExpired(token))
@@ -115,7 +114,6 @@ namespace ToeicStudyNetwork.Controllers
         public IActionResult SignUp()
         {
             var token = Request.Cookies["token"];
-            Console.WriteLine(token);
             if (!string.IsNullOrEmpty(token))
             {
                 if (IsTokenExpired(token))
