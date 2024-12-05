@@ -13,4 +13,5 @@ public interface IUserRepository
     User CreateUser(User user);
     string HashPassword(string password);
     string GetUserIdByEmail(string email);
+    User UpdateUser(User user);
 }

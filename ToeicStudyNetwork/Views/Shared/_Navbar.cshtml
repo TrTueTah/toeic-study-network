@@ -62,7 +62,6 @@
 
     document.addEventListener("DOMContentLoaded", function () {
         let token = getCookie("token");
-        console.log(token);
         if (token && !isTokenExpired(token)) {
             const decodedToken = jwt_decode(token);
             const givenName = decodedToken.given_name || "User";
@@ -72,7 +71,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><h6 class="dropdown-header fw-bold text-dark">${givenName}</h6></li>
-                    <li><button class="dropdown-item" type="button">Hồ sơ chi tiết</button></li>
+                    <li><a class="dropdown-item" type="button" href="/Personal">Hồ sơ chi tiết</a></li>
                     <li><button class="dropdown-item text-danger" type="button" onclick="logout()">Đăng xuất</button></li>
                 </ul>
             `;

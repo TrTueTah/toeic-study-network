@@ -68,26 +68,35 @@
                 <span class="total-text">88</span>
             </div>
         </div>
-        <div class="media-content me-4 pe-2">
-            <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
-                asp-action="CreateComment">
-                <div class="d-flex flex-row">
-                    <img src="@Model.User.ImageUrl" alt="Avatar"
-                        style="width: 40px; height: 40px; border-radius: 100%; margin-right: 8px;" />
-                    <textarea id="commentContent" class="form-control" rows="2"
-                        placeholder="Add a comment..."></textarea>
-                </div>
-                <div id="image-holder" class="ms-5 mt-2">
+        @if (@Model.User.Username == null)
+        {
+            <div class="d-flex justify-content-center p-4">
+                <span class="text-secondary">Please login to comment</span>
+            </div>
+        }
+        else
+        {
+            <div class="media-content me-4 pe-2">
+                <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
+                    asp-action="CreateComment">
+                    <div class="d-flex flex-row">
+                        <img src="@Model.User.ImageUrl" alt="Avatar"
+                            style="width: 40px; height: 40px; border-radius: 100%; margin-right: 8px;" />
+                        <textarea id="commentContent" class="form-control" rows="2"
+                            placeholder="Add a comment..."></textarea>
+                    </div>
+                    <div id="image-holder" class="ms-5 mt-2">
 
-                </div>
-                <div class="d-flex justify-content-end">
-                    <button type="button" class="btn-action" id="upload-image-button">
-                        <i class="bi bi-images"></i>
-                    </button>
-                    <button type="submit" class="btn btn-primary mt-2 ">Post Comment</button>
-                </div>
-            </form>
-        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn-action" id="upload-image-button">
+                            <i class="bi bi-images"></i>
+                        </button>
+                        <button type="submit" class="btn btn-primary mt-2 ">Post Comment</button>
+                    </div>
+                </form>
+            </div>
+        }
         <div>
             <div class="media-comments">
                 @if (Model.Post.Comments != null && Model.Post.Comments.Count > 0)
@@ -199,11 +208,16 @@
 
                     // Cập nhật số lượt thích
                     const totalLikesSpan = container.querySelector(".total-text");
-                    const totalLikes = await response.json(); // Giả sử API trả về tổng số lượt thích
+                    let totalLikes = parseInt(totalLikesSpan.textContent);
+                    if (!isLiked) {
+                        totalLikes++;
+                    } else {
+                        totalLikes--;
+                    }
                     totalLikesSpan.textContent = totalLikes;
                 } else {
                     console.error("Không thể cập nhật trạng thái thích.");
-                    alert("Có lỗi xảy ra, vui lòng thử lại.");
+                    alert("Hãy đăng nhập để tương tác với bài viết");
                 }
             } catch (error) {
                 console.error("Lỗi kết nối:", error);
