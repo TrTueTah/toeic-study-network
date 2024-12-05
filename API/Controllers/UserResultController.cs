@@ -91,4 +91,22 @@ public class UserResultController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
     }
+    
+    [HttpGet("getQuestionDetailResult/{detailResultId}")]
+    [ProducesResponseType(typeof(QuestionDetailResultDto), 200)]
+
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public ActionResult<QuestionDetailResultDto> GetQuestionDetailResult(string detailResultId)
+    {
+        try
+        {
+            var result = _userResultRepository.GetQuestionDetailResult(detailResultId);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 }
