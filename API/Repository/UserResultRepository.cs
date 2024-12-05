@@ -177,8 +177,7 @@ public class UserResultRepository : IUserResultRepository
         var incorrectCount = 200 - userResult.CorrectAnswerAmount;
 
         var exam = _context.Exams
-            .Where(ex => ex.Id == userResult.ExamId)
-            .FirstOrDefault();
+            .FirstOrDefault(ex => ex.Id == userResult.ExamId);
         
         var resultDto = new UserResultDto
         {
@@ -220,8 +219,7 @@ public class UserResultRepository : IUserResultRepository
     public QuestionDetailResultDto GetQuestionDetailResult(string detailResultId)
     {
         var detailResult = _context.DetailResults
-            .Where(ur => ur.DetailResultId == detailResultId)
-            .FirstOrDefault();
+            .FirstOrDefault(ur => ur.DetailResultId == detailResultId);
         
         if (detailResult == null)
         {
@@ -229,8 +227,7 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var userResult = _context.UserResults
-            .Where(ur => ur.UserResultId == detailResult.UserResultId)
-            .FirstOrDefault();
+            .FirstOrDefault(ur => ur.UserResultId == detailResult.UserResultId);
         
         if (userResult == null)
         {
@@ -238,8 +235,7 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var exam = _context.Exams
-            .Where(ex => ex.Id == userResult.ExamId)
-            .FirstOrDefault();
+            .FirstOrDefault(ex => ex.Id == userResult.ExamId);
         
         if (exam == null)
         {
@@ -247,8 +243,7 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var question = _context.Questions
-            .Where(q => q.QuestionNumber == detailResult.QuestionNumber && q.Group.ExamId == exam.Id)
-            .FirstOrDefault();
+            .FirstOrDefault(q => q.QuestionNumber == detailResult.QuestionNumber && q.Group.ExamId == exam.Id);
 
         if (question == null)
         {
@@ -256,8 +251,7 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var questionGroup = _context.QuestionGroups
-            .Where(qg => qg.Id == question.GroupId)
-            .FirstOrDefault();
+            .FirstOrDefault(qg => qg.Id == question.GroupId);
 
         if (questionGroup == null)
         {
@@ -280,6 +274,104 @@ public class UserResultRepository : IUserResultRepository
             QuestionNumber = question.QuestionNumber,
             ImageFilesUrl = questionGroup.ImageFilesUrl,
             AudioFilesUrl = questionGroup.AudioFilesUrl,
+        };
+
+        return resultDto;
+    }
+
+    public AnalysisUserResultDto GetAnalysisUserResult(string userId, string timeRange)
+    {
+        DateTime filterDate = DateTime.UtcNow;
+
+        switch (timeRange.ToLower())
+        {
+            case "today":
+                filterDate = DateTime.UtcNow.Date;
+                break;
+            case "3days":
+                filterDate = DateTime.UtcNow.AddDays(-3);
+                break;
+            case "7days":
+                filterDate = DateTime.UtcNow.AddDays(-7);
+                break;
+            case "1month":
+                filterDate = DateTime.UtcNow.AddMonths(-1);
+                break;
+            case "6months":
+                filterDate = DateTime.UtcNow.AddMonths(-6);
+                break;
+            case "1year":
+                filterDate = DateTime.UtcNow.AddYears(-1);
+                break;
+            default:
+                filterDate = DateTime.MinValue;
+                break;
+        }
+        
+        var userResults = _context.UserResults
+            .Where(ur => ur.UserId == userId && ur.CreatedAt >= filterDate)
+            .Include(ur => ur.DetailResults)
+            .ToList();
+        
+        var totalTimeTakenList = userResults
+            .Select(ur => ur.TimeTaken)
+            .ToList();
+        
+        var totalTime = totalTimeTakenList.Count > 0 
+            ? totalTimeTakenList.Sum()
+            : 0;
+        
+        var averageTime = totalTimeTakenList.Count > 0 
+            ? totalTimeTakenList.Average() 
+            : 0;
+
+        var totalScoreList = userResults
+            .Select(ur => ur.Score)
+            .ToList();
+
+        var averageScore = totalScoreList.Count > 0
+            ? Math.Round(totalScoreList.Average() / 5.0) * 5
+            : 0;
+        
+        var maxScore = totalScoreList.Count > 0 
+            ? totalScoreList.Max() 
+            : 0;
+        
+        var totalReadingScore = userResults
+            .Select(ur => ur.ReadingScore)
+            .ToList();
+        
+        var averageReadingScore = totalReadingScore.Count > 0
+            ? Math.Round(totalReadingScore.Average() / 5.0) * 5
+            : 0;
+        
+        var maxReadingScore = totalReadingScore.Count > 0 
+            ? totalReadingScore.Max() 
+            : 0;
+            
+        var totalListeningScore = userResults
+        .Select(ur => ur.ListeningScore)
+        .ToList();
+        
+        var averageListeningScore = totalListeningScore.Count > 0
+            ? Math.Round(totalListeningScore.Average() / 5.0) * 5
+            : 0;
+        
+        var maxLísteningScore = totalListeningScore.Count > 0 
+            ? totalListeningScore.Max() 
+            : 0;
+        
+        var resultDto = new AnalysisUserResultDto()
+        {
+            TotalExamTaken = userResults.Count,
+            TotalTimeTaken = totalTime,
+            AverageTimeTaken = averageTime,
+            AverageScore = averageScore,
+            AverageReadingScore = averageReadingScore,
+            AverageListeningScore = averageListeningScore,
+            HighestScore = maxScore,
+            HighestListeningScore = maxLísteningScore,
+            HighestReadingScore = maxReadingScore,
         };
 
         return resultDto;
