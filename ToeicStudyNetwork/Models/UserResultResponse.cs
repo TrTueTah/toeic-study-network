@@ -10,4 +10,6 @@ public class UserResultResponse
     public float TimeTaken { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? Type { get; set; }
+    public List<DetailResultModel> DetailResults { get; set; }
+
 }

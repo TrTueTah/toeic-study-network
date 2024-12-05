@@ -24,7 +24,7 @@ Layout = "_Layout";
                             <div class="result-stats-item">
                                 <span class="result-stats-icon bi bi-check-lg"></span>
                                 <span class="result-stats-label">Kết quả làm bài</span>
-                                <span class="result-stats-text">0/200</span>
+                                <span class="result-stats-text">@Model.CorrectAnswerAmount/200</span>
                             </div>
                             <br>
                             <div class="result-stats-item">
@@ -36,7 +36,7 @@ Layout = "_Layout";
                             <div class="result-stats-item">
                                 <span class="result-stats-icon bi bi-clock"></span>
                                 <span class="result-stats-label">Thời gian hoàn thành</span>
-                                <span class="result-stats-text">0:00:06</span>
+                                <span class="result-stats-text">@Model.TimeTaken</span>
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,6 @@ Layout = "_Layout";
                             </div>
                         </div>
                         <div class="row">
-
                             <div class="col">
                                 <div class="result-score-box">
                                     <div class="result-score-icontext text-score">Listening</div>
@@ -102,472 +101,220 @@ Layout = "_Layout";
                     <br/>
                     <h5 id="part-1">Part 1</h5>
                     <div class="result-answers-list">
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>1</strong></span>
-                            <span>
-                                <span class="text-answerkey">A</span>:
-                                <i class="mr-1">A</i>
-                                <span class="text-correct bi bi-check-lg"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>2</strong></span>
-                            <span>
-                                <span class="text-answerkey">A</span>:
-                                <i class="mr-1">A</i>
-                                <span class="text-correct bi bi-check-lg"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8593/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-                        
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>3</strong></span>
-                            <span>
-                                <span class="text-answerkey">A</span>:
-                                <i class="mr-1">A</i>
-                                <span class="text-correct bi bi-check-lg"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8594/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-                        
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>4</strong></span>
-                            <span>
-                            
-                                <span class="text-answerkey">B</span>:
-                                <i class="text-line-through mr-1">A</i>
-                                <span class="text-wrong bi bi-x"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8595/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-                        
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>5</strong></span>
-                            <span>
-                                <span class="text-answerkey">A</span>:
-                                <i class="mr-1">A</i>
-                                <span class="text-correct bi bi-check-lg"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8596/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-
-                        <div class="result-answers-item">
-                            <span class="question-number"><strong>6</strong></span>
-                            <span>
-                                <span class="text-answerkey">D</span>:
-                                <i class="text-line-through mr-1">A</i>
-                                <span class="text-wrong bi bi-x"></span>
-                            </span>
-                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8597/?view=embed" href="#">[Chi tiết]</a>
-                        </div>
-                    </div>
-                    <h5 id="part-2">Part 2</h5>
-                    <div class="result-answers-list">
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>7</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8598/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>8</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8599/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>9</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8600/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>10</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8601/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>11</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8602/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>12</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8603/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>13</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8604/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>14</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8605/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>15</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8606/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>16</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8607/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>17</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8608/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>18</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8609/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>19</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8610/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>20</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8611/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>21</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8612/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>22</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8613/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>23</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8614/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>24</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8615/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>25</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8616/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>26</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8617/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>27</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8618/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>28</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8619/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>29</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">B</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8620/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>30</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">C</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8621/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
-
-                    <div class="result-answers-item">
-                        <span class="question-number"><strong>31</strong></span>
-                        <span>
-                            
-                            <span class="text-answerkey">A</span>:
-                            
-
-                            
-                            <i class="mr-1">chưa trả lời</i>
-                            <span class="text-unanswer bi bi-dash"></span>
-                            
-                        </span>
-                        <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8622/?view=embed" href="#">[Chi tiết]</a>
-                    </div>
-
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 1 && q.QuestionNumber <= 6))
+                        {
+                            <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                                <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                    @if (@item.IsCorrect)
+                                    {
+                                        <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                    }
+                                    else if (@item.UserAnswer == null)
+                                    { 
+                                        <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                    }
+                                    else
+                                    {
+                                        <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                    }
+                                </span>
+                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                            </div>
+                        }
                     </div>
                     <br/>
+                    <h5 id="part-2">Part 2</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 7 && q.QuestionNumber <= 31))
+                        {
+                            <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                                <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                    @if (@item.IsCorrect)
+                                    {
+                                        <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                    }
+                                    else if (@item.UserAnswer == null)
+                                    {
+                                        <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                    }
+                                    else
+                                    {
+                                        <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                    }
+                                </span>
+                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                            </div>
+                        }
+                    </div>
+                    <br/>
+                    <h5 id="part-3">Part 3</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 32 && q.QuestionNumber <= 70))
+                        {
+                        <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                            <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                @if (@item.IsCorrect)
+                                {
+                                <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                }
+                                else if (@item.UserAnswer == null)
+                                {
+                                <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                }
+                                else
+                                {
+                                <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                }
+                                </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        }
+                    </div>
+                    <br/>
+                    <h5 id="part-4">Part 4</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 71 && q.QuestionNumber <= 100))
+                        {
+                            <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                                <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                    @if (@item.IsCorrect)
+                                    {
+                                        <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                    }
+                                    else if (@item.UserAnswer == null)
+                                    {
+                                        <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                    }
+                                    else
+                                    {
+                                        <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                    }
+                                </span>
+                                <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                            </div>
+                        }
+                    </div>
+                    <br/>
+                    <h5 id="part-5">Part 5</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 101 && q.QuestionNumber <= 130))
+                        {
+                        <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                            <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                @if (@item.IsCorrect)
+                                {
+                                <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                }
+                                else if (@item.UserAnswer == null)
+                                {
+                                <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                }
+                                else
+                                {
+                                <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                }
+                                </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        }
+                    </div>
+                    <br/>
+                    <h5 id="part-6">Part 6</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 131 && q.QuestionNumber <= 146))
+                        {
+                        <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                            <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                @if (@item.IsCorrect)
+                                {
+                                <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                }
+                                else if (@item.UserAnswer == null)
+                                {
+                                <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                }
+                                else
+                                {
+                                <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                }
+                                </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        }
+                    </div>
+                    <br/>
+                    <h5 id="part-7">Part 7</h5>
+                    <div class="result-answers-list">
+                        @foreach (var item in @Model.DetailResults.Where(q => q.QuestionNumber >= 147 && q.QuestionNumber <= 200))
+                        {
+                        <div class="result-answers-item">
+                                <span class="question-number">
+                                    <strong>@item.QuestionNumber</strong>
+                                </span>
+                            <span>
+                                    <span class="text-answerkey">@item.CorrectAnswer</span>:
+                                @if (@item.IsCorrect)
+                                {
+                                <i class="mr-1">@item.UserAnswer</i>
+                                        <span class="text-correct bi bi-check-lg"></span>
+                                }
+                                else if (@item.UserAnswer == null)
+                                {
+                                <i class="mr-1">chưa trả lời</i>
+                                        <span class="text-unanswer bi bi-dash"></span>
+                                }
+                                else
+                                {
+                                <i class="text-line-through mr-1">@item.UserAnswer</i>
+                                        <span class="text-wrong bi bi-x"></span>
+                                }
+                                </span>
+                            <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal" onclick="window.load_jqiframe(this, '#result-modal-content');" data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                        </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -624,7 +371,7 @@ Layout = "_Layout";
 
 
 @section scripts {
-<script src="~/js/test_result.js" asp-append-version="true"></script>
+    <script src="~/js/test_result.js" asp-append-version="true"></script>
 }
 
 
