@@ -13,7 +13,12 @@ public class TestController : Controller
     {
         _httpClient = httpClient;
     }
-    
+
+    [HttpGet("Analytics")]
+    public IActionResult Analytics()
+    {
+        return View();
+    }
     // GET
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -32,7 +37,7 @@ public class TestController : Controller
 
         return View(examSeries);
     }
-    
+
     [NonAction]
     private async Task<List<ExamModel>> FetchExamsAsync()
     {
@@ -44,7 +49,7 @@ public class TestController : Controller
 
         return exams;
     }
-    
+
     [NonAction]
     private async Task<ExamModel> FetchExamAsync(string id)
     {
@@ -56,7 +61,7 @@ public class TestController : Controller
 
         return exam;
     }
-    
+
     [NonAction]
     public async Task<List<QuestionModel>> FetchQuestionsAsync(string id)
     {
@@ -80,7 +85,7 @@ public class TestController : Controller
     public async Task<IActionResult> StartExam(string id)
     {
         var exam = await FetchExamAsync(id);
-    
+
         TakeTestModel takeTestModel = new()
         {
             Id = exam.Id,
@@ -151,13 +156,13 @@ public class TestController : Controller
             _ => PartialView("_PracticeTab")
         };
     }
-    
+
 
     [HttpGet("{examId}/result/{resultId}")]
     public async Task<IActionResult> Result(string examId, string resultId)
     {
         var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResult/{resultId}");
-        
+
         if (!response.IsSuccessStatusCode)
         {
             return BadRequest("Failed to fetch result data.");
