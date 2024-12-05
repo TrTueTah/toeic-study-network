@@ -166,10 +166,10 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var readingCorrect = userResult.DetailResults
-            .Count(dr => dr.QuestionNumber <= 100 && dr.IsCorrect);
+            .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
 
         var listeningCorrect = userResult.DetailResults
-            .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
+            .Count(dr => dr.QuestionNumber <= 100 && dr.IsCorrect);
 
         var unansweredCount = userResult.DetailResults
             .Count(dr => string.IsNullOrEmpty(dr.UserAnswer));
@@ -215,5 +215,73 @@ public class UserResultRepository : IUserResultRepository
         return _context.UserResults
             .Where(ur => ur.UserId == userId)
             .ToList();
+    }
+
+    public QuestionDetailResultDto GetQuestionDetailResult(string detailResultId)
+    {
+        var detailResult = _context.DetailResults
+            .Where(ur => ur.DetailResultId == detailResultId)
+            .FirstOrDefault();
+        
+        if (detailResult == null)
+        {
+            throw new Exception("Detail result not found");
+        }
+        
+        var userResult = _context.UserResults
+            .Where(ur => ur.UserResultId == detailResult.UserResultId)
+            .FirstOrDefault();
+        
+        if (userResult == null)
+        {
+            throw new Exception("User result not found");
+        }
+        
+        var exam = _context.Exams
+            .Where(ex => ex.Id == userResult.ExamId)
+            .FirstOrDefault();
+        
+        if (exam == null)
+        {
+            throw new Exception("Exam not found");
+        }
+        
+        var question = _context.Questions
+            .Where(q => q.QuestionNumber == detailResult.QuestionNumber && q.Group.ExamId == exam.Id)
+            .FirstOrDefault();
+
+        if (question == null)
+        {
+            throw new Exception("Question not found");
+        }
+        
+        var questionGroup = _context.QuestionGroups
+            .Where(qg => qg.Id == question.GroupId)
+            .FirstOrDefault();
+
+        if (questionGroup == null)
+        {
+            throw new Exception("Question group not found");
+        }
+
+        
+        var resultDto = new QuestionDetailResultDto()
+        {
+            DetailResultId = detailResultId,
+            ExamName = exam.Title,
+            UserAnswer = detailResult.UserAnswer,
+            IsCorrect = detailResult.IsCorrect,
+            Title = question.Title,
+            AnswerA = question.AnswerA,
+            AnswerB = question.AnswerB,
+            AnswerC = question.AnswerC,
+            AnswerD =  question.AnswerD,
+            CorrectAnswer = question.CorrectAnswer,
+            QuestionNumber = question.QuestionNumber,
+            ImageFilesUrl = questionGroup.ImageFilesUrl,
+            AudioFilesUrl = questionGroup.AudioFilesUrl,
+        };
+
+        return resultDto;
     }
 }
