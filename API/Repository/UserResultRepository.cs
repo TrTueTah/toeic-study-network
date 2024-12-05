@@ -176,11 +176,16 @@ public class UserResultRepository : IUserResultRepository
 
         var incorrectCount = 200 - userResult.CorrectAnswerAmount;
 
+        var exam = _context.Exams
+            .Where(ex => ex.Id == userResult.ExamId)
+            .FirstOrDefault();
+        
         var resultDto = new UserResultDto
         {
             UserResultId = userResult.UserResultId,
             UserId = userResult.UserId,
             ExamId = userResult.ExamId,
+            ExamName = exam.Title,
             Score = userResult.Score,
             ReadingScore = userResult.ReadingScore,
             ListeningScore = userResult.ListeningScore,
