@@ -9,5 +9,6 @@ namespace ToeicStudyNetwork.Models
     {
         public List<PostModel> Posts { get; set; }
         public UserModel User { get; set; }
+        public string Type { get; set; }
     }
 }

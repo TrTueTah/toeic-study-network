@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 
 namespace ToeicStudyNetwork.Controllers
 {
+    [Route("[controller]")]
     public class ForumController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,13 +22,29 @@ namespace ToeicStudyNetwork.Controllers
             _logger = logger;
         }
 
-        // GET
+        [HttpGet("Newest")]
         public async Task<IActionResult> Index()
         {
-            var posts = await FetchPostsAsync();
-            return View(posts);
+            var forumModel = await FetchPostsAsync();
+            forumModel.Posts.OrderByDescending(post => post.CreatedAt).ToList();
+            forumModel.Type = "Newest";
+            return View("Index", forumModel);
         }
+        [HttpGet("Favourite")]
+        public async Task<IActionResult> SortByLike()
+        {
+            var forumModel = await FetchPostsAsync();
 
+            var handler = new JwtSecurityTokenHandler();
+            var userId = Request.Cookies["userId"];
+
+            var likedPosts = forumModel.Posts.Where(post => post.Likes.Any(like => like.UserId == userId)).ToList();
+            forumModel.Posts = likedPosts;
+            forumModel.Type = "Favourite";
+
+            return View("Index", forumModel);
+        }
+        [NonAction]
         private async Task<ForumModel> FetchPostsAsync()
         {
             var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
@@ -69,6 +86,7 @@ namespace ToeicStudyNetwork.Controllers
 
             return forumModel;
         }
+        [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] string content, [FromForm] List<IFormFile> files)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -119,6 +137,7 @@ namespace ToeicStudyNetwork.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost("CreateComment")]
         public async Task<IActionResult> CreateComment([FromForm] string content, [FromForm] List<IFormFile> files, [FromForm] string postId)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -169,7 +188,7 @@ namespace ToeicStudyNetwork.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
+        [HttpPost("ToggleLike")]
         public async Task<IActionResult> ToggleLike([FromBody] ToggleLikeRequest request)
         {
             if (request == null || string.IsNullOrEmpty(request.PostId))
