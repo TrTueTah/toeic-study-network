@@ -109,4 +109,22 @@ public class UserResultController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
     }
+
+    [HttpGet("getAnalysisUserResult/{userId}/{timeRange}")]
+    [ProducesResponseType(typeof(AnalysisUserResultDto), 200)]
+
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public ActionResult<AnalysisUserResultDto> GetAnalysisUserResult(string userId, string timeRange)
+    {
+        try
+        {
+            var result = _userResultRepository.GetAnalysisUserResult(userId, timeRange);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 }
