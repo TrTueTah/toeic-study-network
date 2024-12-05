@@ -40,6 +40,8 @@ public class UserResultController : ControllerBase
                     userId = result.UserId,
                     examId = result.ExamId,
                     score = result.Score,
+                    readingScore = result.ReadingScore,
+                    listeningScore = result.ListeningScore,
                     correctAnswerAmount = result.CorrectAnswerAmount,
                     type = result.Type,
                     timeTaken = result.TimeTaken,

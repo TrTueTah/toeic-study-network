@@ -83,12 +83,16 @@ public class UserResultRepository : IUserResultRepository
         }
         
         int totalScore = CalculateToeicScore(readingCorrect, listeningCorrect);
+        int ReadingScore = GetReadingScore(readingCorrect);
+        int ListeningScore = GetListeningScore(readingCorrect);
         
         var userResult = new UserResult
         {
             UserId = submission.UserId,
             ExamId = submission.ExamId,
             Score = totalScore,
+            ReadingScore = ReadingScore,
+            ListeningScore = ListeningScore,
             TimeTaken = submission.TimeTaken,
             CorrectAnswerAmount = readingCorrect + listeningCorrect,
             Type = submission.Type,
@@ -115,6 +119,14 @@ public class UserResultRepository : IUserResultRepository
 
     private int CalculateToeicScore(int readingCorrect, int listeningCorrect)
     {
+        int readingScore = GetReadingScore(readingCorrect);
+        int listeningScore = GetListeningScore(listeningCorrect);
+        
+        return readingScore + listeningScore;
+    }
+
+    private int GetReadingScore(int readingCorrect)
+    {
         var scoreConfig = LoadToeicScores();
         
         int readingScore = scoreConfig.ReadingScores
@@ -122,12 +134,19 @@ public class UserResultRepository : IUserResultRepository
             .OrderByDescending(x => x.Score)
             .FirstOrDefault()?.Points ?? 0;
         
+        return readingScore;
+    }
+
+    private int GetListeningScore(int listeningCorrect)
+    {
+        var scoreConfig = LoadToeicScores();
+        
         int listeningScore = scoreConfig.ListeningScores
             .Where(x => x.Score <= listeningCorrect)
             .OrderByDescending(x => x.Score)
             .FirstOrDefault()?.Points ?? 0;
-
-        return readingScore + listeningScore;
+        
+        return listeningScore;
     }
     
     private bool SaveChanges()
@@ -145,6 +164,17 @@ public class UserResultRepository : IUserResultRepository
         {
             throw new Exception("User result not found.");
         }
+        
+        var readingCorrect = userResult.DetailResults
+            .Count(dr => dr.QuestionNumber <= 100 && dr.IsCorrect);
+
+        var listeningCorrect = userResult.DetailResults
+            .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
+
+        var unansweredCount = userResult.DetailResults
+            .Count(dr => string.IsNullOrEmpty(dr.UserAnswer));
+
+        var incorrectCount = 200 - userResult.CorrectAnswerAmount;
 
         var resultDto = new UserResultDto
         {
@@ -152,8 +182,14 @@ public class UserResultRepository : IUserResultRepository
             UserId = userResult.UserId,
             ExamId = userResult.ExamId,
             Score = userResult.Score,
+            ReadingScore = userResult.ReadingScore,
+            ListeningScore = userResult.ListeningScore,
+            ReadingCorrectAnswerAmount = readingCorrect,
+            ListeningCorrectAnswerAmount = listeningCorrect,
             Type = userResult.Type,
             CorrectAnswerAmount = userResult.CorrectAnswerAmount,
+            IncorrectAnswerAmount = incorrectCount,
+            WithoutAnswerAmount = unansweredCount,
             TimeTaken = userResult.TimeTaken,
             DetailResults = userResult.DetailResults
                 .OrderBy(dr => dr.QuestionNumber)

@@ -6,6 +6,8 @@ public class UserResult
     public string? UserId { get; set; }
     public string? ExamId { get; set; }
     public int Score { get; set; }
+    public int ReadingScore { get; set; }
+    public int ListeningScore { get; set; }
     public int CorrectAnswerAmount { get; set; }
     public float TimeTaken { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
