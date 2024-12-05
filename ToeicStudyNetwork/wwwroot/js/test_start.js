@@ -143,9 +143,9 @@ function initializeSubmitTest() {
 
       const examId = document.getElementById("exam-id").value;
       const timeTaken = Math.floor(parseFloat(document.getElementById('timeleft').getAttribute('data-totaltime')));
-
+      const userId = Cookies.get('userId')
       const requestData = {
-        userId: 'ee74d453-9307-4c91-8031-ddb934b9313d',
+        userId: userId,
         examId: examId,
         timeTaken: timeTaken,
         type: 'Full Test',

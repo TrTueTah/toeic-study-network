@@ -164,8 +164,10 @@ public class TestController : Controller
         }
 
         var resultData = JsonConvert.DeserializeObject<UserResultResponse>(await response.Content.ReadAsStringAsync());
-
+        var userImage = Request.Cookies["userImage"];
+        var username = Request.Cookies["given_name"];
+        ViewBag.UserImage = userImage;
+        ViewBag.Username = username;
         return View("Result", resultData);
     }
-
 }
