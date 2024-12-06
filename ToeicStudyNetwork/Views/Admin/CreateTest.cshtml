@@ -1,3 +1,5 @@
+@model ToeicStudyNetwork.Models.ExamModel
+
 @{
 ViewBag.Title = "Tạo Đề Thi TOEIC";
 Layout = "_LayoutAdmin";
@@ -10,7 +12,7 @@ Layout = "_LayoutAdmin";
 }
 
 <div class="container-fluid d-flex gap-2 p-4">
-    <div class="main-container p-3">
+    <div class="main-container p-3" id="upload-question-section">
         <div id="test-builder-scrollable" class="scrollable-container">
             <div id="test-info-section" class="section">
                 <div class="section-header">TEST INFORMATION</div>
@@ -18,7 +20,8 @@ Layout = "_LayoutAdmin";
                 <div>
                     <div class="section-content-container">
                         <div class="d-flex flex-column">
-                            <b id="test-info-title"></b>
+                            <b id="test-info-title">@Model.Title</b>
+                            <div id="test-info-id" class="d-none">@Model.Id</div>
                             <span id="test-info-description"></span>
                         </div>
                     </div>
@@ -32,13 +35,37 @@ Layout = "_LayoutAdmin";
             </div>
         </div>
     </div>
+
+    <div class="main-container p-3 d-none" id="upload-image-section">
+        <div class="scrollable-container">
+            <div id="upload-image-test-question-section"  class="section edit-mode">
+                <div class="section-header">UPLOAD IMAGE SECTION</div>
+                <div class="section-divider"></div>
+                <div class="d-flex gap-2">
+                    <div id="upload-image-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-container p-3 d-none" id="upload-audio-section">
+        <div class="scrollable-container">
+            <div id="upload-audio-test-question-section" class="section edit-mode">
+                <div class="section-header">UPLOAD AUDIO SECTION</div>
+                <div class="section-divider"></div>
+                <div class="d-flex gap-2">
+                    <div id="upload-audio-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="sub-container p-2">
         <button class="btn btn-outline-primary btn-block mb-3" id="import-button">
             Import
         </button>
         <input type="file" id="file-input" accept=".txt" style="display:none;" />
 
-        <div class="test-questions-list">
+        <div class="test-questions-list" id="test-question-list">
             <div class="test-questions-list-part">
                 <div class="test-questions-list-wrapper">
                 </div>
@@ -49,7 +76,19 @@ Layout = "_LayoutAdmin";
                 <i class="fa fa-edit"></i>
                 <span>Edit</span>
             </button>
-            <button class="button save-button" type="button" onclick="saveQuestions()">
+            <button class="button preview-button" id="preview-question-button" type="button" onclick="previewQuestions()">
+                <i class="bi bi-eye-fill"></i>
+                <span>Preview</span>
+            </button>
+            <button class="button next-button" type="button" id="next-page-button">
+                <span>Move to next page</span>
+                <i class="fa fa-arrow-right"></i>
+            </button>
+            <button class="button next-button d-none" type="button" id="previous-page-button">
+                <i class="fa fa-arrow-left"></i>
+                <span>Move to previous page</span>
+            </button>
+            <button class="button save-button d-none" type="button" id="save-question-button">
                 <i class="fa fa-save"></i>
                 <span>Save</span>
             </button>
@@ -60,51 +99,46 @@ Layout = "_LayoutAdmin";
 @section scripts {
     <script src="~/js/admin_create_test.js" asp-append-version="true"></script>
     <script>
-   $('#import-button').click(function() {
-    $('#file-input').click();
-});
-   $('#file-input').change(function(event) {
-       var file = event.target.files[0];
-       if (file) {
-           var reader = new FileReader();
-           reader.onload = function(e) {
-               var fileContent = e.target.result;
+       $('#import-button').click(function() {
+        $('#file-input').click();
+        });
+        
+       $('#file-input').change(function(event) {
+           var file = event.target.files[0];
+           if (file) {
+               var reader = new FileReader();
+               reader.onload = function(e) {
+                   var fileContent = e.target.result;
 
-               const questionRegex = /(\d+\..*?)(?=\n\(A\))/s; 
-               const answerRegex = /\(A\)(.*?)\(B\)(.*?)\(C\)(.*?)\(D\)(.*?)(?=\n|\r|\Z)/s; 
-
-               let questionMatch = fileContent.match(questionRegex);
-               let answerMatch = fileContent.match(answerRegex);
-
-               let questionIndex = 0;
-
-               while (questionMatch && answerMatch) {
-                   const questionText = questionMatch[1].trim();
-                   const answers = [
-                       answerMatch[1].trim(),
-                       answerMatch[2].trim(),
-                       answerMatch[3].trim(),
-                       answerMatch[4].trim()
-                   ];
-
-                   $(`#test-question-input-${questionIndex + 1}`).val(questionText); 
-                   $(`#test-answer-input-${questionIndex + 1}`).val(answers.join('\n'));  
-
-                   questionIndex++;
-
-                   fileContent = fileContent.replace(questionMatch[0], ''); 
-                   fileContent = fileContent.replace(answerMatch[0], '');  
-
-                   questionMatch = fileContent.match(questionRegex);
-                   answerMatch = fileContent.match(answerRegex);
-               }
-           };
-           reader.readAsText(file);
-       }
-});
+                   const questionRegex = /(\d+\..*?)(?=\n\(A\))/s;
+                   const answerRegex = /\(A\)(.*?)\(B\)(.*?)\(C\)(.*?)\(D\)(.*?)(?=\n|\r|\Z)/s;
 
 
+                   let questionMatch = fileContent.match(questionRegex);
+                   let answerMatch = fileContent.match(answerRegex);
 
+                   let questionIndex = 1;
 
+                   while (questionMatch && answerMatch) {
+                       const questionText = questionMatch[1].trim();
+
+                       $(`#test-question-input-${questionIndex}`).val(questionText);
+                       $(`#test-answerA-input-${questionIndex}`).val(answerMatch[1].trim() || " ");
+                       $(`#test-answerB-input-${questionIndex}`).val(answerMatch[2].trim() || " ");
+                       $(`#test-answerC-input-${questionIndex}`).val(answerMatch[3].trim() || " ");
+                       $(`#test-answerD-input-${questionIndex}`).val(answerMatch[4].trim() || " ");
+
+                       questionIndex++;
+
+                       fileContent = fileContent.replace(questionMatch[0], '');
+                       fileContent = fileContent.replace(answerMatch[0], '');
+
+                       questionMatch = fileContent.match(questionRegex);
+                       answerMatch = fileContent.match(answerRegex);
+                   }
+               };
+               reader.readAsText(file);
+           }
+    });
     </script>
 }
