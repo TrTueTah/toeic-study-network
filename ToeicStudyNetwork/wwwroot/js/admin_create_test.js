@@ -1,4 +1,3 @@
-let questionCounter = 1;
 let questions = [];
 
 const questionGroups = [
@@ -114,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
       questionElement.id = `test-question-${questionId}`;
       questionElement.className = 'pb-2';
 
-      questions.push({ id: questionId, title: '', description: '' });
+      questions.push({ id: questionId, title: '', description: '', answers: [] });
       
       questionElement.innerHTML = `
         <div class="section-content-container" style="display: none;">
@@ -133,8 +132,30 @@ document.addEventListener('DOMContentLoaded', function () {
             </label>
             <label class="form-label">
               <span for="test-answer-input" class="label-text label-required">Answer options</span>
-              <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard" id="test-answer-input-${questionId}"></textarea>
-            </label>
+              <div class="d-flex flex-column gap-2" id="test-answer-input-${questionId}">
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="A" id="radio-answerA-${questionId}" />
+                      <span>A.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerA-input-${questionId}"></textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="B" id="radio-answerB-${questionId}" />
+                      <span>B.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerB-input-${questionId}"></textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="C" id="radio-answerC-${questionId}" />
+                      <span>C.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerC-input-${questionId}"></textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="D" id="radio-answerD-${questionId}" />
+                      <span>D.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerD-input-${questionId}"></textarea>
+                  </div>
+              </div>
+          </label>
+
           </div>
         </form>
       `;
@@ -155,7 +176,17 @@ document.addEventListener('DOMContentLoaded', function () {
       const qid = this.dataset.qid;
       const targetQuestion = document.getElementById(`test-question-${qid}`);
       if (targetQuestion) {
-        targetQuestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        targetQuestion.scrollIntoView({ behavior: 'smooth', block: "center" });
+      }
+
+      const targetImage = document.getElementById(`upload-question-image-${qid}`);
+      if (targetQuestion) {
+        targetImage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      const targetAudio = document.getElementById(`upload-question-audio-${qid}`);
+      if (targetQuestion) {
+        targetAudio.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     });
   });
@@ -188,18 +219,30 @@ function toggleEditMode(section, isEditMode) {
   }
 }
 
-function saveQuestions() {
+function previewQuestions() {
   questions.forEach((question) => {
     const questionText = document.getElementById(`test-question-input-${question.id}`).value;
-    const optionsText = document.getElementById(`test-answer-input-${question.id}`).value;
+    const optionsAText = document.getElementById(`test-answerA-input-${question.id}`).value;
+    const optionsBText = document.getElementById(`test-answerB-input-${question.id}`).value;
+    const optionsCText = document.getElementById(`test-answerC-input-${question.id}`).value;
+    const optionsDText = document.getElementById(`test-answerD-input-${question.id}`).value;
 
     question.title = questionText;
-    question.description = optionsText;
+    question.description = {
+      A: optionsAText,
+      B: optionsBText,
+      C: optionsCText,
+      D: optionsDText
+    };
 
-    document.getElementById(`test-question-title-${question.id}`).innerText = `${question.id}. ${questionText}`;
-    document.getElementById(`test-answer-options-${question.id}`).innerHTML = optionsText.split('\n').map((option, index) => {
-      return `<li>(${String.fromCharCode(65 + index)}) ${option}</li>`;
-    }).join('');
+    const optionsHtml = [];
+    if (optionsAText) optionsHtml.push(`<li>(A) ${optionsAText}</li>`);
+    if (optionsBText) optionsHtml.push(`<li>(B) ${optionsBText}</li>`);
+    if (optionsCText) optionsHtml.push(`<li>(C) ${optionsCText}</li>`);
+    if (optionsDText) optionsHtml.push(`<li>(D) ${optionsDText}</li>`);
+
+    document.getElementById(`test-question-title-${question.id}`).innerText = `${questionText}`;
+    document.getElementById(`test-answer-options-${question.id}`).innerHTML = optionsHtml.join('');
 
     const questionSection = document.getElementById(`test-question-${question.id}`);
     toggleEditMode(questionSection, false);
@@ -209,112 +252,56 @@ function saveQuestions() {
   toggleEditMode(testQuestionSection, false);
 }
 
-function deleteQuestion(event, id) {
-  event.preventDefault();
+function collectQuestionData() {
+  return questionGroups.map(group => {
+    return group.questions.map(questionId => {
+      const questionTitle = document.getElementById(`test-question-input-${questionId}`).value;
+      const answerA = document.getElementById(`test-answerA-input-${questionId}`).value;
+      const answerB = document.getElementById(`test-answerB-input-${questionId}`).value;
+      const answerC = document.getElementById(`test-answerC-input-${questionId}`).value;
+      const answerD = document.getElementById(`test-answerD-input-${questionId}`).value;
 
-  const questionElement = document.getElementById(`test-question-${id}`);
-  if (questionElement) {
-    questionElement.remove();
-  }
+      // const correctAnswer = [
+      //   'A', 'B', 'C', 'D'
+      // ].find(letter => document.getElementById(`test-answer${letter}-${questionId}`).checked);
 
-  questions = questions.filter(question => question.id !== id);
-
-  const questionListItem = document.getElementById(`test-questions-lisitem-${id}`);
-  if (questionListItem) {
-    questionListItem.remove();
-  }
-
-  const questionList = Array.from(document.getElementById('test-question-list').children);
-
-  questionList.forEach((question, index) => {
-    const newQuestionId = index + 1;
-
-    question.id = `test-question-${newQuestionId}`;
-
-    const inputs = question.querySelectorAll('input, textarea');
-    inputs.forEach(input => {
-      input.id = input.id.replace(/\d+$/, newQuestionId);
+      return {
+        title: questionTitle,
+        answerA: answerA,
+        answerB: answerB,
+        answerC: answerC,
+        answerD: answerD,
+        correctAnswer: "A",
+        questionNumber: questionId
+      };
     });
-
-    const options = question.querySelectorAll('ul');
-    options.forEach(option => {
-      option.id = option.id.replace(/\d+$/, newQuestionId);
-    });
-
-    const titles = question.querySelectorAll('b');
-    titles.forEach(title => {
-      title.id = title.id.replace(/\d+$/, newQuestionId);
-    });
-
-    const listItem = document.getElementById(`test-questions-lisitem-${index + 2}`);
-    if (listItem) {
-      listItem.id = `test-questions-lisitem-${newQuestionId}`;
-      listItem.innerText = newQuestionId;
-    }
-
-    const updatedQuestion = questions.find(q => q.id === (newQuestionId + 1));
-    if (updatedQuestion) {
-      updatedQuestion.id = newQuestionId;
-    }
-
-    const deleteButton = question.querySelector('.button-group-item-delete');
-    if (deleteButton) {
-      deleteButton.setAttribute('onclick', `deleteQuestion(event, ${newQuestionId})`);
-    }
-  });
-
-  questionCounter = questions.length + 1;
+  }).flat();
 }
 
-function addMoreQuestion(e) {
-  e.preventDefault();
+async function saveQuestions() {
+  const examId =  document.getElementById("test-info-id").textContent.trim()
+  const questionsData = collectQuestionData();
 
-  const questionId = questionCounter++;
-
-  const newQuestionElement = document.createElement('div');
-  newQuestionElement.id = `test-question-${questionId}`;
-  newQuestionElement.className = 'py-2';
-  newQuestionElement.style.borderTop = `1px solid #d8d8d8`
-
-  newQuestionElement.innerHTML =
-    `<div id="test-section-container-${questionId}" class="section-content-container" style="display: none;">
-      <div class="d-flex flex-column">
-        <b id="test-question-title-${questionId}"></b>
-        <span>
-                <ul id="test-answer-options-${questionId}" style="padding-left: 1rem; list-style: none"></ul>
-            </span>
-
-      </div>
-    </div>
-  <form class="edit-form" style="display: block;">
-    <div>
-      <div style="position: relative">
-        <label class="form-label" style="width: 350px">
-          <span class="label-text label-required">Question</span>
-          <input type="text" placeholder="Enter question here" required="" class="form-input" id="test-question-input-${questionId}" value="">
-            <span id="error-message-${questionId}" class="error-message" style="color: red; font-size: 12px; display: none;"></span>
-        </label>
-        <label class="form-label">
-          <span class="label-text label-required">Answer options</span>
-          <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="4" wrap="hard" id="test-answer-input-${questionId}"></textarea>
-        </label>
-        <div class="button-group-absolute">
-          <button class="button-group-item button-group-item-delete" onclick="deleteQuestion(event, ${questionId})">
-            <i class="fa fa-trash" style="margin-top: -2px; padding-right: 1px; color: var(--red-500);"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </form>`;
-
-  document.getElementById('test-question-list').appendChild(newQuestionElement);
-
-  const questionListItem =
-    `<span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>`
-  ;
-  document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
-
-  questions.push({ id: questionId, title: '', description: '' });
+  await fetch('http://localhost:5112/api/v1/question/createQuestionList', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json-patch+json',
+    },
+    body: JSON.stringify({
+      examId: examId,
+      questions: questionsData
+    })
+  })
+    .then(response => {
+      console.log(response);
+      if (response.ok) {
+      }
+    })
+    .then(data => {
+    })
+    .catch(error => {
+      console.error('Error submitting questions:', error);
+    });
 }
 
 document.querySelectorAll('.cancel-button').forEach(button => {
@@ -343,18 +330,178 @@ document.getElementById('edit-question-button-1').addEventListener('click', func
   })
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const newTestData = JSON.parse(localStorage.getItem('newTestData'));
-  if (newTestData) {
-    const testTitleElement = document.getElementById('test-info-title');
-    if (testTitleElement) {
-      testTitleElement.textContent = newTestData.title;
+document.getElementById("next-page-button").addEventListener('click', function () {
+  const uploadQuestionSection = document.getElementById("upload-question-section")
+  const uploadImageSection = document.getElementById("upload-image-section")
+  const uploadAudioSection = document.getElementById("upload-audio-section")
+  const previousPageButton = document.getElementById("previous-page-button");
+  const editQuestionButton = document.getElementById("edit-question-button-1");
+  const previewQuestionButton  = document.getElementById("preview-question-button");
+  const saveQuestionButton = document.getElementById("save-question-button");
+  
+  this.classList.add("d-none")
+  previousPageButton.classList.remove("d-none");
+  uploadQuestionSection.classList.add("d-none");
+  uploadImageSection.classList.remove("d-none");
+  uploadAudioSection.classList.remove("d-none");
+  
+  editQuestionButton.classList.add("d-none");
+  previewQuestionButton.classList.add("d-none");
+  saveQuestionButton.classList.remove("d-none");
+})
+
+document.getElementById("previous-page-button").addEventListener('click', function () {
+  const uploadQuestionSection = document.getElementById("upload-question-section")
+  const uploadImageSection = document.getElementById("upload-image-section")
+  const uploadAudioSection = document.getElementById("upload-audio-section")
+  const nextPageButton = document.getElementById("next-page-button");
+  const editQuestionButton = document.getElementById("edit-question-button-1");
+  const previewQuestionButton  = document.getElementById("preview-question-button");
+  const saveQuestionButton = document.getElementById("save-question-button");
+
+  this.classList.add("d-none")
+  nextPageButton.classList.remove("d-none");
+  uploadQuestionSection.classList.remove("d-none");
+  uploadImageSection.classList.add("d-none");
+  uploadAudioSection.classList.add("d-none");
+
+  editQuestionButton.classList.remove("d-none");
+  previewQuestionButton.classList.remove("d-none");
+  saveQuestionButton.classList.add("d-none");
+})
+
+
+
+function renderUploadMediaSection(group) {
+  const uploadImageList = document.getElementById('upload-image-list');
+  const uploadAudioList = document.getElementById('upload-audio-list');
+
+  const fragmentImage = document.createDocumentFragment();
+  const fragmentAudio = document.createDocumentFragment();
+
+  group.questions.forEach((questionId, index) => {
+    const questionImageElement = document.createElement('div');
+    questionImageElement.id = `upload-question-image-${questionId}`;
+    questionImageElement.className = 'pb-2';
+
+    const questionAudioElement = document.createElement('div');
+    questionAudioElement.id = `upload-question-audio-${questionId}`;
+    questionAudioElement.className = 'pb-2';
+
+    let imageUploadField = '';
+    let audioUploadField = '';
+
+    if (group.questions.length > 1) {
+      if (group.media === 'image' || group.media === 'both') {
+        imageUploadField = index === 0 ?
+          `<label class="form-label">
+            <span class="label-text">Question ${group.questions.join('-')}</span>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
+          </label>`:
+          `
+      `;
+      } else {
+        imageUploadField = index === 0 ?
+          `<label class="form-label">
+            <span class="label-text" style="text-decoration: line-through">Question ${group.questions.join('-')}</span>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+          </label>` :
+          ``;
+      }
+    } else {
+      if (group.media === 'image' || group.media === 'both') {
+        imageUploadField =
+          `<label class="form-label">
+            <span class="label-text">Question ${questionId}</span>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
+          </label>
+      `;
+      } else {
+        imageUploadField =
+          `<label class="form-label">
+            <span class="label-text" style="text-decoration: line-through">Question ${questionId}</span>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+          </label>`;
+      }
     }
-    console.log(newTestData);
-  } else {
-    alert('Không có dữ liệu đề thi mới.');
+
+    if (group.questions.length > 1) {
+      if (group.media === 'audio' || group.media === 'both') {
+        audioUploadField = index === 0 ?
+          `<label class="form-label">
+            <span class="label-text"> Question ${group.questions.join('-')}</span>
+            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
+          </label>`:
+          `
+      `;
+      } else {
+        audioUploadField = index === 0 ?
+          `<label class="form-label">
+            <span class="label-text" style="text-decoration: line-through"> Question ${group.questions.join('-')}</span>
+            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+          </label>` :
+          ``;
+      }
+    } else {
+      if (group.media === 'audio' || group.media === 'both') {
+        audioUploadField = `
+        <label class="form-label">
+          <span class="label-text"> Question ${questionId}</span>
+          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
+        </label>
+      `;
+      } else {
+        audioUploadField = `
+        <label class="form-label">
+          <span class="label-text" style="text-decoration: line-through"> Question ${questionId}</span>
+          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+        </label>
+      `;
+      }
+    }
+
+    questionImageElement.innerHTML = imageUploadField;
+    questionAudioElement.innerHTML = audioUploadField;
+
+    fragmentImage.appendChild(questionImageElement);
+    fragmentAudio.appendChild(questionAudioElement);
+  });
+
+  uploadImageList.appendChild(fragmentImage);
+  uploadAudioList.appendChild(fragmentAudio);
+}
+
+function handleFileUpload(event, questionId, fileType) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log(`Uploaded ${fileType} for Question ${questionId}:`, file);
   }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  questionGroups.forEach(group => {
+    renderUploadMediaSection(group);
+    group.questions.forEach((questionId, index) => {
+      if (index === 0) {
+        const imageUploadElement = document.getElementById(`test-image-upload-${questionId}`);
+        const audioUploadElement = document.getElementById(`test-audio-upload-${questionId}`);
+
+        if (imageUploadElement) {
+          imageUploadElement.addEventListener('change', function (event) {
+            handleFileUpload(event, questionId, 'image');
+          });
+        } else {
+          console.error(`Element test-image-upload-${questionId} not found.`);
+        }
+
+        if (audioUploadElement) {
+          audioUploadElement.addEventListener('change', function (event) {
+            handleFileUpload(event, questionId, 'audio');
+          });
+        } else {
+          console.error(`Element test-audio-upload-${questionId} not found.`);
+        }
+      }
+    });
+  });
 });
-
-
-

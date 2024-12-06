@@ -7,6 +7,12 @@
     background-color: var(--white-100);
 }
 
+#upload-image-section, 
+#upload-audio-section {
+    flex: 0.5;
+}
+
+
 .sub-container {
     position: static;
     flex: 0.5;
@@ -162,6 +168,8 @@
 .add-more-button,
 .cancel-button,
 .edit-button,
+.preview-button,
+.next-button,
 .save-button {
     width: 100%;
     padding: 8px 16px;
@@ -184,17 +192,35 @@
     background-color: transparent;
 }
 
+.next-button,
 .save-button {
     color: var(--white-100);
     background-color: var(--primary-500);
     transition: all 0.3s ease-in-out;
 }
 
+.next-button,
 .save-button i {
     margin-right: 0.5rem;
 }
 
-.edit-button {
+.next-button {
+    color: var(--white-100);
+    background-color: var(--black-400);
+    transition: all 0.3s ease-in-out;
+}
+
+.next-button i {
+    margin-right: 0.5rem;
+}
+
+.next-button:hover {
+    background-color: var(--black-600);
+}
+
+
+.edit-button,
+.preview-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -208,6 +234,14 @@
 }
 
 .edit-button:hover {
+    box-shadow: 0 0 0 0.25rem rgba(56, 141, 168, 0.25);
+}
+
+.preview-button i {
+    margin-right: 0.5rem;
+}
+
+.preview-button:hover {
     box-shadow: 0 0 0 0.25rem rgba(56, 141, 168, 0.25);
 }
 
@@ -250,4 +284,16 @@
         font-size: 16px;
         padding: 10px 20px;
     }
+}
+
+.test-answer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.test-answer-item span {
+    color: var(--black-900);
+    font-size: 0.875rem;
+    font-weight: 600;
 }
