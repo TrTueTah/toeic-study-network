@@ -108,6 +108,7 @@ const questionGroups = [
 
 document.addEventListener('DOMContentLoaded', function () {
   questionGroups.forEach(group => {
+    // renderUploadMediaSection(group);
     group.questions.forEach((questionId, index) => {
       const questionElement = document.createElement('div');
       questionElement.id = `test-question-${questionId}`;
@@ -161,6 +162,27 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
 
       document.getElementById('test-question-list').appendChild(questionElement);
+
+      // if (index === 0) {
+      //   const imageUploadElement = document.getElementById(`test-image-upload-${questionId}`);
+      //   const audioUploadElement = document.getElementById(`test-audio-upload-${questionId}`);
+      //
+      //   if (imageUploadElement) {
+      //     imageUploadElement.addEventListener('change', function (event) {
+      //       handleFileUpload(event, questionId, 'image');
+      //     });
+      //   } else {
+      //     console.error(`Element test-image-upload-${questionId} not found.`);
+      //   }
+      //
+      //   if (audioUploadElement) {
+      //     audioUploadElement.addEventListener('change', function (event) {
+      //       handleFileUpload(event, questionId, 'audio');
+      //     });
+      //   } else {
+      //     console.error(`Element test-audio-upload-${questionId} not found.`);
+      //   }
+      // }
       
       const questionListItem = `
         <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>
@@ -279,46 +301,32 @@ function collectQuestionData() {
 }
 
 async function saveQuestions() {
-  const examId =  document.getElementById("test-info-id").textContent.trim()
+  const examId = document.getElementById("test-info-id").textContent.trim();
   const questionsData = collectQuestionData();
 
-  await fetch('http://localhost:5112/api/v1/question/createQuestionList', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json-patch+json',
-    },
-    body: JSON.stringify({
-      examId: examId,
-      questions: questionsData
-    })
-  })
-    .then(response => {
-      console.log(response);
-      if (response.ok) {
-      }
-    })
-    .then(data => {
-    })
-    .catch(error => {
-      console.error('Error submitting questions:', error);
+  try {
+    const response = await fetch('http://localhost:5112/api/v1/question/createQuestionList', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json-patch+json',
+      },
+      body: JSON.stringify({
+        examId: examId,
+        questions: questionsData
+      })
     });
+
+    if (!response.ok) {
+      throw new Error(`Failed to save questions: ${response.statusText}`);
+    }
+
+    return response; // Trả về response để xử lý tiếp
+  } catch (error) {
+    console.error('Error submitting questions:', error);
+    throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
 }
 
-document.querySelectorAll('.cancel-button').forEach(button => {
-  button.addEventListener('click', function (event) {
-    event.preventDefault();
-    const section = button.closest('.section');
-    toggleEditMode(section, false);
-  });
-});
-
-document.querySelectorAll('.button-group-item').forEach(button => {
-  button.addEventListener('click', function (event) {
-    event.preventDefault();
-    const section = button.closest('.section');
-    toggleEditMode(section, true);
-  });
-});
 
 document.getElementById('edit-question-button-1').addEventListener('click', function () {
   const testQuestionSection = document.getElementById('test-question-section');
@@ -330,25 +338,53 @@ document.getElementById('edit-question-button-1').addEventListener('click', func
   })
 });
 
-document.getElementById("next-page-button").addEventListener('click', function () {
-  const uploadQuestionSection = document.getElementById("upload-question-section")
-  const uploadImageSection = document.getElementById("upload-image-section")
-  const uploadAudioSection = document.getElementById("upload-audio-section")
+document.getElementById("next-page-button").addEventListener('click', async function () {
+  const uploadQuestionSection = document.getElementById("upload-question-section");
+  const uploadImageSection = document.getElementById("upload-image-section");
+  const uploadAudioSection = document.getElementById("upload-audio-section");
   const previousPageButton = document.getElementById("previous-page-button");
   const editQuestionButton = document.getElementById("edit-question-button-1");
-  const previewQuestionButton  = document.getElementById("preview-question-button");
+  const previewQuestionButton = document.getElementById("preview-question-button");
   const saveQuestionButton = document.getElementById("save-question-button");
-  
-  this.classList.add("d-none")
-  previousPageButton.classList.remove("d-none");
-  uploadQuestionSection.classList.add("d-none");
-  uploadImageSection.classList.remove("d-none");
-  uploadAudioSection.classList.remove("d-none");
-  
-  editQuestionButton.classList.add("d-none");
-  previewQuestionButton.classList.add("d-none");
-  saveQuestionButton.classList.remove("d-none");
-})
+
+  try {
+    const response = await saveQuestions();
+    const data = await response.json();
+    
+    if (data.questionGroups) {
+      const updatedGroups = questionGroups.map(group => {
+        const newGroup = data.questionGroups[group.groupId];
+
+        if (newGroup) {
+          return {
+            groupId: newGroup.questions[0].groupId, 
+            questions: group.questions,
+            media: group.media  
+          };
+        }
+
+        return group; 
+      });
+      console.log(updatedGroups);
+      updatedGroups.forEach(group => {
+        renderUploadMediaSection(group);
+      });
+    }
+
+    this.classList.add("d-none");
+    previousPageButton.classList.remove("d-none");
+    uploadQuestionSection.classList.add("d-none");
+    uploadImageSection.classList.remove("d-none");
+    uploadAudioSection.classList.remove("d-none");
+
+    editQuestionButton.classList.add("d-none");
+    previewQuestionButton.classList.add("d-none");
+    saveQuestionButton.classList.remove("d-none");
+  } catch (error) {
+    console.error("Error saving questions or rendering media section:", error);
+  }
+});
+
 
 document.getElementById("previous-page-button").addEventListener('click', function () {
   const uploadQuestionSection = document.getElementById("upload-question-section")
@@ -380,6 +416,7 @@ function renderUploadMediaSection(group) {
   const fragmentAudio = document.createDocumentFragment();
 
   group.questions.forEach((questionId, index) => {
+    console.log(questionId);
     const questionImageElement = document.createElement('div');
     questionImageElement.id = `upload-question-image-${questionId}`;
     questionImageElement.className = 'pb-2';
@@ -396,7 +433,8 @@ function renderUploadMediaSection(group) {
         imageUploadField = index === 0 ?
           `<label class="form-label">
             <span class="label-text">Question ${group.questions.join('-')}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;">
           </label>`:
           `
       `;
@@ -404,7 +442,8 @@ function renderUploadMediaSection(group) {
         imageUploadField = index === 0 ?
           `<label class="form-label">
             <span class="label-text" style="text-decoration: line-through">Question ${group.questions.join('-')}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;" disabled>
           </label>` :
           ``;
       }
@@ -413,14 +452,16 @@ function renderUploadMediaSection(group) {
         imageUploadField =
           `<label class="form-label">
             <span class="label-text">Question ${questionId}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;">
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;">
           </label>
       `;
       } else {
         imageUploadField =
           `<label class="form-label">
             <span class="label-text" style="text-decoration: line-through">Question ${questionId}</span>
-            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+            <input type="file" accept="image/*" class="form-input" id="test-image-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;" disabled>
           </label>`;
       }
     }
@@ -430,7 +471,8 @@ function renderUploadMediaSection(group) {
         audioUploadField = index === 0 ?
           `<label class="form-label">
             <span class="label-text"> Question ${group.questions.join('-')}</span>
-            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
+            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;">
           </label>`:
           `
       `;
@@ -438,7 +480,8 @@ function renderUploadMediaSection(group) {
         audioUploadField = index === 0 ?
           `<label class="form-label">
             <span class="label-text" style="text-decoration: line-through"> Question ${group.questions.join('-')}</span>
-            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+            <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;" disabled>
           </label>` :
           ``;
       }
@@ -447,14 +490,16 @@ function renderUploadMediaSection(group) {
         audioUploadField = `
         <label class="form-label">
           <span class="label-text"> Question ${questionId}</span>
-          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;">
+          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;">
         </label>
       `;
       } else {
         audioUploadField = `
         <label class="form-label">
           <span class="label-text" style="text-decoration: line-through"> Question ${questionId}</span>
-          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${questionId}" style="margin-top: 0.5rem;" disabled>
+          <input type="file" accept="audio/*" class="form-input" id="test-audio-upload-${group.groupId}-${questionId}" 
+            data-group-id="${group.groupId}"  style="margin-top: 0.5rem;" disabled>
         </label>
       `;
       }
@@ -478,30 +523,59 @@ function handleFileUpload(event, questionId, fileType) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  questionGroups.forEach(group => {
-    renderUploadMediaSection(group);
-    group.questions.forEach((questionId, index) => {
-      if (index === 0) {
-        const imageUploadElement = document.getElementById(`test-image-upload-${questionId}`);
-        const audioUploadElement = document.getElementById(`test-audio-upload-${questionId}`);
-
-        if (imageUploadElement) {
-          imageUploadElement.addEventListener('change', function (event) {
-            handleFileUpload(event, questionId, 'image');
-          });
-        } else {
-          console.error(`Element test-image-upload-${questionId} not found.`);
-        }
-
-        if (audioUploadElement) {
-          audioUploadElement.addEventListener('change', function (event) {
-            handleFileUpload(event, questionId, 'audio');
-          });
-        } else {
-          console.error(`Element test-audio-upload-${questionId} not found.`);
-        }
-      }
-    });
+document.querySelectorAll('input[type="file"]').forEach(input => {
+  input.addEventListener('change', function () {
+    const groupId = this.dataset.groupId;
+    console.log(`Uploading media for Group ID: ${groupId}`);
+    // Gửi file và groupId đến API
   });
 });
+
+
+document.getElementById("save-question-button").addEventListener("click", async function () {
+  const fileInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
+  const apiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
+
+  try {
+    const uploadData = {};
+
+    // Tạo một đối tượng chứa các file grouped theo Group ID
+    fileInputs.forEach(input => {
+      const groupId = input.dataset.groupId; // Lấy groupId từ data-group-id
+      const files = input.files;
+
+      if (files.length > 0) {
+        if (!uploadData[groupId]) {
+          uploadData[groupId] = [];
+        }
+        uploadData[groupId].push(...files); // Thêm tất cả các file vào groupId
+      }
+    });
+
+    // Gửi yêu cầu cho từng Group ID với tất cả file của nó
+    for (const groupId in uploadData) {
+      const formData = new FormData();
+      formData.append("QuestionGroupId", groupId);
+
+      // Thêm tất cả các file vào FormData
+      uploadData[groupId].forEach(file => {
+        formData.append("Files", file);
+      });
+
+      // Gửi API
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error(`Failed to upload for Group ID: ${groupId}`, await response.text());
+      } else {
+        console.log(`Uploaded successfully for Group ID: ${groupId}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error uploading audio files:", error);
+  }
+});
+
