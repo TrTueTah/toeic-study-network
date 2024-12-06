@@ -523,59 +523,77 @@ function handleFileUpload(event, questionId, fileType) {
   }
 }
 
-document.querySelectorAll('input[type="file"]').forEach(input => {
-  input.addEventListener('change', function () {
-    const groupId = this.dataset.groupId;
-    console.log(`Uploading media for Group ID: ${groupId}`);
-    // Gửi file và groupId đến API
-  });
-});
-
-
 document.getElementById("save-question-button").addEventListener("click", async function () {
-  const fileInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
-  const apiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
+  const audioInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
+  const imageInputs = document.querySelectorAll('input[type="file"][accept="image/*"]');
+  const audioApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
+  const imageApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupImage";
 
   try {
     const uploadData = {};
 
-    // Tạo một đối tượng chứa các file grouped theo Group ID
-    fileInputs.forEach(input => {
-      const groupId = input.dataset.groupId; // Lấy groupId từ data-group-id
+    audioInputs.forEach(input => {
+      const groupId = input.dataset.groupId;
       const files = input.files;
 
       if (files.length > 0) {
         if (!uploadData[groupId]) {
-          uploadData[groupId] = [];
+          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
         }
-        uploadData[groupId].push(...files); // Thêm tất cả các file vào groupId
+        uploadData[groupId].audioFiles.push(...files); 
       }
     });
 
-    // Gửi yêu cầu cho từng Group ID với tất cả file của nó
+    imageInputs.forEach(input => {
+      const groupId = input.dataset.groupId;
+      const files = input.files;
+
+      if (files.length > 0) {
+        if (!uploadData[groupId]) {
+          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
+        }
+        uploadData[groupId].imageFiles.push(...files); 
+      }
+    });
+
     for (const groupId in uploadData) {
-      const formData = new FormData();
-      formData.append("QuestionGroupId", groupId);
+      const formDataAudio = new FormData();
+      formDataAudio.append("QuestionGroupId", groupId);
 
-      // Thêm tất cả các file vào FormData
-      uploadData[groupId].forEach(file => {
-        formData.append("Files", file);
+      uploadData[groupId].audioFiles.forEach(file => {
+        formDataAudio.append("Files", file);
       });
 
-      // Gửi API
-      const response = await fetch(apiEndpoint, {
+      const audioResponse = await fetch(audioApiEndpoint, {
         method: "POST",
-        body: formData,
+        body: formDataAudio,
       });
 
-      if (!response.ok) {
-        console.error(`Failed to upload for Group ID: ${groupId}`, await response.text());
+      if (!audioResponse.ok) {
+        console.error(`Failed to upload audio for Group ID: ${groupId}`, await audioResponse.text());
       } else {
-        console.log(`Uploaded successfully for Group ID: ${groupId}`);
+        console.log(`Uploaded audio successfully for Group ID: ${groupId}`);
+      }
+
+      const formDataImage = new FormData();
+      formDataImage.append("QuestionGroupId", groupId);
+
+      uploadData[groupId].imageFiles.forEach(file => {
+        formDataImage.append("Files", file);
+      });
+
+      const imageResponse = await fetch(imageApiEndpoint, {
+        method: "POST",
+        body: formDataImage,
+      });
+
+      if (!imageResponse.ok) {
+        console.error(`Failed to upload image for Group ID: ${groupId}`, await imageResponse.text());
+      } else {
+        console.log(`Uploaded image successfully for Group ID: ${groupId}`);
       }
     }
   } catch (error) {
-    console.error("Error uploading audio files:", error);
+    console.error("Error uploading files:", error);
   }
 });
-
