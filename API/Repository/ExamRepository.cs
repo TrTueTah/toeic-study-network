@@ -68,11 +68,48 @@ namespace API.Repository
             return exam;
         }
 
-        public List<Exam> GetExamsByExamSeries(string examSeriesId)
+        public GetExamByPartDto GetExamByPart(string examId, List<int> partNumbers)
         {
-            throw new NotImplementedException();
-        }
+            var exam = _context.Exams
+                .Include(e => e.QuestionGroups)
+                .ThenInclude(qg => qg.Questions)
+                .Where(e => e.Id == examId)
+                .Select(e => new
+                {
+                    e.Id,
+                    e.Title,
+                    e.CreatedAt,
+                    e.ExamSeries,
+                    FilteredQuestionGroups = e.QuestionGroups
+                        .Where(qg => partNumbers.Contains(qg.PartNumber))
+                        .OrderBy(qg => qg.Questions.FirstOrDefault().QuestionNumber)
+                        .ToList()
+                })
+                .FirstOrDefault();
+            
 
+            if (exam == null)
+            {
+                throw new Exception("Exam not found");
+            }
+            
+            var result = new GetExamByPartDto
+            {
+                ExamId = exam.Id,
+                Title = exam.Title,
+                CreatedAt = exam.CreatedAt,
+                PartNumbers = partNumbers,
+                QuestionGroups = exam.FilteredQuestionGroups,
+                ExamSeries = new GetExamSeriesDto
+                {
+                    Id = exam.ExamSeries.Id,
+                    Name = exam.ExamSeries.Name
+                },
+            };
+
+            return result;
+        }
+        
         public bool UpdateExam(Exam exam)
         {
             _context.Exams.Update(exam);

@@ -21,12 +21,14 @@ namespace API.Controllers
         private readonly IQuestionRepository _questionRepository;
         private readonly IMapper _mapper;
         private readonly IQuestionGroupRepository _questionGroupRepository;
+        private readonly IExamRepository _examRepository;
         
-        public QuestionController(IQuestionRepository questionRepository, IMapper mapper, IQuestionGroupRepository questionGroupRepository)
+        public QuestionController(IQuestionRepository questionRepository, IMapper mapper, IQuestionGroupRepository questionGroupRepository, IExamRepository examRepository)
         {
             _questionRepository = questionRepository;
             _mapper = mapper;
             _questionGroupRepository = questionGroupRepository;
+            _examRepository = examRepository;
         }
 
         [HttpPost("createQuestionList")]
@@ -40,6 +42,13 @@ namespace API.Controllers
 
             try
             {
+                var existingExam = _examRepository.GetExamById(createQuestionListDto.ExamId);
+                
+                if (existingExam != null && existingExam.QuestionGroups.Any())
+                {
+                    return BadRequest("Exam already contains question groups.");
+                }
+                
                 List<QuestionGroupDto> questionGroups = new List<QuestionGroupDto>
                 {
                     new QuestionGroupDto { Questions = new List<int> { 1 }, PartNumber = 1 },
@@ -146,6 +155,7 @@ namespace API.Controllers
                     new QuestionGroupDto { Questions = new List<int> { 191, 192, 193, 194, 195 }, PartNumber = 7 },
                     new QuestionGroupDto { Questions = new List<int> { 196, 197, 198, 199, 200 }, PartNumber = 7 }
                 };
+                
 
                 var groupedQuestions = new List<QuestionGroup>();
                 

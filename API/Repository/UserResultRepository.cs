@@ -214,6 +214,7 @@ public class UserResultRepository : IUserResultRepository
         return _context.UserResults
             .Where(ur => ur.UserId == userId)
             .ToList();
+        
     }
 
     public QuestionDetailResultDto GetQuestionDetailResult(string detailResultId)

@@ -130,5 +130,31 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("getExamByPart/{examId}")]
+        [ProducesResponseType(typeof(GetExamByPartDto), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public ActionResult<GetExamByPartDto> GetExamByPart(string examId, [FromQuery] List<int> partNumbers)
+        {
+            try
+            {
+                var result = _examRepository.GetExamByPart(examId, partNumbers);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+        
+        [HttpDelete("deleteExam/{examId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult DeletePost(string id)
+        {
+            var post = _examRepository.DeleteExam(id);
+            return NoContent();
+        }
     }
 }

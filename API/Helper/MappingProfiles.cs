@@ -65,7 +65,9 @@ public class MappingProfiles : Profile
         CreateMap<UserResult, DetailResultDto>();
         CreateMap<UserResult, UserResultDto>();
         CreateMap<UserResult, SubmitResultDto>();
-        CreateMap<UserResult, GetAllUserResultDto>();
+        CreateMap<UserResult, GetAllUserResultDto>()
+            .ForMember(dest => dest.CreateAt, opt => opt.MapFrom(src => src.CreatedAt.ToUniversalTime()));
+
         CreateMap<DetailResult, DetailResultDto>();
         CreateMap<DetailResult, UserResultDto>();
         CreateMap<DetailResult, SubmitResultDto>();
