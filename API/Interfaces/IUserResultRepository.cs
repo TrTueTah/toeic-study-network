@@ -9,4 +9,5 @@ public interface IUserResultRepository
     Task<UserResultDto> GetDetailsResultAsync(string userResultId);
     List<UserResult> GetAllUserResultsByUserId(string userId);
     QuestionDetailResultDto GetQuestionDetailResult(string detailResultId);
+    AnalysisUserResultDto GetAnalysisUserResult(string userId, string timeRange);
 }
