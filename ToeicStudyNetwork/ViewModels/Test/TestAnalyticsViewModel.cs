@@ -7,7 +7,7 @@ namespace ToeicStudyNetwork.ViewModels.Test
 {
     public class TestAnalyticsViewModel
     {
-        public List<TestResultViewModel> UserResults { get; set; }
+        public List<TestResultViewModel>? UserResults { get; set; }
 
     }
 }
