@@ -108,7 +108,6 @@ const questionGroups = [
 
 document.addEventListener('DOMContentLoaded', function () {
   questionGroups.forEach(group => {
-    // renderUploadMediaSection(group);
     group.questions.forEach((questionId, index) => {
       const questionElement = document.createElement('div');
       questionElement.id = `test-question-${questionId}`;
@@ -162,27 +161,6 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
 
       document.getElementById('test-question-list').appendChild(questionElement);
-
-      // if (index === 0) {
-      //   const imageUploadElement = document.getElementById(`test-image-upload-${questionId}`);
-      //   const audioUploadElement = document.getElementById(`test-audio-upload-${questionId}`);
-      //
-      //   if (imageUploadElement) {
-      //     imageUploadElement.addEventListener('change', function (event) {
-      //       handleFileUpload(event, questionId, 'image');
-      //     });
-      //   } else {
-      //     console.error(`Element test-image-upload-${questionId} not found.`);
-      //   }
-      //
-      //   if (audioUploadElement) {
-      //     audioUploadElement.addEventListener('change', function (event) {
-      //       handleFileUpload(event, questionId, 'audio');
-      //     });
-      //   } else {
-      //     console.error(`Element test-audio-upload-${questionId} not found.`);
-      //   }
-      // }
       
       const questionListItem = `
         <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>
@@ -320,50 +298,39 @@ async function saveQuestions() {
       throw new Error(`Failed to save questions: ${response.statusText}`);
     }
 
-    return response; // Trả về response để xử lý tiếp
+    return response; 
   } catch (error) {
     console.error('Error submitting questions:', error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+    throw error;
   }
 }
 
-
-document.getElementById('edit-question-button-1').addEventListener('click', function () {
-  const testQuestionSection = document.getElementById('test-question-section');
-  toggleEditMode(testQuestionSection, true);
-  console.log(testQuestionSection);
-  questions.map((question) => {
-    const questionSection = document.getElementById(`test-question-${question.id}`);
-    toggleEditMode(questionSection, true);
-  })
-});
-
-document.getElementById("next-page-button").addEventListener('click', async function () {
+async function handleMoveToNextPage () {
   const uploadQuestionSection = document.getElementById("upload-question-section");
   const uploadImageSection = document.getElementById("upload-image-section");
   const uploadAudioSection = document.getElementById("upload-audio-section");
   const previousPageButton = document.getElementById("previous-page-button");
-  const editQuestionButton = document.getElementById("edit-question-button-1");
+  const editQuestionButton = document.getElementById("edit-question-button");
   const previewQuestionButton = document.getElementById("preview-question-button");
   const saveQuestionButton = document.getElementById("save-question-button");
 
   try {
     const response = await saveQuestions();
     const data = await response.json();
-    
+
     if (data.questionGroups) {
       const updatedGroups = questionGroups.map(group => {
         const newGroup = data.questionGroups[group.groupId];
 
         if (newGroup) {
           return {
-            groupId: newGroup.questions[0].groupId, 
+            groupId: newGroup.questions[0].groupId,
             questions: group.questions,
-            media: group.media  
+            media: group.media
           };
         }
 
-        return group; 
+        return group;
       });
       console.log(updatedGroups);
       updatedGroups.forEach(group => {
@@ -383,15 +350,24 @@ document.getElementById("next-page-button").addEventListener('click', async func
   } catch (error) {
     console.error("Error saving questions or rendering media section:", error);
   }
-});
+}
 
+function handleEditQuestion () {
+  const testQuestionSection = document.getElementById('test-question-section');
+  toggleEditMode(testQuestionSection, true);
+  console.log(testQuestionSection);
+  questions.map((question) => {
+    const questionSection = document.getElementById(`test-question-${question.id}`);
+    toggleEditMode(questionSection, true);
+  })
+}
 
-document.getElementById("previous-page-button").addEventListener('click', function () {
+function handleMoveToPreviousPage () {
   const uploadQuestionSection = document.getElementById("upload-question-section")
   const uploadImageSection = document.getElementById("upload-image-section")
   const uploadAudioSection = document.getElementById("upload-audio-section")
   const nextPageButton = document.getElementById("next-page-button");
-  const editQuestionButton = document.getElementById("edit-question-button-1");
+  const editQuestionButton = document.getElementById("edit-question-button");
   const previewQuestionButton  = document.getElementById("preview-question-button");
   const saveQuestionButton = document.getElementById("save-question-button");
 
@@ -404,9 +380,82 @@ document.getElementById("previous-page-button").addEventListener('click', functi
   editQuestionButton.classList.remove("d-none");
   previewQuestionButton.classList.remove("d-none");
   saveQuestionButton.classList.add("d-none");
-})
+}
 
+async function handleSaveMediaFile () {
+  const audioInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
+  const imageInputs = document.querySelectorAll('input[type="file"][accept="image/*"]');
+  const audioApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
+  const imageApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupImage";
 
+  try {
+    const uploadData = {};
+
+    audioInputs.forEach(input => {
+      const groupId = input.dataset.groupId;
+      const files = input.files;
+
+      if (files.length > 0) {
+        if (!uploadData[groupId]) {
+          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
+        }
+        uploadData[groupId].audioFiles.push(...files);
+      }
+    });
+
+    imageInputs.forEach(input => {
+      const groupId = input.dataset.groupId;
+      const files = input.files;
+
+      if (files.length > 0) {
+        if (!uploadData[groupId]) {
+          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
+        }
+        uploadData[groupId].imageFiles.push(...files);
+      }
+    });
+
+    for (const groupId in uploadData) {
+      const formDataAudio = new FormData();
+      formDataAudio.append("QuestionGroupId", groupId);
+
+      uploadData[groupId].audioFiles.forEach(file => {
+        formDataAudio.append("Files", file);
+      });
+
+      const audioResponse = await fetch(audioApiEndpoint, {
+        method: "POST",
+        body: formDataAudio,
+      });
+
+      if (!audioResponse.ok) {
+        console.error(`Failed to upload audio for Group ID: ${groupId}`, await audioResponse.text());
+      } else {
+        console.log(`Uploaded audio successfully for Group ID: ${groupId}`);
+      }
+
+      const formDataImage = new FormData();
+      formDataImage.append("QuestionGroupId", groupId);
+
+      uploadData[groupId].imageFiles.forEach(file => {
+        formDataImage.append("Files", file);
+      });
+
+      const imageResponse = await fetch(imageApiEndpoint, {
+        method: "POST",
+        body: formDataImage,
+      });
+
+      if (!imageResponse.ok) {
+        console.error(`Failed to upload image for Group ID: ${groupId}`, await imageResponse.text());
+      } else {
+        console.log(`Uploaded image successfully for Group ID: ${groupId}`);
+      }
+    }
+  } catch (error) {
+    console.error("Error uploading files:", error);
+  }
+}
 
 function renderUploadMediaSection(group) {
   const uploadImageList = document.getElementById('upload-image-list');
@@ -516,84 +565,11 @@ function renderUploadMediaSection(group) {
   uploadAudioList.appendChild(fragmentAudio);
 }
 
-function handleFileUpload(event, questionId, fileType) {
-  const file = event.target.files[0];
-  if (file) {
-    console.log(`Uploaded ${fileType} for Question ${questionId}:`, file);
-  }
-}
 
-document.getElementById("save-question-button").addEventListener("click", async function () {
-  const audioInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
-  const imageInputs = document.querySelectorAll('input[type="file"][accept="image/*"]');
-  const audioApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
-  const imageApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupImage";
+document.getElementById('edit-question-button').addEventListener('click', handleEditQuestion);
 
-  try {
-    const uploadData = {};
+document.getElementById("next-page-button").addEventListener('click', handleMoveToNextPage);
 
-    audioInputs.forEach(input => {
-      const groupId = input.dataset.groupId;
-      const files = input.files;
+document.getElementById("previous-page-button").addEventListener('click', handleMoveToPreviousPage)
 
-      if (files.length > 0) {
-        if (!uploadData[groupId]) {
-          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
-        }
-        uploadData[groupId].audioFiles.push(...files); 
-      }
-    });
-
-    imageInputs.forEach(input => {
-      const groupId = input.dataset.groupId;
-      const files = input.files;
-
-      if (files.length > 0) {
-        if (!uploadData[groupId]) {
-          uploadData[groupId] = { audioFiles: [], imageFiles: [] };
-        }
-        uploadData[groupId].imageFiles.push(...files); 
-      }
-    });
-
-    for (const groupId in uploadData) {
-      const formDataAudio = new FormData();
-      formDataAudio.append("QuestionGroupId", groupId);
-
-      uploadData[groupId].audioFiles.forEach(file => {
-        formDataAudio.append("Files", file);
-      });
-
-      const audioResponse = await fetch(audioApiEndpoint, {
-        method: "POST",
-        body: formDataAudio,
-      });
-
-      if (!audioResponse.ok) {
-        console.error(`Failed to upload audio for Group ID: ${groupId}`, await audioResponse.text());
-      } else {
-        console.log(`Uploaded audio successfully for Group ID: ${groupId}`);
-      }
-
-      const formDataImage = new FormData();
-      formDataImage.append("QuestionGroupId", groupId);
-
-      uploadData[groupId].imageFiles.forEach(file => {
-        formDataImage.append("Files", file);
-      });
-
-      const imageResponse = await fetch(imageApiEndpoint, {
-        method: "POST",
-        body: formDataImage,
-      });
-
-      if (!imageResponse.ok) {
-        console.error(`Failed to upload image for Group ID: ${groupId}`, await imageResponse.text());
-      } else {
-        console.log(`Uploaded image successfully for Group ID: ${groupId}`);
-      }
-    }
-  } catch (error) {
-    console.error("Error uploading files:", error);
-  }
-});
+document.getElementById("save-question-button").addEventListener("click", handleSaveMediaFile);
