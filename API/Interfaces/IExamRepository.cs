@@ -8,7 +8,7 @@ namespace API.Interfaces
         Task<List<GetAllExamDto>> GetAllExams();
         Task<Exam> CreateExam(Exam exam);
         GetAllExamDto? GetExamById(string id);
-        List<Exam> GetExamsByExamSeries(string examSeriesId);
+        GetExamByPartDto GetExamByPart(string examId, List<int> partNumbers);
         bool UpdateExam(Exam exam);
         bool DeleteExam(string id);
         bool IsExamExist(string id);
