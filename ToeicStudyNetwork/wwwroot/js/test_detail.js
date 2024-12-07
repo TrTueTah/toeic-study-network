@@ -1,15 +1,24 @@
-const practiceTabs = document.querySelectorAll("#practice-tabs .nav-link");
-practiceTabs.forEach((tab) => {
-	tab.addEventListener("click", (e) => {
-		practiceTabs.forEach((item) => item.classList.remove("active")); 
-		e.target.classList.add("active");
-	});
-});
+function practiceTabActive () {
+  const practiceTabButton = document.getElementById("practice-tab-button");
+  const fullTestTabButton = document.getElementById("full-test-tab-button");
+  const practiceTab = document.getElementById("practice-tab");
+  const fullTestTab = document.getElementById("full-test-tab");
 
-const examInfoTabs = document.querySelectorAll("#exam-info-tabs .nav-link");
-examInfoTabs.forEach((tab) => {
-	tab.addEventListener("click", (e) => {
-		examInfoTabs.forEach((item) => item.classList.remove("active"));
-		e.target.classList.add("active");
-	});
-});
+  practiceTabButton.classList.add("active");
+  fullTestTabButton.classList.remove("active");
+  practiceTab.classList.remove("d-none");
+  fullTestTab.classList.add("d-none");
+}
+
+function fullTestTabActive () {
+  const practiceTabButton = document.getElementById("practice-tab-button");
+  const fullTestTabButton = document.getElementById("full-test-tab-button");
+  const practiceTab = document.getElementById("practice-tab");
+  const fullTestTab = document.getElementById("full-test-tab");
+
+  practiceTabButton.classList.remove("active");
+  fullTestTabButton.classList.add("active");
+  practiceTab.classList.add("d-none");
+  fullTestTab.classList.remove("d-none");
+}
+

@@ -11,7 +11,6 @@
 
 <section class="detail p-4">
     <div class="container my-4 border rounded-3 p-4 bg-white">
-        <!-- Title and Details -->
         <div class="mb-4">
             <h2 class="fw-bold exam-title">@Model.Exam.Title</h2>
 
@@ -20,16 +19,12 @@
                 <li class="nav-item">
                     <a class="nav-link active" href="#">Thông tin đề thi</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Đáp án/transcript</a>
-                </li>
             </ul>
 
-            <!-- Test Information -->
             <div class="mb-2 custom-test-information">
                 <div class="info">
                     <i class="bi bi-clock"></i>
-                    <p>Thời gian làm bài:<span> 120 phút | 7 phần thi | 200 câu hỏi | 1341 bình luận</span>
+                    <p>Thời gian làm bài:<span> 120 phút | 7 phần thi | 200 câu hỏi</span>
                     </p>
                 </div>
                 <div class="info">
@@ -56,73 +51,230 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="column-layout">
-                            <div>11/11/2024</div>
-                            <span class="badge text-black badge-custom">Full test</span>
-                        </td>
-
-                        <td>12/200 (Điểm: 70)</td>
-                        <td>0:00:47</td>
-                        <td><a href="#" class="">Xem chi tiết</a></td>
-                    </tr>
-                    <tr>
-                        <td class="column-layout">
-                            11/11/2024 <span class="badge text-black badge-custom">Luyện tập Part 2</span>
-                        </td>
-                        <td>8/25</td>
-                        <td>0:00:32</td>
-                        <td><a href="#" class="">Xem chi tiết</a></td>
-                    </tr>
-                    <tr>
-                        <td class="column-layout">
-                            11/11/2024 <span class="badge text-black badge-custom">Luyện tập Part 1</span>
-                        </td>
-                        <td>4/6</td>
-                        <td>0:00:17</td>
-                        <td><a href="#" class="">Xem chi tiết</a></td>
-                    </tr>
+                @foreach (var result in Model.UserResults)
+                {
+                <tr>
+                    <td class="column-layout">
+                        <div>@result.CreateAt.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                        <span class="badge text-black badge-custom">@result.Type</span>
+                    </td>
+                    <td>
+                        @result.CorrectAnswerAmount/@result.TotalQuestions (Điểm: @result.Score)
+                    </td>
+                    <td>
+                        @TimeSpan.FromSeconds(result.TimeTaken).ToString(@"hh\:mm\:ss")
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Result", "Test", new { examId= result.ExamId, resultId = result.UserResultId })">Xem chi tiết</a>
+                    </td>
+                </tr>
+                }
                 </tbody>
             </table>
         </div>
 
         <!-- Practice Modes Section -->
         <ul id="practice-tabs" class="nav nav-tabs my-3 custom-tabs">
-            <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "practice" ? "active" : "")"
-                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "practice" })">Luyện
-                    tập</a>
+            <li class="nav-item" onclick="practiceTabActive()">
+                <a type="button" id="practice-tab-button" class="nav-link active">Luyện tập</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "takeTest" ? "active" : "")"
-                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "takeTest" })">Làm
-                    full
-                    test</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "discussion" ? "active" : "")"
-                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "discussion" })">Thảo
-                    luận</a>
+            <li class="nav-item" onclick="fullTestTabActive()">
+                <a type="button" id="full-test-tab-button" class="nav-link" >Làm full test</a>
             </li>
         </ul>
 
         <div id="content-div">
-            @if (ViewBag.ActiveTab == "practice")
-            {
-                @await Html.PartialAsync("_PracticeTab")
-            }
-            else if (ViewBag.ActiveTab == "takeTest")
-            {
-                @await Html.PartialAsync("_TakeExamTab")
-            }
-            else if (ViewBag.ActiveTab == "discussion")
-            {
-                @await Html.PartialAsync("_DiscussionTab")
-            }
+            <div id="practice-tab">
+                <!-- Pro Tips Section -->
+                <div class="alert alert-pro-tips my-3" style="font-style: normal">
+                    <span style="font-style: normal">
+                        <strong>Pro tips: </strong>Hình thức luyện tập từng phần và chọn mức thời gian phù
+                        hợp sẽ giúp bạn tập trung vào giải từng các câu hỏi thay vì phải chịu áp lực hoàn thành bài thi.
+                    </span>
+                </div>
+
+                <form id="getExamForm" method="get" action="@Url.Action("GetExamByParts", "Test", new {examId = @Model.Exam.Id})">
+                    <!-- Practice Options -->
+                    <div class="mb-3" style="font-style: normal">
+                        <label class="label fw-bold" style="margin-bottom: 0.5rem">Chọn phần thi bạn muốn làm</label>
+                        <!-- Part 1 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part1" value="1">
+                            <label class="form-check-label" for="part1">Part 1 (6 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Tranh tả người</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Tranh tả vật</a>
+                        </div>
+
+                        <!-- Part 2 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part2" value="2">
+                            <label class="form-check-label" for="part2">Part 2 (25 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi WHAT</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi WHO</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi WHERE</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi WHEN</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi HOW</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi WHY</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi YES/NO</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi đuôi</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu hỏi lựa chọn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu yêu cầu, đề nghị</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary">Câu trần thuật</a>
+                        </div>
+
+                        <!-- Part 3 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part3" value="3">
+                            <label class="form-check-label" for="part3">Part 3 (39 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về chủ đề, mục đích</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về danh tính người
+                                nói</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về chi tiết cuộc hội
+                                thoại</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về hành động tương
+                                lai</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi kết hợp bảng biểu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về hàm ý câu nói</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Company - General Office
+                                Work</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Company - Personnel</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Company - Event,
+                                Project</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Company - Facility</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Shopping, Service</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Order, delivery</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Chủ đề: Transportation</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về yêu cầu, gợi ý</a>
+                        </div>
+
+                        <!-- Part 4 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part4" value="4">
+                            <label class="form-check-label" for="part4">Part 4 (30 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về chủ đề, mục đích</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về danh tính, địa điểm</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về chi tiết</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về hành động tương lai</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi kết hợp bảng biểu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về hàm ý câu nói</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Telephone message - Tin nhắn thoại</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Announcement - Thông báo</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: News report, Broadcast - Bản tin</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Talk - Bài phát biểu, diễn văn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Excerpt from a meeting - Trích dẫn từ buổi
+                                họp</a>
+                        </div>
+
+                        <!-- Part 5 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part5" value="5">
+                            <label class="form-check-label" for="part5">Part 5 (30 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi từ loại</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi ngữ pháp</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi từ vựng</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Danh từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Đại từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Tính từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Thể</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Trạng từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Động từ nguyên mẫu có to</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Giới từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Liên từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Cấu trúc so sánh</a>
+                        </div>
+
+                        <!-- Part 6 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part6" value="6">
+                            <label class="form-check-label" for="part6">Part 6 (16 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi từ loại</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi ngữ pháp</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi từ vựng</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi điền câu vào đoạn văn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Hình thức: Thư điện tử/ thư tay (Email/ Letter)</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Hình thức: Quảng cáo (Advertisement)</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Hình thức: Thông báo/ văn bản hướng dẫn (Notice/
+                                Announcement Information)</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Hình thức: Thông báo nội bộ (Memo)</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Danh từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Đại từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Tính từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Thì</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Thể</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Động từ nguyên mẫu có to</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Động từ nguyên mẫu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Phân từ và Cấu trúc phân từ</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Liên từ</a>
+                        </div>
+
+                        <!-- Part 7 -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="partNumbers" id="part7" value="7">
+                            <label class="form-check-label" for="part7">Part 7 (54 câu hỏi)</label>
+                        </div>
+                        <div class="my-2 d-grid grid-template-columns custom-btn-group">
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi tìm thông tin</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi tìm chi tiết sai</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về chủ đề, mục đích</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi suy luận</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi điền câu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Cấu trúc: một đoạn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Cấu trúc: nhiều đoạn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Email/ Letter: Thư điện tử/ Thư tay</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Form - Đơn từ, biểu mẫu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Article/ Review: Bài báo/ Bài đánh giá</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Advertisement - Quảng cáo</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Announcement/ Notice: Thông báo</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Text message chain - Chuỗi tin nhắn</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi tìm từ đồng nghĩa</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Câu hỏi về hàm ý câu nói</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: Schedule - Lịch trình, thời gian biểu</a>
+                            <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: List/ Menu: Danh sách/ Thực đơn</a>
+                        </div>
+                    </div>
+                   
+                    <button class="btn mb-3 btn-primary" type="submit" style="background-color: var(--primary-500)">Bắt đầu thi</button>
+                </form>
+        </div>
+        
+            <div id="full-test-tab" class="d-none">
+                <div class="alert alert-take-test my-3" style="font-style: normal">
+                    <span style="font-style: normal">Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra 120 phút cho bài test này.</span>
+                </div>
+                <a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)" href="@Url.Action("StartExam", "Test", new { id = Model.Exam.Id})">Bắt đầu thi</a>
+            </div>
         </div>
     </div>
 </section>
 
 @section scripts {
     <script src="~/js/test_detail.js" asp-append-version="true"></script>
+    <script>
+        document.getElementById('getExamForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var selectedParts = [];
+            document.querySelectorAll('input[name="partNumbers"]:checked').forEach(function (checkbox) {
+                selectedParts.push(checkbox.value);
+            });
+
+            var baseUrl = `@Url.Action("PracticeExam", "Test", new { examId = @Model.Exam.Id })`;
+
+            var url = baseUrl + (selectedParts.length > 0 ? '?' : '') + selectedParts.map(part => `partNumbers=${part}`).join('&');
+
+            window.location.href = url;
+        });
+    </script>
 }
