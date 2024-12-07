@@ -1,6 +1,6 @@
-@model ToeicStudyNetwork.Models.ExamModel
+@model ToeicStudyNetwork.ViewModels.Test.TestDetailViewModel
 @{
-    ViewBag.Title = @Model.Title;
+    ViewBag.Title = @Model.Exam.Title;
     Layout = "_Layout";
 }
 
@@ -13,7 +13,7 @@
     <div class="container my-4 border rounded-3 p-4 bg-white">
         <!-- Title and Details -->
         <div class="mb-4">
-            <h2 class="fw-bold exam-title">@Model.Title</h2>
+            <h2 class="fw-bold exam-title">@Model.Exam.Title</h2>
 
             <!-- Tabs -->
             <ul id="exam-info-tabs" class="nav nav-tabs my-3 custom-tabs">
@@ -89,28 +89,35 @@
         <!-- Practice Modes Section -->
         <ul id="practice-tabs" class="nav nav-tabs my-3 custom-tabs">
             <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "practice" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "practice" })">Luyện tập</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "practice" ? "active" : "")"
+                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "practice" })">Luyện
+                    tập</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "takeTest" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "takeTest" })">Làm full test</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "takeTest" ? "active" : "")"
+                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "takeTest" })">Làm
+                    full
+                    test</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link @(ViewBag.ActiveTab == "discussion" ? "active" : "")" href="@Url.Action("DetailExamTab", "Test", new { id = Model.Id, activeTab = "discussion" })">Thảo luận</a>
+                <a class="nav-link @(ViewBag.ActiveTab == "discussion" ? "active" : "")"
+                    href="@Url.Action("DetailExamTab", "Test", new { id = @Model.Exam.Id, activeTab = "discussion" })">Thảo
+                    luận</a>
             </li>
         </ul>
 
         <div id="content-div">
             @if (ViewBag.ActiveTab == "practice")
             {
-            @await Html.PartialAsync("_PracticeTab")
+                @await Html.PartialAsync("_PracticeTab")
             }
             else if (ViewBag.ActiveTab == "takeTest")
             {
-            @await Html.PartialAsync("_TakeExamTab")
+                @await Html.PartialAsync("_TakeExamTab")
             }
             else if (ViewBag.ActiveTab == "discussion")
             {
-            @await Html.PartialAsync("_DiscussionTab")
+                @await Html.PartialAsync("_DiscussionTab")
             }
         </div>
     </div>

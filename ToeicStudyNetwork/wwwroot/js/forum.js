@@ -104,3 +104,12 @@ document.getElementById("postForm").addEventListener("submit", async function (e
         alert("Có lỗi xảy ra trong khi đăng bài.");
     }
 });
+
+var title = document.getElementById("title")
+
+document.getElementById("newest-button").addEventListener("click", function () {
+    window.location.href = "/Forum/Newest";
+});
+document.getElementById("like-button").addEventListener("click", function () {
+    window.location.href = "/Forum/Favourite";
+});

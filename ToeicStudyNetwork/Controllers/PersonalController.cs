@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ToeicStudyNetwork.Models;
+using ToeicStudyNetwork.ViewModels;
+using ToeicStudyNetwork.ViewModels.Personal;
 
 namespace ToeicStudyNetwork.Controllers
 {
@@ -25,7 +27,7 @@ namespace ToeicStudyNetwork.Controllers
         {
             var token = Request.Cookies["token"];
             var user = new UserModel();
-            var personalModel = new PersonalModel();
+            var personalModel = new PersonalViewModel();
 
             if (!string.IsNullOrEmpty(token))
             {

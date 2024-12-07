@@ -1,6 +1,4 @@
-namespace ToeicStudyNetwork.Models;
-
-
+namespace ToeicStudyNetwork.Dtos;
 public class CreateExamRequest
 {
     public string Title { get; set; }

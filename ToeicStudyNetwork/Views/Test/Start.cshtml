@@ -1,4 +1,4 @@
-@model ToeicStudyNetwork.Models.TakeTestModel
+@model ToeicStudyNetwork.ViewModels.Test.TestStartViewModel
 @{
   ViewBag.Title = "Start Exam";
   Layout = "_Layout";
@@ -36,18 +36,21 @@
           @foreach (var part in Model.PartQuestions.OrderBy(p => p.Key))
           {
             <li class="nav-item" role="presentation">
-              <a class="nav-link @(part.Key == 1 ? "active" : "")" id="part@(part.Key)-tab" data-bs-toggle="tab" data-bs-target="#part@(part.Key)" role="tab" aria-controls="part@part.Key" aria-selected="false" type="button" asp-controller="Test">
+              <a class="nav-link @(part.Key == 1 ? "active" : "")" id="part@(part.Key)-tab" data-bs-toggle="tab"
+                data-bs-target="#part@(part.Key)" role="tab" aria-controls="part@part.Key" aria-selected="false"
+                type="button" asp-controller="Test">
                 Part @(part.Key)
               </a>
             </li>
           }
         </ul>
-        
+
         <!-- Question -->
         <div class="tab-content" id="pills-tabContent">
           @foreach (var part in Model.PartQuestions.OrderBy(p => p.Key))
           {
-            <div class="tab-pane @(part.Key == 1 ? "active show" : "")" id="part@(part.Key)" role="tabpanel" aria-labelledby="part@(part.Key)-tab">
+            <div class="tab-pane @(part.Key == 1 ? "active show" : "")" id="part@(part.Key)" role="tabpanel"
+              aria-labelledby="part@(part.Key)-tab">
               <div class="test-questions-wrapper">
                 @foreach (var questionGroup in part.Value.OrderBy(g => g.Questions.FirstOrDefault()?.QuestionNumber ?? 0))
                 {
@@ -63,13 +66,15 @@
                       @if (questionGroup.ImageFilesUrl.Any())
                       {
                         <div class="context-content context-image">
-                          <img class="lazyel entered loaded" src="@questionGroup.ImageFilesUrl.First()" alt="Question Group Image"/>
+                          <img class="lazyel entered loaded" src="@questionGroup.ImageFilesUrl.First()"
+                            alt="Question Group Image" />
                         </div>
                       }
                     </div>
                     @foreach (var question in questionGroup.Questions.OrderBy(q => q.QuestionNumber))
                     {
-                      <div class="question-wrapper" data-qid="@(question.QuestionNumber)" id="question-wrapper-@(question.QuestionNumber)">
+                      <div class="question-wrapper" data-qid="@(question.QuestionNumber)"
+                        id="question-wrapper-@(question.QuestionNumber)">
                         <div class="question-number" data-qid="@(question.QuestionNumber)" data-markable="true">
                           <strong>@(question.QuestionNumber)</strong>
                         </div>
@@ -79,25 +84,29 @@
                           </div>
                           <div class="question-answers">
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-A" value="A"/>
+                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)"
+                                id="question-@(question.QuestionNumber)-A" value="A" />
                               <label class="form-check-label" for="question-@(question.QuestionNumber)-A">
                                 A. @question.AnswerA
                               </label>
                             </div>
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-B" value="B"/>
+                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)"
+                                id="question-@(question.QuestionNumber)-B" value="B" />
                               <label class="form-check-label" for="question-@(question.QuestionNumber)-B">
                                 B. @question.AnswerB
                               </label>
                             </div>
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-C" value="C"/>
+                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)"
+                                id="question-@(question.QuestionNumber)-C" value="C" />
                               <label class="form-check-label" for="question-@(question.QuestionNumber)-C">
                                 C. @question.AnswerC
                               </label>
                             </div>
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)" id="question-@(question.QuestionNumber)-D" value="D"/>
+                              <input class="form-check-input" type="radio" name="question-@(question.QuestionNumber)"
+                                id="question-@(question.QuestionNumber)-D" value="D" />
                               <label class="form-check-label" for="question-@(question.QuestionNumber)-D">
                                 D. @question.AnswerD
                               </label>
@@ -133,11 +142,13 @@
                 <div class="test-questions-list-part">
                   <h6 id="part-@part.Key">Part @part.Key</h6>
                   <div class="test-questions-list-wrapper">
-                    @foreach (var questionGroup in part.Value.OrderBy(g => g.Questions.FirstOrDefault()?.QuestionNumber ?? 0))
+                    @foreach (var questionGroup in part.Value.OrderBy(g => g.Questions.FirstOrDefault()?.QuestionNumber ??
+                   0))
                     {
                       @foreach (var question in questionGroup.Questions.OrderBy(q => q.QuestionNumber))
                       {
-                        <span class="test-questions-listitem" data-qid="@question.QuestionNumber" id="test-questions-lisitem-@question.QuestionNumber">
+                        <span class="test-questions-listitem" data-qid="@question.QuestionNumber"
+                          id="test-questions-lisitem-@question.QuestionNumber">
                           @(question.QuestionNumber)
                         </span>
                       }
@@ -160,6 +171,3 @@
   <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
   <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 }
-
-
-

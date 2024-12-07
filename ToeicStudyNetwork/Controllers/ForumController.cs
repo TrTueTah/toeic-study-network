@@ -7,9 +7,13 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Net.Http.Headers;
+using ToeicStudyNetwork.ViewModels;
+using ToeicStudyNetwork.Dtos;
+using ToeicStudyNetwork.ViewModels.Forum;
 
 namespace ToeicStudyNetwork.Controllers
 {
+    [Route("[controller]")]
     public class ForumController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -21,14 +25,30 @@ namespace ToeicStudyNetwork.Controllers
             _logger = logger;
         }
 
-        // GET
+        [HttpGet("Newest")]
         public async Task<IActionResult> Index()
         {
-            var posts = await FetchPostsAsync();
-            return View(posts);
+            var forumModel = await FetchPostsAsync();
+            forumModel.Posts = forumModel.Posts.OrderByDescending(post => post.CreatedAt).ToList();
+            forumModel.Type = "Mới nhất";
+            return View("Index", forumModel);
         }
+        [HttpGet("Favourite")]
+        public async Task<IActionResult> SortByLike()
+        {
+            var forumModel = await FetchPostsAsync();
 
-        private async Task<ForumModel> FetchPostsAsync()
+            var handler = new JwtSecurityTokenHandler();
+            var userId = Request.Cookies["userId"];
+
+            var likedPosts = forumModel.Posts.Where(post => post.Likes.Any(like => like.UserId == userId)).ToList();
+            forumModel.Posts = likedPosts;
+            forumModel.Type = "Yêu thích";
+
+            return View("Index", forumModel);
+        }
+        [NonAction]
+        private async Task<ForumViewModel> FetchPostsAsync()
         {
             var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
             response.EnsureSuccessStatusCode();
@@ -61,7 +81,7 @@ namespace ToeicStudyNetwork.Controllers
                 user.Username = Request.Cookies["given_name"];
             }
 
-            var forumModel = new ForumModel
+            var forumModel = new ForumViewModel
             {
                 Posts = posts,
                 User = user
@@ -69,6 +89,7 @@ namespace ToeicStudyNetwork.Controllers
 
             return forumModel;
         }
+        [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] string content, [FromForm] List<IFormFile> files)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -119,6 +140,7 @@ namespace ToeicStudyNetwork.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost("CreateComment")]
         public async Task<IActionResult> CreateComment([FromForm] string content, [FromForm] List<IFormFile> files, [FromForm] string postId)
         {
             if (string.IsNullOrWhiteSpace(content))
@@ -169,7 +191,7 @@ namespace ToeicStudyNetwork.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
+        [HttpPost("ToggleLike")]
         public async Task<IActionResult> ToggleLike([FromBody] ToggleLikeRequest request)
         {
             if (request == null || string.IsNullOrEmpty(request.PostId))
@@ -205,9 +227,5 @@ namespace ToeicStudyNetwork.Controllers
             return Ok(new { Success = true });
         }
 
-    }
-    public class ToggleLikeRequest
-    {
-        public string PostId { get; set; }
     }
 }

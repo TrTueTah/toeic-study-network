@@ -1,6 +1,8 @@
-namespace ToeicStudyNetwork.Models;
+using ToeicStudyNetwork.Models;
 
-public class UserResultResponse
+namespace ToeicStudyNetwork.ViewModels.Test;
+
+public class TestResultViewModel
 {
     public string? UserResultId { get; set; }
     public string? UserId { get; set; }
@@ -15,7 +17,7 @@ public class UserResultResponse
     public int IncorrectAnswerAmount { get; set; }
     public int WithoutAnswerAmount { get; set; }
     public float TimeTaken { get; set; }
-    
+
     public string TimeTakenFormatted
     {
         get

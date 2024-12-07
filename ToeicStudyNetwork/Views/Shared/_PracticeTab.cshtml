@@ -1,4 +1,4 @@
-@model ToeicStudyNetwork.Models.ExamModel
+@model ToeicStudyNetwork.ViewModels.Test.TestDetailViewModel
 <!-- Pro Tips Section -->
 <div class="alert alert-pro-tips my-3" style="font-style: normal">
     <span style="font-style: normal"><strong>Pro tips: </strong>Hình thức luyện tập từng phần và chọn mức thời gian phù
@@ -232,7 +232,7 @@
         });
 
         // Construct the base URL
-        var baseUrl = `@Url.Action("StartExam", "Test", new { id = Model.Id })`;
+        var baseUrl = `@Url.Action("StartExam", "Test", new { id = Model.Exam.Id })`;
 
         // If there are selected parts, append the query string with partNumbers
         var url = baseUrl + (selectedParts.length > 0 ? '?' : '') + selectedParts.map(part => `partNumbers=${part}`).join('&');
