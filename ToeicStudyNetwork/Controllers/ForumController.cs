@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Net.Http.Headers;
+using ToeicStudyNetwork.ViewModels;
+using ToeicStudyNetwork.Dtos;
+using ToeicStudyNetwork.ViewModels.Forum;
 
 namespace ToeicStudyNetwork.Controllers
 {
@@ -26,8 +29,8 @@ namespace ToeicStudyNetwork.Controllers
         public async Task<IActionResult> Index()
         {
             var forumModel = await FetchPostsAsync();
-            forumModel.Posts.OrderByDescending(post => post.CreatedAt).ToList();
-            forumModel.Type = "Newest";
+            forumModel.Posts = forumModel.Posts.OrderByDescending(post => post.CreatedAt).ToList();
+            forumModel.Type = "Mới nhất";
             return View("Index", forumModel);
         }
         [HttpGet("Favourite")]
@@ -40,12 +43,12 @@ namespace ToeicStudyNetwork.Controllers
 
             var likedPosts = forumModel.Posts.Where(post => post.Likes.Any(like => like.UserId == userId)).ToList();
             forumModel.Posts = likedPosts;
-            forumModel.Type = "Favourite";
+            forumModel.Type = "Yêu thích";
 
             return View("Index", forumModel);
         }
         [NonAction]
-        private async Task<ForumModel> FetchPostsAsync()
+        private async Task<ForumViewModel> FetchPostsAsync()
         {
             var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
             response.EnsureSuccessStatusCode();
@@ -78,7 +81,7 @@ namespace ToeicStudyNetwork.Controllers
                 user.Username = Request.Cookies["given_name"];
             }
 
-            var forumModel = new ForumModel
+            var forumModel = new ForumViewModel
             {
                 Posts = posts,
                 User = user
@@ -224,9 +227,5 @@ namespace ToeicStudyNetwork.Controllers
             return Ok(new { Success = true });
         }
 
-    }
-    public class ToggleLikeRequest
-    {
-        public string PostId { get; set; }
     }
 }

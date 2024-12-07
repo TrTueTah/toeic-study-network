@@ -1,8 +1,8 @@
-@model ToeicStudyNetwork.Models.ExamModel
+@model ToeicStudyNetwork.ViewModels.Test.TestDetailViewModel
 <div class="alert alert-take-test my-3" style="font-style: normal">
     <span style="font-style: normal">Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra
         120 phút cho bài test này.</span>
 </div>
 <a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)"
-    href="@Url.Action("StartExam", "Test", new { id = Model.Id})">Bắt
+    href="@Url.Action("StartExam", "Test", new { id = Model.Exam.Id})">Bắt
     đầu thi</a>

@@ -3,7 +3,8 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
-using ToeicStudyNetwork.Models;
+using ToeicStudyNetwork.ViewModels;
+using ToeicStudyNetwork.ViewModels.Authentication;
 
 namespace ToeicStudyNetwork.Controllers
 {
@@ -18,7 +19,7 @@ namespace ToeicStudyNetwork.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> SignIn(SignInModel model)
+        public async Task<IActionResult> SignIn(SignInViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -62,7 +63,7 @@ namespace ToeicStudyNetwork.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> SignUp(SignUpModel model)
+        public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
             if (!ModelState.IsValid)
             {

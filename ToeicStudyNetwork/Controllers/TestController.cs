@@ -2,6 +2,8 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ToeicStudyNetwork.Models;
+using ToeicStudyNetwork.ViewModels;
+using ToeicStudyNetwork.ViewModels.Test;
 
 namespace ToeicStudyNetwork.Controllers;
 
@@ -21,8 +23,8 @@ public class TestController : Controller
         var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
-        var userResults = JsonConvert.DeserializeObject<List<UserResultResponse>>(responseString);
-        var testAnalyticsModel = new TestAnalyticsModel
+        var userResults = JsonConvert.DeserializeObject<List<TestResultViewModel>>(responseString);
+        var testAnalyticsModel = new TestAnalyticsViewModel
         {
             UserResults = userResults
         };
@@ -43,8 +45,11 @@ public class TestController : Controller
                 Exams = group.ToList()
             })
             .ToList();
-
-        return View(examSeries);
+        var testViewModel = new TestViewModel
+        {
+            ExamSeries = examSeries
+        };
+        return View(testViewModel);
     }
 
     [NonAction]
@@ -87,7 +92,11 @@ public class TestController : Controller
     public async Task<IActionResult> DetailExam(string id)
     {
         var exam = await FetchExamAsync(id);
-        return View("Detail", exam);
+        var testDetailViewModel = new TestDetailViewModel
+        {
+            Exam = exam
+        };
+        return View("Detail", testDetailViewModel);
     }
 
     [HttpGet("{id}/start")]
@@ -95,7 +104,7 @@ public class TestController : Controller
     {
         var exam = await FetchExamAsync(id);
 
-        TakeTestModel takeTestModel = new()
+        TestStartViewModel takeTestModel = new()
         {
             Id = exam.Id,
             TestType = "Full Test",
@@ -142,7 +151,11 @@ public class TestController : Controller
     {
         var exam = await FetchExamAsync(id);
         ViewBag.ActiveTab = activeTab;
-        return View("Detail", exam);
+        var testDetailViewModel = new TestDetailViewModel
+        {
+            Exam = exam
+        };
+        return View("Detail", testDetailViewModel);
     }
 
     [HttpGet("{partId}/questions")]
@@ -177,7 +190,7 @@ public class TestController : Controller
             return BadRequest("Failed to fetch result data.");
         }
 
-        var resultData = JsonConvert.DeserializeObject<UserResultResponse>(await response.Content.ReadAsStringAsync());
+        var resultData = JsonConvert.DeserializeObject<TestResultViewModel>(await response.Content.ReadAsStringAsync());
         var userImage = Request.Cookies["userImage"];
         var username = Request.Cookies["given_name"];
         ViewBag.UserImage = userImage;

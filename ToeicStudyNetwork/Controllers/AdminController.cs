@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ToeicStudyNetwork.Dtos;
 using ToeicStudyNetwork.Models;
 
 namespace ToeicStudyNetwork.Controllers;
@@ -14,7 +15,7 @@ public class AdminController : Controller
     {
         _httpClient = httpClient;
     }
-    
+
     // GET
     [HttpGet]
     public async Task<IActionResult> Index()
@@ -22,7 +23,7 @@ public class AdminController : Controller
         var exams = await FetchAllExams();
         return View(exams);
     }
-    
+
     [HttpPost("createExam")]
     public async Task<IActionResult> CreateExam([FromBody] CreateExamRequest request)
     {
@@ -47,7 +48,7 @@ public class AdminController : Controller
         var createdExam = JsonConvert.DeserializeObject<ExamModel>(await response.Content.ReadAsStringAsync());
         return RedirectToAction("CreateTest", new { examId = createdExam?.Id });
     }
-    
+
     [NonAction]
     private async Task<List<ExamModel>> FetchAllExams()
     {
@@ -75,10 +76,10 @@ public class AdminController : Controller
     [HttpGet("{examId}/create")]
     public async Task<IActionResult> CreateTest(string examId)
     {
-        var exam =  await FetchExamById(examId);
+        var exam = await FetchExamById(examId);
         return View("CreateTest", exam);
     }
-    
+
     [HttpGet("{examId}/upload")]
     public IActionResult UploadAssets()
     {
