@@ -36,7 +36,7 @@ public class UserResultController : ControllerBase
                 message = "Result submitted successfully.",
                 result = new
                 {
-                    resultId = result.UserResultId,
+                    resultId = result.Id,
                     userId = result.UserId,
                     examId = result.ExamId,
                     score = result.Score,

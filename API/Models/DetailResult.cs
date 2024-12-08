@@ -2,7 +2,7 @@
 
 public class DetailResult
 {
-    public string DetailResultId { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string? UserResultId { get; set; }
     public int QuestionNumber { get; set; }
     public string? UserAnswer { get; set; }
