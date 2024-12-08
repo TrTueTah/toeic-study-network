@@ -1,17 +1,17 @@
-@model ToeicStudyNetwork.ViewModels.Forum.MediaPostViewModel
-<div class="media-container" id="@Model.Post.Id">
+@model ToeicStudyNetwork.Models.PostModel
+<div class="media-container" id="@Model.Id">
     <div class="avatar">
-        <img src="@Model.Post.UserImageUrl" alt="Avatar" style="width: 40px; height: 40px; border-radius: 100%;" />
+        <img src="@Model.UserImageUrl" alt="Avatar" style="width: 40px; height: 40px; border-radius: 100%;" />
     </div>
     <div class="media-main">
         <div class="media-header d-flex justify-content-between align-items-center">
             <div class="media-info">
-                <div class="username">@Model.Post.UserName</div>
-                <div class="timestamp">@Model.Post.CreatedAt</div>
+                <div class="username">@Model.UserName</div>
+                <div class="timestamp">@Model.CreatedAt.ToLocalTime().ToString("HH:mm:ss - dd/MM/yyyy")</div>
             </div>
             <div class="dropdown">
                 <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                        aria-expanded="false">
                     <i class="bi bi-three-dots"></i>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -28,323 +28,65 @@
                         </a>
                     </li>
                 </ul>
-
             </div>
         </div>
-
-        <div class="media-content">
-            <div class="media-caption">
-                <span>@Model.Post.Content</span>
+        <div class="media-content" >
+            <div class="media-caption" style="cursor:pointer;" id="mediaMain-@Model.Id">
+                <span>@Model.Content</span>
             </div>
             <div class="media-image-container">
-                @if (Model.Post.MediaUrls != null && Model.Post.MediaUrls.Count > 0)
+                @if (Model.MediaUrls.Count > 0)
                 {
-                    foreach (var mediaUrl in Model.Post.MediaUrls)
+                    foreach (var mediaUrl in Model.MediaUrls)
                     {
-                        <div class="media-image">
-                            <img src="@mediaUrl" alt="Media Image" style="width: 400px; height: 400px;" />
+                        <div class="media-image" id="image-button">
+                            <img src="@mediaUrl" alt="Media Image" />
                         </div>
                     }
                 }
             </div>
         </div>
+        
         <div class=" media-action-container">
             <div class="media-action">
                 <button class="media-action-button">
                     <i id="likeIcon" class="bi bi-heart"></i>
                 </button>
-                <span class="total-text">@Model.Post.TotalLikes</span>
+                <span class="total-text">@Model.Likes.Count</span>
             </div>
-            <div class="media-action">
+            <div class="media-action" style="cursor: pointer" id="comment-button" data-bs-toggle="modal" data-post-id="@Model.Id">
                 <button class="media-action-button">
                     <i class="bi bi-chat"></i>
                 </button>
-                <span class="total-text">@Model.Post.Comments.Count</span>
-            </div>
-            <div class="media-action">
-                <button class="media-action-button">
-                    <i class="bi bi-send"></i>
-                </button>
-                <span class="total-text">88</span>
+                <span class="total-text">@Model.Comments.Count</span>
             </div>
         </div>
-        @if (@Model.User.Username == null)
-        {
-            <div class="d-flex justify-content-center p-4">
-                <span class="text-secondary">Please login to comment</span>
-            </div>
-        }
-        else
-        {
-            <div class="media-content me-4 pe-2">
-                <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
-                    asp-action="CreateComment">
-                    <div class="d-flex flex-row">
-                        <img src="@Model.User.ImageUrl" alt="Avatar"
-                            style="width: 40px; height: 40px; border-radius: 100%; margin-right: 8px;" />
-                        <textarea id="commentContent" class="form-control" rows="2"
-                            placeholder="Add a comment..."></textarea>
-                    </div>
-                    <div id="image-holder" class="ms-5 mt-2">
+    </div>
+</div>
 
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="button" class="btn-action" id="upload-image-button">
-                            <i class="bi bi-images"></i>
-                        </button>
-                        <button type="submit" class="btn btn-primary mt-2 ">Post Comment</button>
-                    </div>
-                </form>
-            </div>
-        }
-        <div>
-            <div class="media-comments">
-                @if (Model.Post.Comments != null && Model.Post.Comments.Count > 0)
-                {
-                    foreach (var comment in Model.Post.Comments)
-                    {
-                        <div class="media-comment">
-                            <div class="avatar">
-                                <img src="@comment.UserImageUrl" alt="Avatar"
-                                    style="width: 30px; height: 30px; border-radius: 100%;" />
-                            </div>
-                            <div class="comment-content">
-                                <div class="comment-header">
-                                    <div class="username">@comment.Username</div>
-                                    <div class="timestamp">@comment.CreatedAt</div>
-                                </div>
-                                <div class="comment-text">
-                                    <span>@comment.Content</span>
-                                </div>
-                                <div>
-                                    @if (comment.MediaUrls != null && comment.MediaUrls.Count > 0)
-                                    {
-                                        foreach (var mediaUrl in comment.MediaUrls)
-                                        {
-                                            <div class="comment-image">
-                                                <img src="@mediaUrl" alt="Media Image"
-                                                    style="width: 60px; height: 60px; margin: 5px; border-radius: 10px;" />
-                                            </div>
-                                        }
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" alt="Preview" class="img-fluid" style="max-height: 90vh;" />
-            </div>
-        </div>
-    </div>
-</div>
+<input type="hidden" id="postId" value="@Model.Id" />
+
 
 <script>
-    (function () {
-        // Sử dụng Set để lưu trữ danh sách file đã chọn
-        const selectedFiles = new Set();
+    document.getElementById("mediaMain-@Model.Id").addEventListener("click", async function() {
+        var url = `@Url.Action("PostDetail", "Forum", new {postId = @Model.Id})`
+    
+        window.location.href = url;
+    })
 
-        // Lấy container dựa trên ID duy nhất
-        const containerId = "@Model.Post.Id";
-        const container = document.getElementById(containerId);
+    document.querySelectorAll("#comment-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const postId = this.getAttribute("data-post-id");
+            const url = `@Url.Action("PostDetail", "Forum", new { postId = "__postId__" })`.replace("__postId__", postId);
+            const currentUrl = window.location.pathname;
 
-        // Kiểm tra container tồn tại
-        if (!container) {
-            console.error(`Container với ID "${containerId}" không tồn tại.`);
-            return;
-        }
-
-        // Lấy danh sách likes từ Razor
-        const likes = @Html.Raw(Json.Serialize(Model.Post.Likes));
-        const currentUsername = "@Model.User.Username";
-
-        // Kiểm tra trạng thái đã thích
-        const likeIcon = container.querySelector("#likeIcon");
-        const userHasLiked = likes.some(like => like.username === currentUsername);
-
-        console.log(likes, currentUsername, userHasLiked);
-
-        if (userHasLiked) {
-            likeIcon.classList.add("text-danger"); // Đổi màu trái tim thành đỏ
-            likeIcon.classList.remove("bi-heart");
-            likeIcon.classList.add("bi-heart-fill"); // Đổi icon thành trái tim đầy
-        }
-
-        // Xử lý sự kiện click vào biểu tượng trái tim
-        likeIcon.addEventListener("click", async function () {
-            const isLiked = likeIcon.classList.contains("text-danger");
-            const postId = containerId;
-
-            try {
-                const response = await fetch(`/Forum/ToggleLike`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ postId: "@Model.Post.Id" }),
-                });
-
-                if (response.ok) {
-                    // Cập nhật giao diện dựa trên trạng thái mới
-                    if (isLiked) {
-                        likeIcon.classList.remove("text-danger");
-                        likeIcon.classList.remove("bi-heart-fill");
-                        likeIcon.classList.add("bi-heart");
-                    } else {
-                        likeIcon.classList.add("text-danger");
-                        likeIcon.classList.remove("bi-heart");
-                        likeIcon.classList.add("bi-heart-fill");
-                    }
-
-                    // Cập nhật số lượt thích
-                    const totalLikesSpan = container.querySelector(".total-text");
-                    let totalLikes = parseInt(totalLikesSpan.textContent);
-                    if (!isLiked) {
-                        totalLikes++;
-                    } else {
-                        totalLikes--;
-                    }
-                    totalLikesSpan.textContent = totalLikes;
-                } else {
-                    console.error("Không thể cập nhật trạng thái thích.");
-                    alert("Hãy đăng nhập để tương tác với bài viết");
-                }
-            } catch (error) {
-                console.error("Lỗi kết nối:", error);
-                alert("Có lỗi xảy ra trong khi cập nhật trạng thái thích.");
+            if (url === currentUrl) {
+                const commentModal = new bootstrap.Modal(document.getElementById("commentModal"));
+                commentModal.show();
+            } else {
+                window.location.href = url;
             }
         });
-
-        container.querySelectorAll(".media-image img, .comment-image img").forEach(img => {
-            img.addEventListener("click", function () {
-                const modalImage = document.getElementById("modalImage");
-                modalImage.src = this.src;
-                const imageModal = new bootstrap.Modal(document.getElementById("imageModal"));
-                imageModal.show();
-            });
-        });
-        // Xử lý sự kiện click nút upload ảnh
-        const uploadButton = container.querySelector("#upload-image-button");
-        if (uploadButton) {
-            uploadButton.addEventListener("click", function () {
-                const fileInput = document.createElement("input");
-                fileInput.type = "file";
-                fileInput.accept = "image/*";
-                fileInput.multiple = true; // Cho phép chọn nhiều ảnh
-                fileInput.click();
-
-                fileInput.addEventListener("change", function () {
-                    const files = fileInput.files;
-                    const imageHolder = container.querySelector("#image-holder");
-
-                    for (const file of files) {
-                        // Bỏ qua file đã được thêm trước đó
-                        if ([...selectedFiles].some((f) => f.name === file.name)) continue;
-                        selectedFiles.add(file);
-
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const img = document.createElement("img");
-                            img.src = e.target.result;
-                            img.style.width = "60px";
-                            img.style.height = "60px";
-                            img.style.border = "1px solid #ccc";
-                            img.style.display = "inline-block";
-                            img.style.margin = "5px";
-                            img.style.borderRadius = "5px";
-
-                            const cancelIcon = document.createElement("span");
-                            cancelIcon.innerHTML = "&times;";
-                            cancelIcon.style.position = "absolute";
-                            cancelIcon.style.top = "0";
-                            cancelIcon.style.left = "0";
-                            cancelIcon.style.background = "#fff";
-                            cancelIcon.style.border = "1px solid #ccc";
-                            cancelIcon.style.borderRadius = "50%";
-                            cancelIcon.style.cursor = "pointer";
-                            cancelIcon.style.fontSize = "12px";
-                            cancelIcon.style.width = "16px";
-                            cancelIcon.style.height = "16px";
-                            cancelIcon.style.lineHeight = "16px";
-                            cancelIcon.style.textAlign = "center";
-
-                            const imgContainer = document.createElement("div");
-                            imgContainer.style.position = "relative";
-                            imgContainer.style.display = "inline-block";
-                            imgContainer.appendChild(img);
-                            imgContainer.appendChild(cancelIcon);
-
-                            // Xử lý sự kiện xóa ảnh
-                            cancelIcon.addEventListener("click", function () {
-                                imageHolder.removeChild(imgContainer);
-                                selectedFiles.delete(file);
-                            });
-
-                            // Thêm ảnh vào image holder
-                            imageHolder.appendChild(imgContainer);
-
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            });
-        }
-
-        // Xử lý sự kiện submit form
-        const form = container.querySelector("#postForm");
-        if (form) {
-            form.addEventListener("submit", async function (event) {
-                event.preventDefault(); // Ngăn form submit mặc định
-
-                const formData = new FormData(form);
-
-                // Append các file đã chọn vào FormData
-                for (const file of selectedFiles) {
-                    formData.append("files", file);
-                }
-
-                // Append the post content
-                const content = container.querySelector("#commentContent").value;
-                formData.append("content", content);
-
-                formData.append("postId", containerId)
-
-                // Debug FormData (kiểm tra trước khi gửi)
-                for (let [key, value] of formData.entries()) {
-                    console.log(`${key}:`, value);
-                }
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    if (response.ok) {
-                        alert("Bình luận đã được đăng thành công!");
-                        window.location.reload(); // Reload lại trang sau khi đăng thành công
-                    } else {
-                        const error = await response.text();
-                        console.error("Lỗi khi gửi form:", error);
-                        alert("Không thể gửi bình luận.");
-                    }
-                } catch (error) {
-                    console.error("Lỗi kết nối:", error);
-                    alert("Có lỗi xảy ra trong khi gửi bình luận.");
-                }
-            });
-        } else {
-            console.error("Form với ID #postForm không tìm thấy.");
-        }
-    })();
+    });
+    
 </script>

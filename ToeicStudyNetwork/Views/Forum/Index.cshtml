@@ -1,5 +1,4 @@
-@model ToeicStudyNetwork.ViewModels.Forum.ForumViewModel
-@using ToeicStudyNetwork.ViewModels.Forum
+@model List<ToeicStudyNetwork.ViewModels.Forum.PostViewModel>
 @{
     ViewBag.Title = "Forum";
     Layout = "_LayoutForum";
@@ -19,11 +18,11 @@
         </div>
 
         <div class="col text-center d-flex justify-content-center align-items-center">
-            <span class="py-2" id="title">@Model.Type</span>
+            <span class="py-2" id="title">Newest</span>
 
             <div class="dropdown">
                 <button class="btn btn-icon mx-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                        aria-expanded="false">
                     <i class="bi bi-chevron-down"></i>
                 </button>
                 <ul class="dropdown-menu expanded-dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -52,7 +51,7 @@
     </div>
 
     <div class="card">
-        @if (@Model.User.ImageUrl == null)
+        @if (@ViewBag.UserImageUrl == null)
         {
             <div class="d-flex justify-content-center p-4">
                 <span class="text-secondary">Hãy đăng nhập để đăng bài</span>
@@ -62,7 +61,7 @@
         {
             <div class="card-header">
                 <div class="avatar">
-                    <img src="@Model.User.ImageUrl" alt="Avatar" class="rounded-avatar">
+                    <img src="@ViewBag.UserImageUrl" alt="Avatar" class="rounded-avatar">
                 </div>
                 <div role="button" class="post-text" data-mdb-toggle="modal" data-mdb-target="#postModal" tabindex="0">
                     <span>What's new?</span>
@@ -75,20 +74,20 @@
                         <div class="modal-content">
                             <div
                                 class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
-                                <div type="button" class="btn btn-link" data-bs-dismiss="modal"><span>Huỷ bỏ</span></div>
+                                <div type="button" class="btn btn-link opacity-0" style="cursor: default" data-bs-dismiss="modal"><span>Huỷ bỏ</span></div>
                                 <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel"
                                     style="font-weight: 600;">Bài viết mới</h6>
                             </div>
 
                             <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
-                                asp-action="CreatePost">
+                                  asp-action="CreatePost">
                                 <div class="modal-body">
                                     <div class="post-grid">
                                         <div class="avatar-section">
-                                            <img src="@Model.User.ImageUrl" class="avatar-img rounded-circle" alt="Avatar">
+                                            <img src="@ViewBag.UserImageUrl" class="avatar-img rounded-circle" alt="Avatar">
                                         </div>
                                         <div class="user-info">
-                                            <span class="user-name">@Model.User.Username</span>
+                                            <span class="user-name">@ViewBag.UserName</span>
                                         </div>
 
                                         <div class="post-input">
@@ -103,11 +102,6 @@
                                             <div class="action-item">
                                                 <button type="button" class="btn-action" id="upload-image-button">
                                                     <i class="bi bi-images"></i>
-                                                </button>
-                                            </div>
-                                            <div class="action-item">
-                                                <button type="button" class="btn-action">
-                                                    <i class="bi bi-text-left"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -125,13 +119,26 @@
             </div>
         }
 
-        @foreach (var post in Model.Posts)
+        @foreach (var post in Model.OrderByDescending(p => p.CreatedAt))
         {
-            @await Html.PartialAsync("_MediaPost", new MediaPostViewModel { Post = post, User = Model.User })
+            @await Html.PartialAsync("_MediaPost", new PostModel { Id = post.Id, Content = post.Content, MediaUrls = post.MediaUrls, CreatedAt = post.CreatedAt, Likes = post.Likes, Comments = post.Comments, UserId = post.UserId, UserName = post.UserName, UserImageUrl = post.UserImageUrl})
         }
     </div>
 </div>
 
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Preview" class="img-fluid" style="max-height: 90vh;" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts {
-    <script src="~/js/forum.js" asp-append-version="true"></script>
+    <script src="~/js/forum_index.js" asp-append-version="true"></script>
 }

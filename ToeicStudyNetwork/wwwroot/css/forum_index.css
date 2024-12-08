@@ -1,7 +1,7 @@
 .container {
     width: 60%;
     height: 100%;
-    padding-top: 2rem;
+    padding: 2rem 0;
 }
 
 .forum-navbar {
@@ -84,13 +84,21 @@
 .media-container {
     display: flex;
     background-color: #ffffff;
-    padding: 16px 20px;
+    padding: 16px 24px;
     border-top: 1px solid #D5D5D5;;
+    gap: 0.5rem;
 }
+.media-sub-container {
+    display: flex;
+    background-color: #ffffff;
+    padding: 2rem;
+    border-top: 1px solid #D5D5D5;;
+    gap: 0.5rem;
+}
+
 
 .avatar {
     position: relative;
-    margin-right: 16px; 
 }
 
 .rounded-avatar {
@@ -111,7 +119,8 @@
 
 .media-info {
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .username {
@@ -155,8 +164,8 @@
 .media-image-container {
     display: flex;
     gap: 10px;
-    overflow-x: auto; 
     max-width: 100%;
+    overflow-x: auto;
     scrollbar-width: none; 
 }
 
@@ -170,6 +179,8 @@
     max-width: 100%;
     height: auto;
     display: block;
+    overflow: hidden;
+    max-height: 235px;
 }
 
 .media-action-container {
@@ -268,14 +279,15 @@
     background: none;
     color: var(--black-500);
 }
+
 /* Grid container */
 .post-grid {
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: auto auto auto;
-    grid-column-gap: 20px;
-    grid-row-gap: 12px;
-    padding: 16px;
+    grid-column-gap: 0.5rem;
+    grid-row-gap: 0.5rem;
+    padding: 1rem 0;
 }
 
 .avatar-section {
