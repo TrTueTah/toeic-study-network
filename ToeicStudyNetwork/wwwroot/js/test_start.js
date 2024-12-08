@@ -142,13 +142,14 @@ function initializeSubmitTest() {
       });
 
       const examId = document.getElementById("exam-id").value;
+      const examType = document.getElementById("exam-type").value;
       const timeTaken = Math.floor(parseFloat(document.getElementById('timeleft').getAttribute('data-totaltime')));
       const userId = Cookies.get('userId')
       const requestData = {
         userId: userId,
         examId: examId,
         timeTaken: timeTaken,
-        type: 'Full Test',
+        type: examType,
         answers: answers
       };
 
