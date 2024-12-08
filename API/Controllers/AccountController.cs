@@ -101,4 +101,43 @@ public class AccountController : ControllerBase
             return StatusCode(500, new { Message = "Undefine Error", Error = e.Message });
         }
     }
+    [HttpPost("changePassword/{id}")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> ChangePassword([FromRoute] string id, [FromBody] ChangePasswordRequestDto request)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = _userRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+
+            var hashedPassword = _userRepository.HashPassword(request.CurrentPassword);
+            if (user.Password != hashedPassword)
+            {
+                return BadRequest(new { Message = "Current password is incorrect" });
+            }
+
+            user.Password = _userRepository.HashPassword(request.NewPassword);
+            var updatedUser = _userRepository.UpdateUser(user);
+            if (updatedUser != null)
+            {
+                return Ok(new { Message = "Password updated successfully" });
+            }
+            else
+            {
+                return StatusCode(500, new { Message = "There was an error updating the password" });
+            }
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, new { Message = "Undefine Error", Error = e.Message });
+        }
+    }
 }

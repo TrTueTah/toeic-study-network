@@ -11,6 +11,6 @@ namespace API.Dtos.UserDto
         [AllowNull]
         public string? Username { get; set; }
         [AllowNull]
-        public string? ImageUrl { get; set; }
+        public IFormFile? ImageFile { get; set; }
     }
 }
