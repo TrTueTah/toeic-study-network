@@ -26,7 +26,7 @@ public class PostRepository : IPostRepository
             .Where(p => p.Id == id)
             .Include(p=>p.Comments)
             .Include(p=>p.Likes)
-            .FirstOrDefault();
+            .FirstOrDefault() ?? throw new InvalidOperationException();
     }
 
     public List<Post> GetPostsByUserId(string id)

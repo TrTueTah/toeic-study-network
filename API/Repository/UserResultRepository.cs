@@ -211,7 +211,7 @@ public class UserResultRepository : IUserResultRepository
     public async Task<UserResultDto> GetDetailsResultAsync(string userResultId)
     {
         var userResult = await _context.UserResults
-            .Where(ur => ur.UserResultId == userResultId)
+            .Where(ur => ur.Id == userResultId)
             .Include(ur => ur.DetailResults)
             .FirstOrDefaultAsync();
 
@@ -261,7 +261,7 @@ public class UserResultRepository : IUserResultRepository
         
         var resultDto = new UserResultDto
         {
-            UserResultId = userResult.UserResultId,
+            UserResultId = userResult.Id,
             UserId = userResult.UserId,
             ExamId = userResult.ExamId,
             ExamName = exam.Title,
@@ -301,7 +301,7 @@ public class UserResultRepository : IUserResultRepository
     public QuestionDetailResultDto GetQuestionDetailResult(string detailResultId)
     {
         var detailResult = _context.DetailResults
-            .FirstOrDefault(ur => ur.DetailResultId == detailResultId);
+            .FirstOrDefault(ur => ur.Id == detailResultId);
         
         if (detailResult == null)
         {
@@ -309,7 +309,7 @@ public class UserResultRepository : IUserResultRepository
         }
         
         var userResult = _context.UserResults
-            .FirstOrDefault(ur => ur.UserResultId == detailResult.UserResultId);
+            .FirstOrDefault(ur => ur.Id == detailResult.UserResultId);
         
         if (userResult == null)
         {

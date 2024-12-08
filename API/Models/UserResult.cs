@@ -2,7 +2,7 @@
 
 public class UserResult
 {
-    public string UserResultId { get; set; } = Guid.NewGuid().ToString();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public string? UserId { get; set; }
     public string? ExamId { get; set; }
     public int? Score { get; set; }
