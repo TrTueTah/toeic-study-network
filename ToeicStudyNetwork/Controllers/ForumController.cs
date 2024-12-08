@@ -1,13 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Threading.Tasks;
 using ToeicStudyNetwork.Models;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using System.Net.Http.Headers;
-using ToeicStudyNetwork.ViewModels;
 using ToeicStudyNetwork.Dtos;
 using ToeicStudyNetwork.ViewModels.Forum;
 
@@ -17,78 +12,59 @@ namespace ToeicStudyNetwork.Controllers
     public class ForumController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly ILogger<ForumController> _logger;
 
-        public ForumController(HttpClient httpClient, ILogger<ForumController> logger)
+        public ForumController(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _logger = logger;
         }
 
-        [HttpGet("Newest")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var forumModel = await FetchPostsAsync();
-            forumModel.Posts = forumModel.Posts.OrderByDescending(post => post.CreatedAt).ToList();
-            forumModel.Type = "Mới nhất";
-            return View("Index", forumModel);
+            var response = await FetchAllPosts();
+            
+            var posts = response.Select(p => new PostViewModel
+            {
+                Id = p.Id,
+                Content = p.Content,
+                MediaUrls = p.MediaUrls,
+                CreatedAt = p.CreatedAt,
+                Likes = p.Likes,
+                Comments = p.Comments,
+                UserId = p.UserId,
+                UserName = p.UserName,
+                UserImageUrl = p.UserImageUrl
+            }).ToList();
+            
+            ViewBag.UserImageUrl = Request.Cookies["userImage"];
+            ViewBag.UserName = Request.Cookies["given_name"];
+            return View("Index", posts);
         }
-        [HttpGet("Favourite")]
-        public async Task<IActionResult> SortByLike()
+        
+        [HttpGet("post/{postId}")]
+        public async Task<IActionResult> PostDetail([FromRoute] string postId)
         {
-            var forumModel = await FetchPostsAsync();
+            var postData = await FetchPostById(postId);
 
-            var handler = new JwtSecurityTokenHandler();
-            var userId = Request.Cookies["userId"];
-
-            var likedPosts = forumModel.Posts.Where(post => post.Likes.Any(like => like.UserId == userId)).ToList();
-            forumModel.Posts = likedPosts;
-            forumModel.Type = "Yêu thích";
-
-            return View("Index", forumModel);
-        }
-        [NonAction]
-        private async Task<ForumViewModel> FetchPostsAsync()
-        {
-            var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
-            response.EnsureSuccessStatusCode();
-
-            var responseString = await response.Content.ReadAsStringAsync();
-            var posts = JsonConvert.DeserializeObject<List<PostModel>>(responseString);
-            var user = new UserModel();
-
-            foreach (var post in posts)
+            var postModel = new PostModel()
             {
-                var comments = await _httpClient.GetAsync($"http://localhost:5112/api/v1/comment/getCommentsByPostId/{post.Id}");
-                comments.EnsureSuccessStatusCode();
-                var commentsString = await comments.Content.ReadAsStringAsync();
-                post.Comments = JsonConvert.DeserializeObject<List<CommentModel>>(commentsString);
-
-                var likes = await _httpClient.GetAsync($"http://localhost:5112/api/v1/like/getLikesByPostId/{post.Id}");
-                likes.EnsureSuccessStatusCode();
-                var likesString = await likes.Content.ReadAsStringAsync();
-                post.Likes = JsonConvert.DeserializeObject<List<LikeModel>>(likesString);
-            }
-
-            var token = Request.Cookies["token"];
-            if (!string.IsNullOrEmpty(token))
-            {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                user.ImageUrl = Request.Cookies["userImage"];
-                user.Email = Request.Cookies["email"];
-                user.Username = Request.Cookies["given_name"];
-            }
-
-            var forumModel = new ForumViewModel
-            {
-                Posts = posts,
-                User = user
+                Id = postData.Id,
+                Content = postData.Content,
+                MediaUrls = postData.MediaUrls,
+                CreatedAt = postData.CreatedAt,
+                Likes = postData.Likes,
+                Comments = postData.Comments,
+                UserId = postData.UserId,
+                UserName = postData.UserName,
+                UserImageUrl = postData.UserImageUrl
             };
-
-            return forumModel;
+            
+            ViewBag.UserImageUrl = Request.Cookies["userImage"];
+            ViewBag.UserName = Request.Cookies["given_name"];
+            
+            return View("PostDetail", postModel);
         }
+        
         [HttpPost("CreatePost")]
         public async Task<IActionResult> CreatePost([FromForm] string content, [FromForm] List<IFormFile> files)
         {
@@ -97,24 +73,12 @@ namespace ToeicStudyNetwork.Controllers
                 return BadRequest("Content cannot be empty.");
             }
 
-            if (files == null || files.Count == 0)
+            if (files.Count == 0)
             {
                 return BadRequest("At least one file is required.");
             }
 
-            var token = Request.Cookies["token"];
-            if (string.IsNullOrEmpty(token))
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-
-            var userEmail = Request.Cookies["email"];
-            var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
-            userIdResponse.EnsureSuccessStatusCode();
-            var userId = await userIdResponse.Content.ReadAsStringAsync();
+            var userId = Request.Cookies["userId"];
 
             using var formData = new MultipartFormDataContent();
             formData.Add(new StringContent(userId), "UserId");
@@ -126,7 +90,7 @@ namespace ToeicStudyNetwork.Controllers
                 {
                     var fileContent = new StreamContent(file.OpenReadStream());
                     fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
-                    formData.Add(fileContent, "MediaFiles", file.FileName); // Use "MediaFiles" as the key
+                    formData.Add(fileContent, "MediaFiles", file.FileName); 
                 }
             }
 
@@ -147,25 +111,8 @@ namespace ToeicStudyNetwork.Controllers
             {
                 return BadRequest("Content cannot be empty.");
             }
-
-            if (files == null || files.Count == 0)
-            {
-                return BadRequest("At least one file is required.");
-            }
-
-            var token = Request.Cookies["token"];
-            if (string.IsNullOrEmpty(token))
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-
-            var userEmail = Request.Cookies["email"];
-            var userIdResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/users/getUserIdByEmail/{userEmail}");
-            userIdResponse.EnsureSuccessStatusCode();
-            var userId = await userIdResponse.Content.ReadAsStringAsync();
+            
+            var userId = Request.Cookies["userId"];
 
             using var formData = new MultipartFormDataContent();
             formData.Add(new StringContent(userId), "UserId");
@@ -178,7 +125,7 @@ namespace ToeicStudyNetwork.Controllers
                 {
                     var fileContent = new StreamContent(file.OpenReadStream());
                     fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
-                    formData.Add(fileContent, "MediaFiles", file.FileName); // Use "MediaFiles" as the key
+                    formData.Add(fileContent, "MediaFiles", file.FileName);
                 }
             }
 
@@ -191,6 +138,7 @@ namespace ToeicStudyNetwork.Controllers
 
             return RedirectToAction("Index");
         }
+        
         [HttpPost("ToggleLike")]
         public async Task<IActionResult> ToggleLike([FromBody] ToggleLikeRequest request)
         {
@@ -226,6 +174,29 @@ namespace ToeicStudyNetwork.Controllers
 
             return Ok(new { Success = true });
         }
+        
+        [NonAction]
+        private async Task<List<PostDetailResponse>> FetchAllPosts()
+        {
+            var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
+            response.EnsureSuccessStatusCode();
 
+            var responseData = await response.Content.ReadAsStringAsync();
+            var posts = JsonConvert.DeserializeObject<List<PostDetailResponse>>(responseData);
+
+            return posts;
+        }
+        
+        [NonAction]
+        private async Task<PostDetailResponse> FetchPostById(string postId)
+        {
+            var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/post/getPostById/{postId}");
+
+            response.EnsureSuccessStatusCode();
+
+            var responseData = await response.Content.ReadAsStringAsync();
+            var post = JsonConvert.DeserializeObject<PostDetailResponse>(responseData);
+            return post;
+        }
     }
 }
