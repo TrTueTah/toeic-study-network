@@ -41,11 +41,59 @@ public class UserResultRepository : IUserResultRepository
         int readingCorrect = 0;
         int listeningCorrect = 0;
         
+        var questionCounts = new Dictionary<string, int>
+        {
+            { "Full Test", 200 },
+            { "Part 1", 6 },
+            { "Part 2", 25 },
+            { "Part 3", 39 },
+            { "Part 4", 30 },
+            { "Part 5", 30 },
+            { "Part 6", 16 },
+            { "Part 7", 54 },
+        };
+        
+        var types = submission.Type.Split(",");
+        int totalQuestions = 0;
+
+        foreach (var type in types)
+        {
+            var trimmedType = type.Trim();
+            if (questionCounts.ContainsKey(trimmedType))
+            {
+                totalQuestions += questionCounts[trimmedType];
+                        
+            }
+        }
+        
+        var validTypes = submission.Type.Split(",").Select(t => t.Trim()).ToList();
+        
+        var typeRanges = new Dictionary<string, (int Start, int End)>
+        {
+            { "Part 1", (1, 6) },
+            { "Part 2", (7, 31) },
+            { "Part 3", (32, 70) },
+            { "Part 4", (71, 100) },
+            { "Part 5", (101, 130) },
+            { "Part 6", (131, 146) },
+            { "Part 7", (147, 200) }
+        };
+
+        var allQuestions = _context.Questions
+            .Where(q => q.Group.ExamId == submission.ExamId)
+            .ToList();
+
+        var filteredQuestions = allQuestions
+            .Where(q =>
+                validTypes.Any(type =>
+                    typeRanges.ContainsKey(type) &&
+                    q.QuestionNumber >= typeRanges[type].Start &&
+                    q.QuestionNumber <= typeRanges[type].End
+                )).ToList();
+        
         var detailResults = new List<DetailResult>();
 
-        var questions = questionGroups.SelectMany(qg => qg.Questions).ToList();
- 
-        foreach (var question in questions)
+        foreach (var question in filteredQuestions)
         {
             if (submission.Answers.TryGetValue(question.QuestionNumber, out string userAnswer))
             {
@@ -82,9 +130,16 @@ public class UserResultRepository : IUserResultRepository
             }
         }
         
-        int totalScore = CalculateToeicScore(readingCorrect, listeningCorrect);
-        int ReadingScore = GetReadingScore(readingCorrect);
-        int ListeningScore = GetListeningScore(readingCorrect);
+        int? totalScore = null;
+        int? ReadingScore = null;
+        int? ListeningScore = null;
+        
+        if (submission.Type.Equals("Full Test", StringComparison.OrdinalIgnoreCase))
+        {
+            totalScore = CalculateToeicScore(readingCorrect, listeningCorrect);
+            ReadingScore = GetReadingScore(readingCorrect);
+            ListeningScore = GetListeningScore(readingCorrect);
+        }
         
         var userResult = new UserResult
         {
@@ -165,6 +220,31 @@ public class UserResultRepository : IUserResultRepository
             throw new Exception("User result not found.");
         }
         
+        var questionCounts = new Dictionary<string, int>
+        {
+            { "Full Test", 200 },
+            { "Part 1", 6 },
+            { "Part 2", 25 },
+            { "Part 3", 39 },
+            { "Part 4", 30 },
+            { "Part 5", 30 },
+            { "Part 6", 16 },
+            { "Part 7", 54 },
+        };
+        
+        var types = userResult.Type.Split(",");
+        int totalQuestions = 0;
+
+        foreach (var type in types)
+        {
+            var trimmedType = type.Trim();
+            if (questionCounts.ContainsKey(trimmedType))
+            {
+                totalQuestions += questionCounts[trimmedType];
+                        
+            }
+        }
+        
         var readingCorrect = userResult.DetailResults
             .Count(dr => dr.QuestionNumber > 100 && dr.IsCorrect);
 
@@ -174,7 +254,7 @@ public class UserResultRepository : IUserResultRepository
         var unansweredCount = userResult.DetailResults
             .Count(dr => string.IsNullOrEmpty(dr.UserAnswer));
 
-        var incorrectCount = 200 - userResult.CorrectAnswerAmount;
+        var incorrectCount = totalQuestions - userResult.CorrectAnswerAmount;
 
         var exam = _context.Exams
             .FirstOrDefault(ex => ex.Id == userResult.ExamId);
@@ -191,6 +271,7 @@ public class UserResultRepository : IUserResultRepository
             ReadingCorrectAnswerAmount = readingCorrect,
             ListeningCorrectAnswerAmount = listeningCorrect,
             Type = userResult.Type,
+            TotalQuestion = totalQuestions,
             CorrectAnswerAmount = userResult.CorrectAnswerAmount,
             IncorrectAnswerAmount = incorrectCount,
             WithoutAnswerAmount = unansweredCount,
@@ -331,7 +412,7 @@ public class UserResultRepository : IUserResultRepository
             .ToList();
 
         var averageScore = totalScoreList.Count > 0
-            ? Math.Round(totalScoreList.Average() / 5.0) * 5
+            ? Math.Round((double)(totalScoreList.Average() / 5.0)) * 5
             : 0;
         
         var maxScore = totalScoreList.Count > 0 
@@ -343,7 +424,7 @@ public class UserResultRepository : IUserResultRepository
             .ToList();
         
         var averageReadingScore = totalReadingScore.Count > 0
-            ? Math.Round(totalReadingScore.Average() / 5.0) * 5
+            ? Math.Round((double)(totalReadingScore.Average() / 5.0)) * 5
             : 0;
         
         var maxReadingScore = totalReadingScore.Count > 0 
@@ -355,7 +436,7 @@ public class UserResultRepository : IUserResultRepository
         .ToList();
         
         var averageListeningScore = totalListeningScore.Count > 0
-            ? Math.Round(totalListeningScore.Average() / 5.0) * 5
+            ? Math.Round((double)(totalListeningScore.Average() / 5.0)) * 5
             : 0;
         
         var maxLísteningScore = totalListeningScore.Count > 0 

@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Interfaces;
 using API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository;
 
@@ -13,12 +14,19 @@ public class PostRepository : IPostRepository
     }
     public List<Post> GetAllPosts()
     {
-        return _context.Posts.ToList();
+        return _context.Posts
+            .Include(p=>p.Comments)
+            .Include(p=>p.Likes)
+            .ToList();
     }
 
     public Post GetPostById(string id)
     {
-        return _context.Posts.Where(p => p.Id == id).FirstOrDefault();
+        return _context.Posts
+            .Where(p => p.Id == id)
+            .Include(p=>p.Comments)
+            .Include(p=>p.Likes)
+            .FirstOrDefault();
     }
 
     public List<Post> GetPostsByUserId(string id)
