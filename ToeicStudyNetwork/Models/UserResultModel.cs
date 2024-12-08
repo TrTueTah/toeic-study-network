@@ -5,6 +5,7 @@ public class UserResultModel
     public string UserResultId { get; set; } = Guid.NewGuid().ToString();
     public string? UserId { get; set; }
     public string? ExamId { get; set; }
+    public string? ExamName { get; set; }
     public int Score { get; set; }
     public int CorrectAnswerAmount { get; set; }
     public float TimeTaken { get; set; }

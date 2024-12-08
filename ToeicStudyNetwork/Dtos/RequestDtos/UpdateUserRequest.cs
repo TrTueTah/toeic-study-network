@@ -4,13 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Dtos.UserDto
+namespace ToeicStudyNetwork.Dtos.RequestDtos
 {
-    public class UpdateUserDto
+    public class UpdateUserRequest
     {
         [AllowNull]
-        public string? Username { get; set; }
+        public string Username { get; set; }
         [AllowNull]
-        public IFormFile? ImageFile { get; set; }
+        public IFormFile ImageFile { get; set; }
     }
 }
