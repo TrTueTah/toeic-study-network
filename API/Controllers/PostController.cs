@@ -55,6 +55,9 @@ namespace API.Controllers
                 return NotFound();
             }
             var postDto = _mapper.Map<PostDto>(post);
+            var user = _userRepository.GetUserById(postDto.UserId);
+            postDto.UserName = user.Username;
+            postDto.UserImageUrl = user.ImageUrl;
             return Ok(postDto);
         }
 
