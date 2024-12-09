@@ -32,7 +32,6 @@ namespace API.Controllers
         {
             if (page < 1) page = 1;
             if (limit < 1) limit = 10;
-            var skip = (page - 1) * limit;
             
             var posts = _postRepository.GetAllPosts(page, limit);
             var postDtos = _mapper.Map<List<PostDto>>(posts);
@@ -45,8 +44,7 @@ namespace API.Controllers
 
             var totalPosts = _postRepository.GetAllPostsCount();
             var totalPages = (int)Math.Ceiling((double)totalPosts / limit);
-
-            // Trả về kết quả phân trang
+            
             var result = new 
             {
                 Results = postDtos,
@@ -64,9 +62,12 @@ namespace API.Controllers
         [ProducesResponseType(typeof(PostDto), 200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<PostDto> GetPost(string id)
+        public ActionResult<PostDto> GetPost(string id, [FromQuery] int page, [FromQuery] int limit)
         {
-            var post = _postRepository.GetPostById(id);
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
+
+            var post = _postRepository.GetPostById(id, page, limit);
             if (post == null)
             {
                 return NotFound();
@@ -75,7 +76,32 @@ namespace API.Controllers
             var user = _userRepository.GetUserById(postDto.UserId);
             postDto.UserName = user.Username;
             postDto.UserImageUrl = user.ImageUrl;
-            return Ok(postDto);
+            
+            var totalComment = _postRepository.GetCommentCountByPostId(id);
+            var totalPages = (int)Math.Ceiling((double)totalComment / limit);
+            
+            var comments = new 
+            {
+                Results = postDto.Comments,
+                TotalComment = totalComment,
+                TotalPages = totalPages,
+                CurrentPage = page,
+                PageSize = limit
+            };
+
+            var result = new
+            {
+                Id = postDto.Id,
+                Content = postDto.Content,
+                MediaUrls = postDto.MediaUrls,
+                CreatedAt = postDto.CreatedAt,
+                Likes = postDto.Likes,
+                Comments = comments,
+                UserId = postDto.UserId,
+                UserName = postDto.UserName,
+                UserImageUrl = postDto.UserImageUrl,
+            };
+            return Ok(result);
         }
 
         // GET: api/v1/post/getPostsByUserId/{userId}
@@ -180,7 +206,7 @@ namespace API.Controllers
         [ProducesResponseType(500)]
         public async Task<ActionResult> DeletePost(string id)
         {
-            var post = _postRepository.GetPostById(id);
+            var post = _postRepository.GetPostById(id, 1, 10);
             if (post == null)
             {
                 return NotFound();
