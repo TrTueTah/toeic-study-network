@@ -22,13 +22,20 @@ public class PostRepository : IPostRepository
             .ToList();
     }
 
-    public Post GetPostById(string id)
+    public Post GetPostById(string id, int page, int limit)
     {
-        return _context.Posts
-            .Where(p => p.Id == id)
-            .Include(p=>p.Comments)
-            .Include(p=>p.Likes)
-            .FirstOrDefault() ?? throw new InvalidOperationException();
+    var post = _context.Posts
+        .Where(p => p.Id == id)
+        .Include(p => p.Likes)
+        .Include(post => post.Comments)
+        .FirstOrDefault() ?? throw new InvalidOperationException();
+    
+    post.Comments = post.Comments
+        .Skip((page - 1) * limit)
+        .Take(limit)
+        .ToList();
+
+    return post;
     }
 
     public List<Post> GetPostsByUserId(string id)
@@ -75,5 +82,10 @@ public class PostRepository : IPostRepository
     public int GetAllPostsCount()
     {
         return _context.Posts.Count();
+    }
+
+    public int GetCommentCountByPostId(string id)
+    {
+        return _context.Comments.Count(c => c.PostId == id);
     }
 }
