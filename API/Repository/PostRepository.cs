@@ -12,11 +12,13 @@ public class PostRepository : IPostRepository
     {
         _context = context;
     }
-    public List<Post> GetAllPosts()
+    public List<Post> GetAllPosts(int page, int limit)
     {
         return _context.Posts
             .Include(p=>p.Comments)
             .Include(p=>p.Likes)
+            .Skip((page - 1) * limit)
+            .Take(limit)
             .ToList();
     }
 
@@ -68,5 +70,10 @@ public class PostRepository : IPostRepository
     public bool PostExists(string id)
     {
         return _context.Posts.Any(c => c.Id == id);
+    }
+
+    public int GetAllPostsCount()
+    {
+        return _context.Posts.Count();
     }
 }

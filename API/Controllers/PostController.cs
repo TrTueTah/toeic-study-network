@@ -28,9 +28,13 @@ namespace API.Controllers
         [HttpGet("getAllPosts")]
         [ProducesResponseType(typeof(List<PostDto>), 200)]
         [ProducesResponseType(500)]
-        public ActionResult<List<PostDto>> GetAllPosts()
+        public ActionResult<List<PostDto>> GetAllPosts([FromQuery] int page, [FromQuery] int limit)
         {
-            var posts = _postRepository.GetAllPosts();
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
+            var skip = (page - 1) * limit;
+            
+            var posts = _postRepository.GetAllPosts(page, limit);
             var postDtos = _mapper.Map<List<PostDto>>(posts);
 
             foreach (var post in postDtos)
@@ -39,7 +43,20 @@ namespace API.Controllers
                 post.UserImageUrl = _userRepository.GetUserImageUrlById(post.UserId);
             }
 
-            return Ok(postDtos);
+            var totalPosts = _postRepository.GetAllPostsCount();
+            var totalPages = (int)Math.Ceiling((double)totalPosts / limit);
+
+            // Trả về kết quả phân trang
+            var result = new 
+            {
+                Results = postDtos,
+                TotalCount = totalPosts,
+                TotalPages = totalPages,
+                CurrentPage = page,
+                PageSize = limit
+            };
+
+            return Ok(result);
         }
 
         // GET: api/v1/post/getPostById/{id}
