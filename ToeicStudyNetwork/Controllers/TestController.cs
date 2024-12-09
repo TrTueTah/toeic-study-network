@@ -108,7 +108,7 @@ public class TestController : Controller
             var practiceExamModel = new TestPracticeViewModel
             {
                 Id = exam.ExamId,
-                TestType = "Part " + string.Join(", ", exam.PartNumbers),
+                TestType = "Part " + string.Join(", Part ", exam.PartNumbers),
                 PartNumbers = exam.PartNumbers,
                 Title = exam.Title,
                 PartQuestions = new Dictionary<int, List<QuestionGroupModel>>(),

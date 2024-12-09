@@ -1,6 +1,7 @@
 const usernameWrapper = document.getElementById("username-wrapper");
 const usernameElement = document.getElementById("username");
 const changeNameButton = document.getElementById("change-name-button");
+const changeImageButton = document.getElementById("change-image-button");
 
 changeNameButton.addEventListener("click", () => {
   const currentUsername = usernameElement.textContent;
@@ -17,13 +18,11 @@ changeNameButton.addEventListener("click", () => {
   const confirmButton = document.getElementById("confirm-button");
   confirmButton.addEventListener("click", () => {
     const newUsername = document.getElementById("username-input").value;
-
+    const formData = new FormData();
+    formData.append("username", newUsername);
     fetch('/Personal/UpdateUserInfor', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username: newUsername })
+      body: formData
     })
       .then(response => {
         if (response.ok) {
@@ -69,4 +68,37 @@ changeNameButton.addEventListener("click", () => {
       changeNameButton.click();
     });
   });
+});
+
+changeImageButton.addEventListener("click", () => {
+    console.log("Button clicked");
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      if (file) {
+
+        const formData = new FormData();
+        formData.append("imageFile", file);
+
+        fetch('/Personal/UpdateUserInfor', {
+          method: 'POST',
+          body: formData
+        })
+          .then(response => {
+            if (response.ok) {
+              alert("Ảnh đại diện đã được cập nhật thành công!");
+              // Optionally, update the displayed image here
+            } else {
+              alert("Cập nhật ảnh đại diện thất bại. Vui lòng thử lại.");
+            }
+          })
+          .catch(error => {
+            console.error("Lỗi:", error);
+            alert("Đã xảy ra lỗi khi cập nhật ảnh đại diện.");
+          });
+      }
+    });
 });

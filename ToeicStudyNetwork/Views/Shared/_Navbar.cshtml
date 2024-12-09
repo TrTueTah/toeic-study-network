@@ -13,9 +13,9 @@
         <nav id="navmenu" class="navmenu">
             <ul>
                 <li><a href="/">Trang chủ</a></li>
-                <li><a href="/Forum/Newest">Diễn đàn</a></li>
+                <li><a href="/Forum">Diễn đàn</a></li>
                 <li><a href="/Test">Đề thi online</a></li>
-                <li><a href="/">Hỗ trợ</a></li>
+                <li><a href="/Support">Hỗ trợ</a></li>
 
             </ul>
             <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
@@ -60,6 +60,12 @@
         window.location.href = "/Authentication/SignIn";
     }
 
+    function getUserImageFromCache() {
+        const userImage = getCookie("userImage");
+        console.log(userImage);
+        return userImage;
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         let token = getCookie("token");
         if (token && !isTokenExpired(token)) {
@@ -67,11 +73,12 @@
             const givenName = decodedToken.given_name || "User";
             document.getElementById("user-info").innerHTML = `
                 <a type="button" data-bs-toggle="dropdown" aria-expanded="false" href="/" class="user-image">
-                    <img src="/assets/img/icon-image.png" alt="userimage">
+                    <img src="${getUserImageFromCache()}" alt="userimage" class="rounded-circle">
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><h6 class="dropdown-header fw-bold text-dark">${givenName}</h6></li>
                     <li><a class="dropdown-item" type="button" href="/Personal">Hồ sơ chi tiết</a></li>
+                    <li><a class="dropdown-item" type="button" href="/Personal/ChangePassword">Đổi mật khẩu</a></li>
                     <li><button class="dropdown-item text-danger" type="button" onclick="logout()">Đăng xuất</button></li>
                 </ul>
             `;

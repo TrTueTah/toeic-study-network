@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using API.Dtos.UserDto;
 using Microsoft.AspNetCore.Authorization;
+using API.Services;
 
 namespace API.Controllers
 {
@@ -16,12 +17,14 @@ namespace API.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
+        private readonly FirebaseService _firebaseService;
 
-        public UserController(IUserRepository userRepository, IMapper mapper, ITokenService tokenService)
+        public UserController(IUserRepository userRepository, IMapper mapper, ITokenService tokenService, FirebaseService firebaseService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _tokenService = tokenService;
+            _firebaseService = firebaseService;
         }
 
         // GET: api/v1/users/{userId}
@@ -52,7 +55,7 @@ namespace API.Controllers
             return Ok(userId);
         }
         [HttpPut("updateUser/{id}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserDto userDto)
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromForm] UpdateUserDto userDto)
         {
             var user = _userRepository.GetUserById(id);
             if (user == null)
@@ -63,9 +66,10 @@ namespace API.Controllers
             {
                 user.Username = userDto.Username;
             }
-            if (userDto.ImageUrl != null)
+            if (userDto.ImageFile != null)
             {
-                user.ImageUrl = userDto.ImageUrl;
+                var url = await _firebaseService.UploadFileAsync(userDto.ImageFile, $"userAvatar/{id}");
+                user.ImageUrl = url;
             }
             var updatedUser = _userRepository.UpdateUser(user);
             if (updatedUser.Username != null)

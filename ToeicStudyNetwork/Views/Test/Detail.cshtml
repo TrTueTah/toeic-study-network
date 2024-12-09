@@ -31,8 +31,7 @@
                     <i class="bi bi-people"></i>
                     <p>Số người đã làm đề:<span> 992847</span></p>
                 </div>
-                <p class="alert-custom">Chú ý: để được quy đổi sang scaled score (ví dụ trên thang điểm 990 cho TOEIC
-                    hoặc 9.0 cho IELTS), vui lòng chọn chế độ làm FULL TEST.</p>
+                <p class="alert-custom">Chú ý: để được quy đổi sang scaled score (ví dụ trên thang điểm 990 cho TOEIC hoặc 9.0 cho IELTS), vui lòng chọn chế độ làm FULL TEST.</p>
             </div>
         </div>
 
@@ -93,7 +92,7 @@
                     </span>
                 </div>
 
-                <form id="getExamForm" method="get" action="@Url.Action("GetExamByParts", "Test", new {examId = @Model.Exam.Id})">
+                <form id="getExamForm">
                     <!-- Practice Options -->
                     <div class="mb-3" style="font-style: normal">
                         <label class="label fw-bold" style="margin-bottom: 0.5rem">Chọn phần thi bạn muốn làm</label>
@@ -253,7 +252,7 @@
                 <div class="alert alert-take-test my-3" style="font-style: normal">
                     <span style="font-style: normal">Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra 120 phút cho bài test này.</span>
                 </div>
-                <a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)" href="@Url.Action("StartExam", "Test", new { id = Model.Exam.Id})">Bắt đầu thi</a>
+                <a class="btn mb-3 btn-primary" style="background-color: var(--primary-500)" href="@Url.Action("StartExam", "Test", new { examId = Model.Exam.Id })">Bắt đầu thi</a>
             </div>
         </div>
     </div>
