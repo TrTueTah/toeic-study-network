@@ -80,7 +80,6 @@ namespace API.Controllers
             
             var result = new 
             {
-                UserId = userId,
                 Results = postDtos,
                 TotalPost = totalPosts,
                 TotalPages = totalPages,
