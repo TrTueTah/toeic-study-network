@@ -1,4 +1,4 @@
-@model ToeicStudyNetwork.Models.PostModel
+@model ToeicStudyNetwork.ViewModels.Forum.PostViewModel
 @{
     ViewBag.Title = "Detail";
     Layout = "_LayoutForum";
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="card">
-        @await Html.PartialAsync("_MediaPost", new PostModel { Id = @Model.Id, Content = @Model.Content, MediaUrls = @Model.MediaUrls, CreatedAt = @Model.CreatedAt, Likes = @Model.Likes, Comments = @Model.Comments, UserId = @Model.UserId, UserName = @Model.UserName, UserImageUrl = @Model.UserImageUrl})
+        @await Html.PartialAsync("_MediaPost", Model)
         <div class="media-comments">
             @if (Model.Comments.Count > 0)
             {
@@ -104,7 +104,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" >
+<div class="modal fade" id="commentModal-@Model.Id" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" >
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
@@ -176,8 +176,6 @@
     </div>
 </div>
 
-
-
 @section scripts {
     <script src="~/js/forum_post_detail.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
@@ -187,6 +185,30 @@
             window.location.href = currentUrl.split("/post/@Model.Id")[0];
         })
     </script>
+
+    <script>
+    document.getElementById("mediaMain-@Model.Id").addEventListener("click", async function() {
+        var url = `@Url.Action("PostDetail", "Forum", new {postId = @Model.Id})`
+
+        window.location.href = url;
+    })
+
+    document.querySelectorAll("#comment-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const postId = this.getAttribute("data-post-id");
+            const url = `@Url.Action("PostDetail", "Forum", new { postId = "__postId__" })`.replace("__postId__", postId);
+            const currentUrl = window.location.pathname;
+
+            if (url === currentUrl) {
+                const commentModal = new bootstrap.Modal(document.getElementById("commentModal-@Model.Id"));
+                commentModal.show();
+            } else {
+                window.location.href = url;
+            }
+        });
+    });
+
+</script>
 }
 
 

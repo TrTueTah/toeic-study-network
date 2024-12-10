@@ -378,3 +378,6 @@
     transform: scale(1.05); /* Phóng to nhẹ khi hover */
 }
 
+#loading-indicator {
+    margin: 20px 0;
+}
