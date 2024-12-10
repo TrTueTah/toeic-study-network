@@ -38,7 +38,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="test-card-title-container" style="cursor:pointer;" onclick="window.location.href='@Url.Action("CreateTest", "Admin", new { examId = exam.Id })'">
+            <div class="test-card-title-container" id="test-card-title-container-@exam.Id" onclick="createNewTest()" data-exam-id="@exam.Id" data-url="@Url.Action("CreateTest", "Admin", new { examId = exam.Id })" style="cursor:pointer;">
                 <span class="test-card-title" id="test-card-title-@exam.Id">@exam.Title</span>
             </div>
             <div class="test-card-subtitle">
