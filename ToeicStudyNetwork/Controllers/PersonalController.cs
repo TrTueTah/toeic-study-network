@@ -105,7 +105,7 @@ namespace ToeicStudyNetwork.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("UpdateUserInfor")]
         public async Task<IActionResult> UpdateUserInfor([FromForm] UpdateUserRequest user)
         {
             var token = Request.Cookies["token"];

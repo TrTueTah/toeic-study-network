@@ -90,6 +90,7 @@ changeImageButton.addEventListener("click", () => {
           .then(response => {
             if (response.ok) {
               alert("Ảnh đại diện đã được cập nhật thành công!");
+              window.location.reload();
               // Optionally, update the displayed image here
             } else {
               alert("Cập nhật ảnh đại diện thất bại. Vui lòng thử lại.");
