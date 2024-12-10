@@ -91,17 +91,37 @@ document.addEventListener('DOMContentLoaded', function () {
     addTestTypeModal.show();
   });
 
-  saveTestTypeButton.addEventListener('click', function () {
+  saveTestTypeButton.addEventListener('click', async function () {
     const newTestType = newTestTypeInput.value.trim();
     if (!newTestType) {
       alert('Vui lòng nhập tên loại đề thi.');
       return;
     }
-    addTestType(newTestType, testTypeDropdownMenu);
-    newTestTypeInput.value = '';
-    addTestTypeModal.hide();
-  });
 
+    try {
+      const response = await fetch("http://localhost:5112/api/v1/examSeries/createExamSeries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "text/plain"
+        },
+        body: JSON.stringify({ name: newTestType })
+      });
+
+      if (response.ok) {
+        const createdExamSeries = await response.json();
+        addTestType(createdExamSeries.name, testTypeDropdownMenu);
+        newTestTypeInput.value = '';
+        addTestTypeModal.hide();
+      } else {
+        alert("Không thể thêm loại đề thi. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      console.error("Error adding new test type:", error);
+      alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
+  });
+  
   addTestTypeModal._element.addEventListener('hidden.bs.modal', function () {
     createTestModal.show();
   });
@@ -122,3 +142,5 @@ document.getElementById("testTypeDropdown").addEventListener("click", function (
       console.error(error);
     });
 });
+
+
