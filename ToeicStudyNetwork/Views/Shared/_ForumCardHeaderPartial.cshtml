@@ -1,0 +1,67 @@
+@if (@ViewBag.UserImageUrl == null)
+        {
+            <div class="d-flex justify-content-center p-4">
+                <span class="text-secondary">Hãy đăng nhập để đăng bài</span>
+            </div>
+        }
+        else
+        {
+            <div class="card-header">
+                <div class="avatar">
+                    <img src="@ViewBag.UserImageUrl" alt="Avatar" class="rounded-avatar">
+                </div>
+                <div role="button" class="post-text" data-mdb-toggle="modal" data-mdb-target="#postModal" tabindex="0">
+                    <span>What's new?</span>
+                </div>
+                <button class="post-button py-1 px-3" data-mdb-toggle="modal" data-mdb-target="#postModal">
+                    <span class="text-center">Đăng bài</span>
+                </button>
+                <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div
+                                class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
+                                <div type="button" class="btn btn-link opacity-0" style="cursor: default" data-bs-dismiss="modal"><span>Huỷ bỏ</span></div>
+                                <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel"
+                                    style="font-weight: 600;">Bài viết mới</h6>
+                            </div>
+
+                            <form id="postForm" enctype="multipart/form-data" method="post" asp-controller="Forum"
+                                  asp-action="CreatePost">
+                                <div class="modal-body">
+                                    <div class="post-grid">
+                                        <div class="avatar-section">
+                                            <img src="@ViewBag.UserImageUrl" class="avatar-img rounded-circle" alt="Avatar">
+                                        </div>
+                                        <div class="user-info">
+                                            <span class="user-name">@ViewBag.UserName</span>
+                                        </div>
+
+                                        <div class="post-input">
+                                            <textarea class="form-control" placeholder="What's new?" rows="3"
+                                                id="postContent"></textarea>
+                                        </div>
+                                        <div id="image-holder" class="image-holder">
+
+                                        </div>
+
+                                        <div class="action-bar d-flex align-items-center">
+                                            <div class="action-item">
+                                                <button type="button" class="btn-action" id="upload-image-button">
+                                                    <i class="bi bi-images"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="post-button py-1 px-3">
+                                        <span class="text-center">Đăng bài</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }

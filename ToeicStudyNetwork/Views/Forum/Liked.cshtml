@@ -1,12 +1,12 @@
 @model List<ToeicStudyNetwork.ViewModels.Forum.PostViewModel>
 @{
-    ViewBag.Title = "Newest";
-    Layout = "_LayoutForum";
+ViewBag.Title = "Liked";
+Layout = "_LayoutForum";
 }
 
 @section customHead {
-    <link rel="stylesheet" href="~/css/forum_index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/forum_index.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 }
 
 <div class="container">
@@ -17,7 +17,7 @@
         <div id="post-container">
             @foreach (var post in Model)
             {
-                @await Html.PartialAsync("_MediaPost", post)
+            @await Html.PartialAsync("_MediaPost", post)
             }
         </div>
         @await Html.PartialAsync("_LoadingPartial")
@@ -28,5 +28,5 @@
 
 @section scripts {
     <script src="~/js/forum.js" asp-append-version="true"></script>
-    <script src="~/js/forum_index.js" asp-append-version="true"></script>
+    <script src="~/js/forum_liked.js" asp-append-version="true"></script>
 }
