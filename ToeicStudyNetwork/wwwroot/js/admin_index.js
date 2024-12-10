@@ -143,4 +143,13 @@ document.getElementById("testTypeDropdown").addEventListener("click", function (
     });
 });
 
+document.querySelectorAll(".test-card-title-container").forEach(container => {
+  container.addEventListener('click', function () {
+    const examId = this.getAttribute("data-exam-id");
+    localStorage.setItem("examId", examId);
+    const url = this.getAttribute("data-url")
+    window.location.href = url;
+  })
+})
+
 

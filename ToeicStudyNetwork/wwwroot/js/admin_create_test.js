@@ -107,7 +107,8 @@ const questionGroups = [
 ];
 
 document.addEventListener('DOMContentLoaded', async function () {
-  const response = await fetch("http://localhost:5112/api/v1/exam/getExamById/de332583-fc79-4a89-89ae-a575bbac07f5");
+  const examId = localStorage.getItem('examId');
+  const response = await fetch(`http://localhost:5112/api/v1/exam/getExamById/${examId}`);
   const examData = await response.json();
   
   if (examData.questionGroups.length > 0) {
