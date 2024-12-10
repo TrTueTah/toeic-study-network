@@ -17,6 +17,7 @@ public class PostRepository : IPostRepository
         return _context.Posts
             .Include(p=>p.Comments)
             .Include(p=>p.Likes)
+            .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * limit)
             .Take(limit)
             .ToList();
@@ -28,6 +29,7 @@ public class PostRepository : IPostRepository
             .Where(p => p.Likes.Any(like => like.UserId == userId))
             .Include(p => p.Comments)
             .Include(p => p.Likes)
+            .OrderByDescending(p => p.CreatedAt)
             .Skip((page - 1) * limit)
             .Take(limit)
             .ToList();
