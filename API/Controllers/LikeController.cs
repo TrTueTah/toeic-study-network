@@ -58,7 +58,13 @@ namespace API.Controllers
                 {
                     return StatusCode(500, "A problem occurred while unliking the post.");
                 }
-                return NoContent();
+                return Ok(new
+                {
+                    status = "deleted",
+                    isLiked = false,
+                    postId = likeDto.PostId,
+                    userId = likeDto.UserId
+                });
             }
             else
             {
@@ -68,7 +74,14 @@ namespace API.Controllers
                 {
                     return StatusCode(500, "A problem occurred while liking the post.");
                 }
-                return CreatedAtAction(nameof(GetLikedUsers), new { postId = like.PostId }, likeDto);
+                
+                return Ok(new
+                {
+                    status = "created",
+                    isLiked = true,
+                    postId = likeDto.PostId,
+                    userId = likeDto.UserId
+                });
             }
         }
 
