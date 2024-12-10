@@ -20,49 +20,36 @@
             <i class="fas fa-plus me-2"></i> 
             <span class="create-new-test-text">Tạo mới</span>
         </button>
-
-        <div class="dropdown filter-dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Gần đây nhất
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                <li><a class="dropdown-item" href="#" data-value="recent">Gần đây nhất</a></li>
-                <li><a class="dropdown-item" href="#" data-value="title">Tiêu đề</a></li>
-            </ul>
-        </div>
     </div>
     <div id="test-list-container" class="test-list-container">
         @foreach (var exam in Model)
         {
-            <div class="test-card" onclick="window.location.href='@Url.Action("CreateTest", "Admin", new { examId = exam.Id })'">
-                <div class="test-card-box" aria-labelledby="test-card-title-@exam.Id">
-                    <div class="test-card-box-icon">📜</div>
-                    <div class="test-action-button">
-                        <div type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-ellipsis-v"></i>
-                        </div>
-                        <ul class="dropdown-menu" aria-labelledby="filterDropdown">
-                            <li><a class="dropdown-item" href="#">
-                                    <i class="far fa-trash-alt me-2"></i>Xoá</a>
-                            </li>
-                            <li><a class="dropdown-item" href="#">
-                                    <i class="far fa-edit me-2"></i>Chỉnh sửa tiêu đề</a>
-                            </li>
-                        </ul>
+        <div class="test-card" style="cursor:default;">
+            <div class="test-card-box" aria-labelledby="test-card-title-@exam.Id">
+                <div class="test-card-box-icon">📜</div>
+                <div class="test-action-button">
+                    <div type="button" id="examDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-ellipsis-v"></i>
                     </div>
-                </div>
-                <div class="test-card-title-container">
-                    <span class="test-card-title" id="test-card-title-@exam.Id}">@exam.Title</span>
-                </div>
-                <div class="test-card-subtitle">
-                    <span class="test-card-subtitle-part">@exam.CreatedAt.ToLocalTime()</span>
-                    <span class="test-card-subtitle-middle-dot">·</span>
-                    <span class="test-card-subtitle-part">@exam.ExamSeries.Name</span>
+                    <ul class="dropdown-menu" aria-labelledby="examDropdown">
+                        <li><a class="dropdown-item" href="#">
+                                <i class="far fa-edit me-2"></i>Chỉnh sửa tiêu đề</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
+            <div class="test-card-title-container" style="cursor:pointer;" onclick="window.location.href='@Url.Action("CreateTest", "Admin", new { examId = exam.Id })'">
+                <span class="test-card-title" id="test-card-title-@exam.Id">@exam.Title</span>
+            </div>
+            <div class="test-card-subtitle">
+                <span class="test-card-subtitle-part">@exam.CreatedAt.ToString("dd/MM/yyyy")</span>
+                <span class="test-card-subtitle-middle-dot">·</span>
+                <span class="test-card-subtitle-part">@exam.ExamSeries.Name</span>
+            </div>
+        </div>
         }
     </div>
-    
+
     <div class="modal fade" id="createTestModal" tabindex="-1" aria-labelledby="createTestModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

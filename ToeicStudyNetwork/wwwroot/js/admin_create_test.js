@@ -106,16 +106,85 @@ const questionGroups = [
   { groupId: 103, questions: [196, 197, 198, 199, 200], media: 'image' }
 ];
 
-document.addEventListener('DOMContentLoaded', function () {
-  questionGroups.forEach(group => {
-    group.questions.forEach((questionId, index) => {
-      const questionElement = document.createElement('div');
-      questionElement.id = `test-question-${questionId}`;
-      questionElement.className = 'pb-2';
+document.addEventListener('DOMContentLoaded', async function () {
+  const response = await fetch("http://localhost:5112/api/v1/exam/getExamById/de332583-fc79-4a89-89ae-a575bbac07f5");
+  const examData = await response.json();
+  
+  if (examData.questionGroups.length > 0) {
+    examData.questionGroups.forEach(group => {
+      group.questions.forEach((questionItem, index) => {
+        console.log(questionItem);
+        const questionId = questionItem.id;
+        const questionElement = document.createElement('div');
+        questionElement.id = `test-question-${questionId}`;
+        questionElement.className = 'pb-2';
 
-      questions.push({ id: questionId, title: '', description: '', answers: [] });
-      
-      questionElement.innerHTML = `
+        questions.push({ id: questionId, title: '', description: '', answers: [] });
+
+        questionElement.innerHTML = `
+        <div class="section-content-container" style="display: none;">
+          <div class="d-flex flex-column">
+            <b id="test-question-title-${questionId}"></b>
+            <span>
+              <ul id="test-answer-options-${questionId}" style="padding-left: 1rem; list-style: none"></ul>
+            </span>
+          </div>
+        </div>
+        <form class="edit-form" style="display: block;">
+          <div>          
+            <label class="form-label">
+              <span for="test-question-input" class="label-text label-required">Question ${questionItem.questionNumber}</span>
+              <input type="text" placeholder="Enter question here" required="" class="form-input" id="test-question-input-${questionId}" value="${questionItem.title}">
+            </label>
+            <label class="form-label">
+              <span for="test-answer-input" class="label-text label-required">Answer options</span>
+              <div class="d-flex flex-column gap-2" id="test-answer-input-${questionId}">
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="A" id="radio-answerA-${questionId}" />
+                      <span>A.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerA-input-${questionId}">${questionItem.answerA}</textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="B" id="radio-answerB-${questionId}" />
+                      <span>B.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerB-input-${questionId}">${questionItem.answerB}</textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="C" id="radio-answerC-${questionId}" />
+                      <span>C.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerC-input-${questionId}">${questionItem.answerC}</textarea>
+                  </div>
+                  <div class="test-answer-item">
+                      <input type="radio" name="test-answer-${questionId}" value="D" id="radio-answerD-${questionId}" />
+                      <span>D.</span>
+                      <textarea placeholder="Enter answer options here" required="" class="form-textarea" rows="1" wrap="hard" id="test-answerD-input-${questionId}">${questionItem.answerD}</textarea>
+                  </div>
+              </div>
+          </label>
+
+          </div>
+        </form>
+      `;
+
+        document.getElementById('test-question-list').appendChild(questionElement);
+
+        const questionListItem = `
+        <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionItem.questionNumber}</span>
+      `;
+        document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
+      });
+    });
+    
+  } else {
+    questionGroups.forEach(group => {
+      group.questions.forEach((questionId, index) => {
+        const questionElement = document.createElement('div');
+        questionElement.id = `test-question-${questionId}`;
+        questionElement.className = 'pb-2';
+
+        questions.push({ id: questionId, title: '', description: '', answers: [] });
+
+        questionElement.innerHTML = `
         <div class="section-content-container" style="display: none;">
           <div class="d-flex flex-column">
             <b id="test-question-title-${questionId}"></b>
@@ -160,15 +229,19 @@ document.addEventListener('DOMContentLoaded', function () {
         </form>
       `;
 
-      document.getElementById('test-question-list').appendChild(questionElement);
-      
-      const questionListItem = `
+        document.getElementById('test-question-list').appendChild(questionElement);
+
+        const questionListItem = `
         <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>
       `;
-      document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
+        document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
+      });
     });
-  });
+  }
 });
+
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.test-questions-listitem').forEach(item => {
@@ -564,7 +637,6 @@ function renderUploadMediaSection(group) {
   uploadImageList.appendChild(fragmentImage);
   uploadAudioList.appendChild(fragmentAudio);
 }
-
 
 document.getElementById('edit-question-button').addEventListener('click', handleEditQuestion);
 

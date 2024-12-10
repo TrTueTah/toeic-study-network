@@ -21,9 +21,10 @@ public class AdminController : Controller
     public async Task<IActionResult> Index()
     {
         var exams = await FetchAllExams();
+        exams = exams.OrderByDescending(exam => exam.CreatedAt).ToList();
         return View(exams);
     }
-
+    
     [HttpPost("createExam")]
     public async Task<IActionResult> CreateExam([FromBody] CreateExamRequest request)
     {
