@@ -46,11 +46,43 @@ namespace API.Controllers
             var totalPosts = _postRepository.GetAllPostsCount();
             var totalPages = (int)Math.Ceiling((double)totalPosts / limit);
 
-            // Trả về kết quả phân trang
             var result = new 
             {
                 Results = postDtos,
                 TotalCount = totalPosts,
+                TotalPages = totalPages,
+                CurrentPage = page,
+                PageSize = limit
+            };
+
+            return Ok(result);
+        }
+        
+        [HttpGet("getLikedPostsByUserId/{userId}")]
+        [ProducesResponseType(typeof(List<PostDto>), 200)]
+        [ProducesResponseType(500)]
+        public ActionResult<List<PostDto>> GetLikedPostsByUserId(string userId,[FromQuery] int page, [FromQuery] int limit)
+        {
+            if (page < 1) page = 1;
+            if (limit < 1) limit = 10;
+            
+            var posts = _postRepository.GetLikedPostsByUserId(userId, page, limit);
+            var postDtos = _mapper.Map<List<PostDto>>(posts);
+
+            foreach (var post in postDtos)
+            {
+                post.UserName = _userRepository.GetUserNameById(post.UserId);
+                post.UserImageUrl = _userRepository.GetUserImageUrlById(post.UserId);
+            }
+
+            var totalPosts = _postRepository.GetLikedPostsByUserIdCount(userId);
+            var totalPages = (int)Math.Ceiling((double)totalPosts / limit);
+            
+            var result = new 
+            {
+                UserId = userId,
+                Results = postDtos,
+                TotalPost = totalPosts,
                 TotalPages = totalPages,
                 CurrentPage = page,
                 PageSize = limit
