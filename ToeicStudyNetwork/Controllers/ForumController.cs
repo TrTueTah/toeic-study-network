@@ -19,11 +19,16 @@ namespace ToeicStudyNetwork.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex, int pageSize = 5)
         {
-            var response = await FetchAllPosts();
-            
-            var posts = response.Select(p => new PostViewModel
+            var response = await FetchAllPosts(pageIndex + 1, pageSize);
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_PostListPartial", response.Results);
+            }
+
+            var posts = response.Results.Select(p => new PostViewModel
             {
                 Id = p.Id,
                 Content = p.Content,
@@ -35,34 +40,22 @@ namespace ToeicStudyNetwork.Controllers
                 UserName = p.UserName,
                 UserImageUrl = p.UserImageUrl
             }).ToList();
-            
+
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
-            return View("Index", posts);
+            return View(posts);
         }
         
         [HttpGet("post/{postId}")]
         public async Task<IActionResult> PostDetail([FromRoute] string postId)
         {
             var postData = await FetchPostById(postId);
-
-            var postModel = new PostModel()
-            {
-                Id = postData.Id,
-                Content = postData.Content,
-                MediaUrls = postData.MediaUrls,
-                CreatedAt = postData.CreatedAt,
-                Likes = postData.Likes,
-                Comments = postData.Comments,
-                UserId = postData.UserId,
-                UserName = postData.UserName,
-                UserImageUrl = postData.UserImageUrl
-            };
             
+           
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
             
-            return View("PostDetail", postModel);
+            return View("PostDetail", postData);
         }
         
         [HttpPost("CreatePost")]
@@ -176,26 +169,26 @@ namespace ToeicStudyNetwork.Controllers
         }
         
         [NonAction]
-        private async Task<List<PostDetailResponse>> FetchAllPosts()
+        private async Task<PostResponse> FetchAllPosts(int pageIndex, int pageSize)
         {
-            var response = await _httpClient.GetAsync("http://localhost:5112/api/v1/post/getAllPosts");
+            var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/post/getAllPosts?page={pageIndex}&limit={pageSize}");
             response.EnsureSuccessStatusCode();
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var posts = JsonConvert.DeserializeObject<List<PostDetailResponse>>(responseData);
+            var posts = JsonConvert.DeserializeObject<PostResponse>(responseData);
 
             return posts;
         }
         
         [NonAction]
-        private async Task<PostDetailResponse> FetchPostById(string postId)
+        private async Task<PostViewModel> FetchPostById(string postId)
         {
             var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/post/getPostById/{postId}");
 
             response.EnsureSuccessStatusCode();
 
             var responseData = await response.Content.ReadAsStringAsync();
-            var post = JsonConvert.DeserializeObject<PostDetailResponse>(responseData);
+            var post = JsonConvert.DeserializeObject<PostViewModel>(responseData);
             return post;
         }
     }

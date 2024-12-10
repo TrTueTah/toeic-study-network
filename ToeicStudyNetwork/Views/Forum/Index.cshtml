@@ -118,26 +118,19 @@
                 </div>
             </div>
         }
-
-        @foreach (var post in Model.OrderByDescending(p => p.CreatedAt))
-        {
-            @await Html.PartialAsync("_MediaPost", new PostModel { Id = post.Id, Content = post.Content, MediaUrls = post.MediaUrls, CreatedAt = post.CreatedAt, Likes = post.Likes, Comments = post.Comments, UserId = post.UserId, UserName = post.UserName, UserImageUrl = post.UserImageUrl})
-        }
-    </div>
-</div>
-
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" alt="Preview" class="img-fluid" style="max-height: 90vh;" />
-            </div>
+        <div id="post-container">
+            @foreach (var post in Model.OrderByDescending(c => c.CreatedAt))
+            {
+                @await Html.PartialAsync("_MediaPost", post)
+            }
+        </div>
+        <div id="loader" class="text-center my-3" style="display: none;">
+            <span>Loading...</span>
         </div>
     </div>
 </div>
+
+
 
 @section scripts {
     <script src="~/js/forum_index.js" asp-append-version="true"></script>
