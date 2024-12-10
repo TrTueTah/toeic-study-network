@@ -216,6 +216,7 @@ public class TestController : Controller
             ExamName = response.ExamName,
             Score = response.Score ?? 0,
             ReadingScore = response.ReadingScore ?? 0,
+            ListeningScore = response.ListeningScore ?? 0,
             ReadingCorrectAnswerAmount = response.ReadingCorrectAnswerAmount,
             ListeningCorrectAnswerAmount = response.ListeningCorrectAnswerAmount,
             CorrectAnswerAmount = response.CorrectAnswerAmount,
