@@ -5,7 +5,7 @@
     foreach (var result in Model.UserResults)
     {
         time += result.TimeTaken;
-        score += result.Score;
+        score += result.Score ?? 0;
     }
     time = Math.Round(time / 60, 2);
     score = Math.Round(score / Model.UserResults.Count, 2);
