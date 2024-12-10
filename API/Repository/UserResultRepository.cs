@@ -85,6 +85,7 @@ public class UserResultRepository : IUserResultRepository
 
         var filteredQuestions = allQuestions
             .Where(q =>
+                submission.Type.Equals("Full Test", StringComparison.OrdinalIgnoreCase) ||
                 validTypes.Any(type =>
                     typeRanges.ContainsKey(type) &&
                     q.QuestionNumber >= typeRanges[type].Start &&
@@ -241,7 +242,6 @@ public class UserResultRepository : IUserResultRepository
             if (questionCounts.ContainsKey(trimmedType))
             {
                 totalQuestions += questionCounts[trimmedType];
-                        
             }
         }
         

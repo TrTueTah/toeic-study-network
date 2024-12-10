@@ -2,7 +2,7 @@
 
 public class GetAllUserResultDto
 {
-    public string UserResultId { get; set; }
+    public string Id { get; set; }
     public string ExamId { get; set; }
     public string ExamName { get; set; }
     public int TotalQuestions { get; set; }
