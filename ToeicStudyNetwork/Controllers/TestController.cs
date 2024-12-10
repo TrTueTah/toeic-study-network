@@ -206,14 +206,27 @@ public class TestController : Controller
     [HttpGet("{examId}/result/{resultId}")]
     public async Task<IActionResult> Result(string examId, string resultId)
     {
-        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResult/{resultId}");
+        var response = await FetchUserResultById(resultId);
 
-        if (!response.IsSuccessStatusCode)
+        var resultData = new TestResultViewModel()
         {
-            return BadRequest("Failed to fetch result data.");
-        }
-
-        var resultData = JsonConvert.DeserializeObject<TestResultViewModel>(await response.Content.ReadAsStringAsync());
+            UserResultId = response.UserResultId,
+            UserId = response.UserId,
+            ExamId = response.ExamId,
+            ExamName = response.ExamName,
+            Score = response.Score ?? 0,
+            ReadingScore = response.ReadingScore ?? 0,
+            ListeningScore = response.ListeningScore ?? 0,
+            ReadingCorrectAnswerAmount = response.ReadingCorrectAnswerAmount,
+            ListeningCorrectAnswerAmount = response.ListeningCorrectAnswerAmount,
+            CorrectAnswerAmount = response.CorrectAnswerAmount,
+            IncorrectAnswerAmount = response.IncorrectAnswerAmount,
+            WithoutAnswerAmount = response.WithoutAnswerAmount,
+            CreatedAt = response.CreatedAt,
+            Type = response.Type,
+            DetailResults = response.DetailResults
+        };
+        
         var userImage = Request.Cookies["userImage"];
         var username = Request.Cookies["given_name"];
         ViewBag.UserImage = userImage;
@@ -243,6 +256,20 @@ public class TestController : Controller
         var exam = JsonConvert.DeserializeObject<ExamModel>(responseString);
 
         return exam;
+    }
+    
+    [NonAction]
+    private async Task<TestResultViewModel> FetchUserResultById(string userResultId)
+    {
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResult/{userResultId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Error fetching user results: {response.ReasonPhrase}");
+        }
+
+        var responseData = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<TestResultViewModel>(responseData);
     }
     
     [NonAction]
