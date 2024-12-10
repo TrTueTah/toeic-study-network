@@ -1,6 +1,6 @@
 @model List<ToeicStudyNetwork.ViewModels.Forum.PostViewModel>
 
-@foreach (var post in Model.OrderByDescending(c => c.CreatedAt))
+@foreach (var post in Model)
 {
     @await Html.PartialAsync("_MediaPost", post)
 }

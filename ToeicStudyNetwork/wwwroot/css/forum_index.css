@@ -249,6 +249,7 @@
 }
 
 .modal-header .modal-title {
+    font-size: 0.875rem;
     font-weight: 600;
     position: absolute;
     left: 0;
@@ -381,3 +382,5 @@
 #loading-indicator {
     margin: 20px 0;
 }
+
+

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("loader").style.display = "block";
 
     try {
-      const response = await fetch(`/Forum?pageIndex=${pageIndex}&pageSize=5`, {
+      const response = await fetch(`/Forum/liked?pageIndex=${pageIndex}&pageSize=5`, {
         method: "GET",
         headers: {
           'X-Requested-With': 'XMLHttpRequest',

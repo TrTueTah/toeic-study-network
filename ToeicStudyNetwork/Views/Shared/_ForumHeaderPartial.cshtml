@@ -1,0 +1,50 @@
+<div class="row align-items-center mb-2">
+    <div class="col-auto opacity-0">
+        <button class="btn btn-icon">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </div>
+
+    <div class="col text-center d-flex justify-content-center align-items-center">
+        <span class="py-2" id="title">@ViewBag.Title</span>
+
+        <div class="dropdown">
+            <button class="btn btn-icon mx-2" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                <i class="bi bi-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu expanded-dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li>
+                    <a href="/Forum"
+                       class="dropdown-item expanded-dropdown-item @(ViewBag.CurrentTab == "newest" ? "selected" : "")"
+                       id="newest-button"
+                       data-type="newest">
+                        <span>Newest</span>
+                        @if (ViewBag.CurrentTab == "newest")
+                        {
+                            <i class="bi bi-check2"></i>
+                        }
+                    </a>
+                </li>
+                <li>
+                    <a href="/Forum/liked"
+                       class="dropdown-item expanded-dropdown-item @(ViewBag.CurrentTab == "liked" ? "selected" : "")"
+                       id="like-button"
+                       data-type="liked">
+                        <span>Liked</span>
+                        @if (ViewBag.CurrentTab == "liked")
+                        {
+                            <i class="bi bi-check2"></i>
+                        }
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-auto opacity-0">
+        <button class="btn btn-icon">
+            <i class="bi bi-three-dots"></i>
+        </button>
+    </div>
+</div>

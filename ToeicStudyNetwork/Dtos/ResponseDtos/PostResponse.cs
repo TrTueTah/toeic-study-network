@@ -5,7 +5,7 @@ namespace ToeicStudyNetwork.Dtos;
 
 public class PostResponse
 {
-    public List<PostViewModel> Results { get; set; } = new();
+    public List<PostViewModel> Results { get; set; }
     public int TotalCount { get; set; }
     public int TotalPages { get; set; }
     public int CurrentPage { get; set; }
