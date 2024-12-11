@@ -85,7 +85,21 @@ namespace ToeicStudyNetwork.Controllers
         [HttpGet("post/{postId}")]
         public async Task<IActionResult> PostDetail([FromRoute] string postId)
         {
-            var postData = await FetchPostById(postId);
+            var postResponse = await FetchPostById(postId);
+            var currentUserId = Request.Cookies["userId"];
+
+            var postData = new PostViewModel()
+            {
+                Id = postResponse.Id,
+                MediaUrls = postResponse.MediaUrls,
+                CreatedAt = postResponse.CreatedAt,
+                Likes = postResponse.Likes,
+                Comments = postResponse.Comments,
+                UserId = postResponse.UserId,
+                UserName = postResponse.UserName,
+                UserImageUrl = postResponse.UserImageUrl,
+                IsLike = postResponse.Likes.Any(like => like.UserId == currentUserId)
+            };
             
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];

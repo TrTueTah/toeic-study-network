@@ -28,7 +28,9 @@
         </div>
     </div>
     <div class="card">
-        @await Html.PartialAsync("_MediaPost", Model)
+        <div id="post-container">
+            @await Html.PartialAsync("_MediaPost", Model)
+        </div>
         <div class="media-comments">
             @if (Model.Comments.Count > 0)
             {
@@ -91,90 +93,6 @@
 
 <input type="hidden" id="postId" value="@Model.Id" />
 
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" alt="Preview" class="img-fluid" style="max-height: 90vh;" />
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="commentModal-@Model.Id" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true" >
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between align-items-center position-relative w-100">
-                <div id="closeModalButton" type="button" class="btn btn-link opacity-0" style="cursor: default" data-bs-dismiss="commentModal"><span>Cancel</span></div>
-                <h6 class="modal-title position-absolute w-100 text-center" id="postModalLabel" style="font-weight: 600;">Reply</h6>
-            </div>
-
-            <form id="commentForm">
-                <div class="modal-body">
-                    <div class="media-main" id="mediaMain-@Model.Id">
-                        <div class="media-header d-flex justify-content-between align-items-center">
-                            <div class="media-info">
-                                <div class="avatar">
-                                    <img src="@Model.UserImageUrl" alt="Avatar" style="width: 40px; height: 40px; border-radius: 100%;" />
-                                </div>
-                                <div class="username">@Model.UserName</div>
-                                <div class="timestamp">@Model.CreatedAt</div>
-                            </div>
-                        </div>
-                        <div class="media-content">
-                            <div class="media-caption">
-                                <span>@Model.Content</span>
-                            </div>
-                            <div class="media-image-container">
-                                @if (Model.MediaUrls.Count > 0)
-                                {
-                                foreach (var mediaUrl in Model.MediaUrls)
-                                {
-                                <div class="media-image">
-                                    <img src="@mediaUrl" alt="Media Image" style="width: 100%; height: 100%"/>
-                                </div>
-                                }
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div class="post-grid">
-                        <div class="avatar-section">
-                            <img src="@ViewBag.UserImageUrl" class="avatar-img rounded-circle" alt="Avatar">
-                        </div>
-                        <div class="user-info">
-                            <span class="user-name">@ViewBag.UserName</span>
-                        </div>
-
-                        <div class="post-input">
-                            <textarea class="form-control" placeholder="Reply to @Model.UserName" id="commentContent"></textarea>
-                        </div>
-
-                        <div id="image-holder" class="image-holder">
-
-                        </div>
-
-                        <div class="action-bar d-flex align-items-center">
-                            <div class="action-item">
-                                <button type="button" class="btn-action" id="upload-image-button">
-                                    <i class="bi bi-images"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="post-button py-1 px-3">
-                        <span class="text-center">Bình luận</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @section scripts {
     <script src="~/js/forum_post_detail.js" asp-append-version="true"></script>
@@ -207,7 +125,6 @@
             }
         });
     });
-
 </script>
 }
 
