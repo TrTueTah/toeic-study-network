@@ -1,0 +1,61 @@
+<div class="result-score-box-wrapper mt-4">
+    <div class="result-score-box-section" id="result-score-box-overall-section">
+        <span class="result-score-box-label">Overall</span>
+        <div class="result-score-box-container">
+            <div class="result-score-box">
+                <div class="result-score-icon text-gray"><i class="bi bi-book"></i></div>
+                <div class="result-score-icontext text-gray">Số đề đã làm</div>
+                <div class="result-score-text">@ViewBag.TotalExamTaken</div>
+                <div class="result-score-sub"><span>đề thi</span></div>
+            </div>
+            <div class="result-score-box">
+                <div class="result-score-icon text-gray"><i class="bi bi-clock"></i></div>
+                <div class="result-score-icontext text-gray">Thời gian luyện thi</div>
+                <div class="result-score-text">
+                    @ViewBag.TotalTimeTaken
+                </div>
+                <div class="result-score-sub"><span>phút</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="result-score-box-section" id="result-score-box-listening-section">
+        <span class="result-score-box-label">Listening</span>
+        <div class="result-score-box-container">
+            <div class="result-score-box">
+                <div class="result-score-icontext text-gray">Điểm trung bình</div>
+
+                <div class="result-score-text">
+                    @ViewBag.AverageListeningScore/495
+                </div>
+
+            </div>
+            <div class="result-score-box">
+                <div class="result-score-icontext text-gray">Điểm cao nhất</div>
+
+                <div class="result-score-text">
+                    @ViewBag.HighestListeningScore/495
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="result-score-box-section" id="result-score-box-reading-section">
+        <span class="result-score-box-label">Reading</span>
+        <div class="result-score-box-container">
+            <div class="result-score-box">
+                <div class="result-score-icontext text-gray">Điểm trung bình</div>
+
+                <div class="result-score-text">
+                    @ViewBag.AverageReadingScore/495
+                </div>
+
+            </div>
+            <div class="result-score-box">
+                <div class="result-score-icontext text-gray">Điểm cao nhất</div>
+
+                <div class="result-score-text">
+                    @ViewBag.HighestReadingScore/495
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

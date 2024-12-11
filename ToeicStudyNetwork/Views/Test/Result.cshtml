@@ -369,10 +369,12 @@
             </div>
         </div>
         <div class="col-md-3">
-            <a class="btn btn-block btn-round btn-primary" asp-action="Analytics" asp-controller="Test">
+            <a class="btn btn-block btn-round btn-primary"
+               href="@Url.Action("Analytics", "Test", new { userId = @ViewBag.UserId, timeRange = "all" })">
                 <span class="bi bi-bar-chart-line mr-2"></span>
                 Kết quả luyện thi
             </a>
+
             <br />
             <div class="user-target-info-box">
                 <div class="user-target-user">

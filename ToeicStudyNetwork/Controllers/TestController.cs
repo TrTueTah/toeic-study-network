@@ -16,21 +16,6 @@ public class TestController : Controller
     {
         _httpClient = httpClient;
     }
-
-    [HttpGet("Analytics")]
-    public async Task<IActionResult> Analytics()
-    {
-        var userId = Request.Cookies["userId"];
-        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
-        response.EnsureSuccessStatusCode();
-        var responseString = await response.Content.ReadAsStringAsync();
-        var userResults = JsonConvert.DeserializeObject<List<TestResultViewModel>>(responseString);
-        var testAnalyticsModel = new TestAnalyticsViewModel
-        {
-            UserResults = userResults
-        };
-        return View(testAnalyticsModel);
-    }
     
     // GET
     [HttpGet]
@@ -226,14 +211,45 @@ public class TestController : Controller
             Type = response.Type,
             DetailResults = response.DetailResults,
             TotalQuestion = response.TotalQuestion,
+            TimeTaken = response.TimeTaken,
+            TimeTakenFormatted = response.TimeTakenFormatted
         };
-        
+
+        var userId = Request.Cookies["userId"];
         var userImage = Request.Cookies["userImage"];
         var username = Request.Cookies["given_name"];
+        
+        ViewBag.UserId = userId;
         ViewBag.UserImage = userImage;
         ViewBag.Username = username;
+        
         return View("Result", resultData);
     }
+    
+    [HttpGet("Analytics")]
+    public async Task<IActionResult> Analytics(string userId, string timeRange = "all")
+    {
+        var analysisUserResultResponse = await FetchAnalysisUserResult(userId, timeRange);
+        var userResultResponse = await FetchUserResultByUserId(userId);
+    
+        ViewBag.TotalExamTaken = analysisUserResultResponse.TotalExamTaken;
+        ViewBag.TotalTimeTaken = Math.Round((double)analysisUserResultResponse.TotalTimeTaken / 60);
+        ViewBag.AverageTimeTaken = analysisUserResultResponse.AverageTimeTaken;
+        ViewBag.AverageScore = analysisUserResultResponse.AverageScore;
+        ViewBag.AverageReadingScore = analysisUserResultResponse.AverageReadingScore;
+        ViewBag.AverageListeningScore = analysisUserResultResponse.AverageListeningScore;
+        ViewBag.HighestScore = analysisUserResultResponse.HighestScore;
+        ViewBag.HighestReadingScore = analysisUserResultResponse.HighestReadingScore;
+        ViewBag.HighestListeningScore = analysisUserResultResponse.HighestListeningScore;
+
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            return PartialView("_AnalysisSectionPartial", userResultResponse);
+        }
+
+        return View("Analytics", userResultResponse);
+    }
+
     
     [NonAction]
     private async Task<List<ExamModel>> FetchExamsAsync()
@@ -317,5 +333,19 @@ public class TestController : Controller
         var responseData = await response.Content.ReadAsStringAsync();
         return JsonConvert.DeserializeObject<TestPracticeResponse>(responseData);
     }
+
+    [NonAction]
+    private async Task<AnalysisUserResultDto> FetchAnalysisUserResult(string userId, string timeRange)
+    {
+        var response =await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getAnalysisUserResult/{userId}/{timeRange}");
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Error fetching analysis user results: {response.ReasonPhrase}");
+        }
+
+        var responseData = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<AnalysisUserResultDto>(responseData);
+    }
+    
     
 }
