@@ -280,6 +280,7 @@ public class UserResultRepository : IUserResultRepository
                 .OrderBy(dr => dr.QuestionNumber)
                 .Select(dr => new DetailResultDto
                 {
+                    Id = dr.Id,
                     QuestionNumber = dr.QuestionNumber,
                     UserAnswer = dr.UserAnswer,
                     IsCorrect = dr.IsCorrect,

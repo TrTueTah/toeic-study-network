@@ -98,17 +98,12 @@ namespace API.Controllers
         {
             try
             {
-                if (examSeriesDto == null || id != examSeriesDto.Id)
-                {
-                    return BadRequest("Exam series data is invalid.");
-                }
-
                 var existingExamSeries = _examSeriesRepository.GetExamSeriesById(id);
                 if (existingExamSeries == null)
                 {
                     return NotFound($"Exam series with ID {id} not found.");
                 }
-
+                
                 var updatedExamSeries = _mapper.Map<ExamSeries>(examSeriesDto);
                 var result = _examSeriesRepository.UpdateExamSeries(updatedExamSeries);
 
