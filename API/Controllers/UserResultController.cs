@@ -154,4 +154,55 @@ public class UserResultController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
     }
+    
+    [HttpGet("getUserResultByExamId/{userId}/{examId}")]
+    [ProducesResponseType(typeof(List<GetAllUserResultDto>), 200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public ActionResult<List<GetAllUserResultDto>> GetUserResultByExamId(string userId, string examId)
+    {
+        try
+        {
+            var result = _userResultRepository.GetAllUserResultsByExamId(userId, examId);
+            var resultDto = _mapper.Map<List<GetAllUserResultDto>>(result);
+            var questionCounts = new Dictionary<string, int>
+            {
+                { "Full Test", 200 },
+                { "Part 1", 6 },
+                { "Part 2", 25 },
+                { "Part 3", 39 },
+                { "Part 4", 30 },
+                { "Part 5", 30 },
+                { "Part 6", 16 },
+                { "Part 7", 54 },
+            };
+
+            foreach (var dto in resultDto)
+            {
+                var exam = _examRepository.GetExamById(dto.ExamId);
+                dto.ExamName = exam.Title;
+                var types = dto.Type.Split(",");
+                int totalQuestions = 0;
+
+                foreach (var type in types)
+                {
+                    var trimmedType = type.Trim();
+                    if (questionCounts.ContainsKey(trimmedType))
+                    {
+                        totalQuestions += questionCounts[trimmedType];
+                        
+                    }
+                }
+
+                dto.TotalQuestions = totalQuestions;
+            }
+
+            return Ok(resultDto);
+
+        }
+        catch (Exception ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
+    }
 }

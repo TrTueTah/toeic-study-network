@@ -2,6 +2,7 @@
 using API.Interfaces;
 using API.Models;
 using API.Dtos.ResultDto;
+using API.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -296,7 +297,6 @@ public class UserResultRepository : IUserResultRepository
         return _context.UserResults
             .Where(ur => ur.UserId == userId)
             .ToList();
-        
     }
 
     public QuestionDetailResultDto GetQuestionDetailResult(string detailResultId)
@@ -458,5 +458,12 @@ public class UserResultRepository : IUserResultRepository
         };
 
         return resultDto;
+    }
+
+    public List<UserResult> GetAllUserResultsByExamId(string userId, string examId)
+    {
+        return _context.UserResults
+            .Where(ur => ur.UserId == userId && ur.ExamId == examId)
+            .ToList();
     }
 }
