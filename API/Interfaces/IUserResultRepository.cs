@@ -10,4 +10,5 @@ public interface IUserResultRepository
     List<UserResult> GetAllUserResultsByUserId(string userId);
     QuestionDetailResultDto GetQuestionDetailResult(string detailResultId);
     AnalysisUserResultDto GetAnalysisUserResult(string userId, string timeRange);
+    List<UserResult> GetAllUserResultsByExamId(string userId, string examId);
 }
