@@ -13,4 +13,5 @@ public class UserResult
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string? Type { get; set; }
     public List<DetailResult> DetailResults { get; set; }
+    public Exam? Exam { get; set; }
 }

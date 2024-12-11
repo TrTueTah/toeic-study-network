@@ -151,9 +151,9 @@ namespace API.Controllers
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult DeletePost(string id)
+        public ActionResult DeletePost(string examId)
         {
-            var post = _examRepository.DeleteExam(id);
+            var post = _examRepository.DeleteExam(examId);
             return NoContent();
         }
     }
