@@ -16,12 +16,14 @@ namespace API.Controllers
         private readonly IExamRepository _examRepository;
         private readonly IMapper _mapper;
         private readonly FirebaseService _firebaseService;
+        private readonly IExamSeriesRepository _examSeriesRepository;
 
-        public ExamController(IExamRepository examRepository, IMapper mapper, FirebaseService firebaseService)
+        public ExamController(IExamRepository examRepository, IMapper mapper, FirebaseService firebaseService, IExamSeriesRepository examSeriesRepository)
         {
             _examRepository = examRepository;
             _mapper = mapper;
             _firebaseService = firebaseService;
+            _examSeriesRepository = examSeriesRepository;
         }
 
         // GET: api/exam/getAllExams
@@ -93,31 +95,29 @@ namespace API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<ActionResult> UploadExamAudio([FromForm] UpdateExamDto updateExamDto)
+        public async Task<ActionResult> UploadExamAudio([FromForm] UpdateExamFileDto updateExamFileDto)
         {
             try
             {
-                if (updateExamDto.audioFile == null || updateExamDto.audioFile.Length == 0)
+                if (updateExamFileDto.audioFile == null || updateExamFileDto.audioFile.Length == 0)
                 {
                     return BadRequest("Audio file is missing or empty.");
                 }
 
-                var contentType = updateExamDto.audioFile.ContentType;
+                var contentType = updateExamFileDto.audioFile.ContentType;
                 if (contentType != "audio/mp3" && contentType != "audio/mpeg")
                 {
                     return BadRequest("Invalid file type. Please upload an MP3 file.");
                 }
 
-                var existingExam = _examRepository.GetExamById(updateExamDto.ExamId);
+                var existingExam = _examRepository.GetExamById(updateExamFileDto.ExamId);
                 if (existingExam == null)
                 {
-                    return NotFound($"Exam with ID {updateExamDto.ExamId} not found.");
+                    return NotFound($"Exam with ID {updateExamFileDto.ExamId} not found.");
                 }
 
-                // Upload file to Firebase
-                string audioUrl = await _firebaseService.UploadFileAsync(updateExamDto.audioFile, $"examAudios/{updateExamDto.ExamId}");
+                string audioUrl = await _firebaseService.UploadFileAsync(updateExamFileDto.audioFile, $"examAudios/{updateExamFileDto.ExamId}");
 
-                // Save the URL to the exam record
                 existingExam.AudioFilesUrl = audioUrl;
                 var exam = _mapper.Map<Exam>(existingExam);
                 _examRepository.UpdateExam(exam);
@@ -144,6 +144,41 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return NotFound(new { message = ex.Message });
+            }
+        }
+        
+        [HttpPut("updateExam/{id}")]
+        [ProducesResponseType(typeof(Exam), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult<ExamSeries> UpdateExam(string id, [FromBody] UpdateExamDto examDto)
+        {
+            try
+            {
+                var existingExam = _examRepository.GetExamById(id);
+                if (existingExam == null)
+                {
+                    return NotFound($"Exam with ID {id} not found.");
+                }
+                
+                var exam = _mapper.Map<Exam>(existingExam);
+                
+                var existingExamSeries = _examSeriesRepository.GetExamSeriesById(examDto.ExamSeriesId);
+                if (existingExamSeries == null)
+                {
+                    return NotFound($"Exam series with ID {id} not found.");
+                }
+                
+                var updatedExam = _mapper.Map(examDto, exam);
+
+                var result = _examRepository.UpdateExam(updatedExam);
+
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
         

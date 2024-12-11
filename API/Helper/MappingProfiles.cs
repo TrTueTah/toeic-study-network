@@ -86,5 +86,8 @@ public class MappingProfiles : Profile
         CreateMap<UpdateExamSeriesDto, ExamSeries>();
         CreateMap<ExamSeries, GetExamSeriesDto>();
         CreateMap<GetExamSeriesDto, ExamSeries>();
+
+        CreateMap<Exam, UpdateExamDto>();
+        CreateMap<UpdateExamDto, Exam>();
     }
 }
