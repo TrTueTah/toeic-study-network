@@ -49,11 +49,17 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(dr => dr.UserResultId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        builder.Entity<UserResult>()
+            .HasOne(ur => ur.Exam)
+            .WithMany(e => e.UserResults)
+            .HasForeignKey(ur => ur.ExamId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.Entity<Exam>()
             .HasOne(e => e.ExamSeries)
             .WithMany(es => es.Exams)
             .HasForeignKey(e => e.ExamSeriesId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Entity<Question>()
             .Property(q => q.GroupId)

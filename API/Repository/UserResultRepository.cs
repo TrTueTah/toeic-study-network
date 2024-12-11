@@ -254,14 +254,14 @@ public class UserResultRepository : IUserResultRepository
         var unansweredCount = userResult.DetailResults
             .Count(dr => string.IsNullOrEmpty(dr.UserAnswer));
 
-        var incorrectCount = totalQuestions - userResult.CorrectAnswerAmount;
+        var incorrectCount = totalQuestions - userResult.CorrectAnswerAmount - unansweredCount;
 
         var exam = _context.Exams
             .FirstOrDefault(ex => ex.Id == userResult.ExamId);
         
         var resultDto = new UserResultDto
         {
-            UserResultId = userResult.Id,
+            Id = userResult.Id,
             UserId = userResult.UserId,
             ExamId = userResult.ExamId,
             ExamName = exam.Title,

@@ -56,7 +56,9 @@ namespace API.Repository
                     Title = e.Title,
                     CreatedAt = e.CreatedAt,
                     AudioFilesUrl = e.AudioFilesUrl,
-                    QuestionGroups = e.QuestionGroups,
+                    QuestionGroups = e.QuestionGroups
+                        .OrderBy(qg => qg.Questions.Min(q => q.QuestionNumber))
+                        .ToList(),
                     ExamSeries = new GetExamSeriesDto
                     {
                         Id = e.ExamSeries.Id,
