@@ -9,7 +9,7 @@ namespace API.Interfaces
         Task<Exam> CreateExam(Exam exam);
         GetAllExamDto? GetExamById(string id);
         GetExamByPartDto GetExamByPart(string examId, List<int> partNumbers);
-        bool UpdateExam(Exam exam);
+        Exam UpdateExam(Exam exam);
         bool DeleteExam(string id);
         bool IsExamExist(string id);
     }

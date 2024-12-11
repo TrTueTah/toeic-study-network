@@ -2,6 +2,6 @@
 
 public class UpdateExamDto
 {
-    public string ExamId { get; set; }
-    public IFormFile audioFile { get; set; }
+    public string? Title { get; set; }
+    public string? ExamSeriesId { get; set; }
 }

@@ -104,7 +104,8 @@ namespace API.Controllers
                     return NotFound($"Exam series with ID {id} not found.");
                 }
                 
-                var updatedExamSeries = _mapper.Map<ExamSeries>(examSeriesDto);
+                var updatedExamSeries = _mapper.Map(examSeriesDto, existingExamSeries);
+
                 var result = _examSeriesRepository.UpdateExamSeries(updatedExamSeries);
 
                 return Ok(result);

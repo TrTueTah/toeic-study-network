@@ -39,9 +39,9 @@ public class ExamSeriesRepository : IExamSeriesRepository
         return examSeries;
     }
 
-    public bool DeleteExamSeries(string Id)
+    public bool DeleteExamSeries(string id)
     {
-        var examSeries = _context.ExamSeries.Find(Id);
+        var examSeries = _context.ExamSeries.Find(id);
 
         if (examSeries == null)
         {

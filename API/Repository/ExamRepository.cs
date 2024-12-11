@@ -36,7 +36,7 @@ namespace API.Repository
                     QuestionGroups = e.QuestionGroups,
                     ExamSeries = new GetExamSeriesDto
                     {
-                        Id = e.ExamSeries.Id,
+                        Id = e.ExamSeries!.Id,
                         Name = e.ExamSeries.Name
                     },
                 })
@@ -112,10 +112,11 @@ namespace API.Repository
             return result;
         }
         
-        public bool UpdateExam(Exam exam)
+        public Exam UpdateExam(Exam exam)
         {
             _context.Exams.Update(exam);
-            return Save();
+            _context.SaveChanges();
+            return exam;
         }
 
         public bool DeleteExam(string id)
