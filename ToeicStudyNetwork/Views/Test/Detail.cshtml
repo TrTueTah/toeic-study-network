@@ -64,7 +64,7 @@
                         @TimeSpan.FromSeconds(result.TimeTaken).ToString(@"hh\:mm\:ss")
                     </td>
                     <td>
-                        <a href="@Url.Action("Result", "Test", new { examId= result.ExamId, resultId = result.UserResultId })">Xem chi tiết</a>
+                        <a href="/Test/@result.ExamId/result/@result.Id">Xem chi tiết</a>
                     </td>
                 </tr>
                 }

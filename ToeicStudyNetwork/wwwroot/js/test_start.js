@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeQuestionListItemClick();
   initializeCountdownTimer(120 * 60);
   handleExit();
+  handleExitPractice();
   initializeSubmitTest();
 });
 
@@ -20,6 +21,23 @@ function handleExit() {
       if (confirmExit) {
         const currentUrl = window.location.href;
         const baseUrl = currentUrl.split("/start")[0];
+        window.location.href = baseUrl;
+      }
+    });
+  }
+}
+
+function handleExitPractice() {
+  const exitPracticeButton = document.getElementById("exit-practice-button");
+
+  if (exitPracticeButton) {
+    exitPracticeButton.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      const confirmExit = confirm("Bạn có chắc chắn muốn thoát? Mọi dữ liệu chưa nộp sẽ bị mất.");
+      if (confirmExit) {
+        const currentUrl = window.location.href;
+        const baseUrl = currentUrl.split("/practice")[0];
         window.location.href = baseUrl;
       }
     });

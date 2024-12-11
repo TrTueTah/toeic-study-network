@@ -65,7 +65,7 @@ public class TestController : Controller
                 return BadRequest("UserId is missing in cookies.");
             }
 
-            var userResults = await FetchUserResultByUserId(userId);
+            var userResults = await FetchUserResultByExamId(userId, id);
 
             var exam = await FetchExamAsync(id);
 
@@ -224,7 +224,8 @@ public class TestController : Controller
             WithoutAnswerAmount = response.WithoutAnswerAmount,
             CreatedAt = response.CreatedAt,
             Type = response.Type,
-            DetailResults = response.DetailResults
+            DetailResults = response.DetailResults,
+            TotalQuestion = response.TotalQuestion,
         };
         
         var userImage = Request.Cookies["userImage"];
@@ -276,6 +277,20 @@ public class TestController : Controller
     private async Task<List<UserResultViewModel>> FetchUserResultByUserId(string userId)
     {
         var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception($"Error fetching user results: {response.ReasonPhrase}");
+        }
+
+        var responseData = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeObject<List<UserResultViewModel>>(responseData);
+    }
+    
+    [NonAction]
+    private async Task<List<UserResultViewModel>> FetchUserResultByExamId(string userId, string examId)
+    {
+        var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByExamId/{userId}/{examId}");
 
         if (!response.IsSuccessStatusCode)
         {
