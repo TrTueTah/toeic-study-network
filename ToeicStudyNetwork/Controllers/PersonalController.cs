@@ -12,6 +12,7 @@ using ToeicStudyNetwork.Dtos.RequestDtos;
 using ToeicStudyNetwork.Models;
 using ToeicStudyNetwork.ViewModels;
 using ToeicStudyNetwork.ViewModels.Personal;
+using ToeicStudyNetwork.ViewModels.Test;
 
 namespace ToeicStudyNetwork.Controllers
 {
@@ -29,37 +30,37 @@ namespace ToeicStudyNetwork.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var token = Request.Cookies["token"];
-            var user = new UserModel();
-            var personalModel = new PersonalViewModel();
+            ViewBag.ImageUrl = Request.Cookies["userImage"];
+            ViewBag.Email = Request.Cookies["email"];
+            ViewBag.Username = Request.Cookies["given_name"];
 
-            if (!string.IsNullOrEmpty(token))
+            var userId = Request.Cookies["userId"];
+
+            var response = FetchUserResultByUserId(userId);
+            
+            return View("Index", response.Result);
+        }
+        
+        [NonAction]
+        private async Task<List<UserResultViewModel>> FetchUserResultByUserId(string userId)
+        {
+            var response = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
+
+            if (!response.IsSuccessStatusCode)
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-
-                user.ImageUrl = Request.Cookies["userImage"];
-                user.Email = Request.Cookies["email"];
-                user.Username = Request.Cookies["given_name"];
-
-                var userId = Request.Cookies["userId"];
-
-                var userResultsResponse = await _httpClient.GetAsync($"http://localhost:5112/api/v1/result/getUserResultByUserId/{userId}");
-                userResultsResponse.EnsureSuccessStatusCode();
-                var userResultsString = await userResultsResponse.Content.ReadAsStringAsync();
-                var userResults = JsonConvert.DeserializeObject<List<UserResultModel>>(userResultsString);
-
-                personalModel.User = user;
-                personalModel.UserResults = userResults;
+                throw new Exception($"Error fetching user results: {response.ReasonPhrase}");
             }
 
-            return View("Index", personalModel);
+            var responseData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<UserResultViewModel>>(responseData);
         }
+        
         [HttpGet("ChangePassword")]
         public async Task<IActionResult> ChangePassword()
         {
             return View("ChangePassword");
         }
+        
         [HttpPost("ChangePasswordRequest")]
         public async Task<IActionResult> ChangePasswordRequest([FromBody] ChangePasswordViewModel changePasswordViewModel)
         {

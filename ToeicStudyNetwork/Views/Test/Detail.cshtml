@@ -42,12 +42,12 @@
         <div class="table-responsive">
             <table class="table table-bordered table-results">
                 <thead>
-                    <tr>
-                        <th class="fw-bold">Ngày làm</th>
-                        <th class="fw-bold">Kết quả</th>
-                        <th class="fw-bold">Thời gian làm bài</th>
-                        <th class="fw-bold">Chi tiết</th>
-                    </tr>
+                <tr>
+                    <th class="fw-bold">Ngày làm</th>
+                    <th class="fw-bold">Kết quả</th>
+                    <th class="fw-bold">Thời gian làm bài</th>
+                    <th class="fw-bold">Chi tiết</th>
+                </tr>
                 </thead>
                 <tbody>
                 @foreach (var result in Model.UserResults)
@@ -243,11 +243,11 @@
                             <a href="#" class="btn btn-sm btn-outline-secondary me-1">Dạng bài: List/ Menu: Danh sách/ Thực đơn</a>
                         </div>
                     </div>
-                   
+
                     <button class="btn mb-3 btn-primary" type="submit" style="background-color: var(--primary-500)">Bắt đầu thi</button>
                 </form>
-        </div>
-        
+            </div>
+
             <div id="full-test-tab" class="d-none">
                 <div class="alert alert-take-test my-3" style="font-style: normal">
                     <span style="font-style: normal">Sẵn sàng để bắt đầu làm full test? Để đạt được kết quả tốt nhất, bạn cần dành ra 120 phút cho bài test này.</span>
@@ -257,6 +257,7 @@
         </div>
     </div>
 </section>
+
 
 @section scripts {
     <script src="~/js/test_detail.js" asp-append-version="true"></script>
