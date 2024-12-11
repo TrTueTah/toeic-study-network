@@ -28,6 +28,7 @@ public class TestResultViewModel
     }
     public DateTime CreatedAt { get; set; }
     public string? Type { get; set; }
+    public int TotalQuestion { get; set; }
     public List<DetailResultModel> DetailResults { get; set; }
 
 }

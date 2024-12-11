@@ -2,7 +2,7 @@ namespace ToeicStudyNetwork.ViewModels.Test;
 
 public class UserResultViewModel
 {
-    public string UserResultId { get; set; }
+    public string Id { get; set; }
     public string? UserId { get; set; }
     public string? ExamId { get; set; }
     public string? ExamName { get; set; }

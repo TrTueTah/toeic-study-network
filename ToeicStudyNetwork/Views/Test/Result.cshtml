@@ -25,7 +25,7 @@
                                 <div class="result-stats-item">
                                     <span class="result-stats-icon bi bi-check-lg"></span>
                                     <span class="result-stats-label">Kết quả làm bài:</span>
-                                    <span class="result-stats-text">@Model.CorrectAnswerAmount/200</span>
+                                    <span class="result-stats-text">@Model.CorrectAnswerAmount/@Model.TotalQuestion</span>
                                 </div>
                                 <br>
                                 <div class="result-stats-item">
@@ -136,8 +136,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -174,8 +173,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -211,8 +209,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -249,8 +246,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -287,8 +283,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -325,8 +320,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -363,8 +357,7 @@
                                             }
                                         </span>
                                         <a class="result-answer-detail" data-toggle="modal" data-target="#result-modal"
-                                            onclick="window.load_jqiframe(this, '#result-modal-content');"
-                                            data-href="/tests/224/results/21337687/q/8592/?view=embed" href="#">[Chi tiết]</a>
+                                           onclick="loadQuestionDetail('@item.Id');" href="javascript:void(0);">[Chi tiết]</a>
                                     </div>
                                 }
                             </div>
@@ -425,8 +418,25 @@
     </div>
 </section>
 
+<div class="modal fade" id="result-modal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalLabel">Question Details</h5>
+            </div>
+            <div class="modal-body" id="result-modal-content">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section scripts {
     <script src="~/js/test_result.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 }
