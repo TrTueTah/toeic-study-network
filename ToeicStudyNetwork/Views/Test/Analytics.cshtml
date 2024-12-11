@@ -1,16 +1,19 @@
-@model ToeicStudyNetwork.ViewModels.Test.TestAnalyticsViewModel
+@model List<ToeicStudyNetwork.ViewModels.Test.UserResultViewModel>
 @{
+    ViewBag.Title = "Analytics";
     var time = 0.0;
     var score = 0.0;
-    foreach (var result in Model.UserResults)
+    foreach (var result in Model)
     {
         time += result.TimeTaken;
-        score += result.Score ?? 0;
+        score += result.Score;
     }
     time = Math.Round(time / 60, 2);
-    score = Math.Round(score / Model.UserResults.Count, 2);
+    score = Math.Round(score / Model.Count, 2);
 }
 @section customHead {
+    <link rel="stylesheet" href="~/css/test_detail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/test_result.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/test_analytics.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 }
@@ -23,166 +26,134 @@
 </div>
 
 <div class="container">
-    <div class="result-score-box-wrapper mt-4">
-        <div class="result-score-box">
-            <div class="result-score-icon text-gray"><i class="bi bi-book"></i></div>
-            <div class="result-score-icontext text-gray">Số đề đã làm</div>
-            <div class="result-score-text">@Model.UserResults.Count</div>
-            <div class="result-score-sub"><span>đề thi</span></div>
-        </div>
-        <div class="result-score-box">
-            <div class="result-score-icon text-gray"><i class="bi bi-clock"></i></div>
-            <div class="result-score-icontext text-gray">Thời gian luyện thi</div>
-            <div class="result-score-text">
-                @time
+    <div>
+        <div class="mb-2">Lọc kết quả theo ngày (tính từ bài thi cuối):</div>
+        <form class="form-inline">
+            <input type="hidden" name="exam" value="1">
+            <div class="form-group mr-1 mt-1">
+                <select name="qdays" class="custom-select" id="timeRangeSelect" onchange="handleTimeRangeChange()">
+                    <option value="" disabled="">-- Chọn khoảng thời gian --</option>
+                    <option selected="selected" value="all">Tất cả</option>
+                    <option value="today">Hôm nay</option>
+                    <option value="3days">3 ngày gần nhất</option>
+                    <option value="7days">7 ngày gần nhất</option>
+                    <option value="1month">30 ngày</option>
+                    <option value="6months">6 tháng</option>
+                    <option value="1year">1 năm</option>
+                </select>
             </div>
-            <div class="result-score-sub"><span>phút</span></div>
+            <div class="mt-1">
+                <button class="ml-1 btn btn-primary">Search</button>
+                <a class="ml-1 btn btn-light" href="?">Clear</a>
+            </div>
+            <div id="loader" role="status" class="spinner-border spinner-border-sm align-self-center my-3" style="display: none; color: var(--primary-500)">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </form>
+    </div>
+    <div id="analysis-section">
+        @await Html.PartialAsync("_AnalysisSectionPartial");
+    </div>
+    
+    <h4 class="label">Danh sách đề thi đã làm:</h4>
+
+    <!-- Navigation Tabs -->
+    <div class="container mt-4 p-0">
+        <ul id="practice-tabs" class="nav nav-tabs my-3 custom-tabs">
+            <li class="nav-item" onclick="fullTestTabActive()">
+                <a type="button" id="full-test-tab-button" class="nav-link active" >Làm full test</a>
+            </li>
+            <li class="nav-item" onclick="practiceTabActive()">
+                <a type="button" id="practice-tab-button" class="nav-link">Luyện tập</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4 p-0">
+        <div id="full-test-tab">
+            <div class="table-responsive">
+                <table class="table table-bordered table-results">
+                    <thead>
+                    <tr>
+                        <th class="fw-bold">Đề thi</th>
+                        <th class="fw-bold">Ngày làm</th>
+                        <th class="fw-bold">Kết quả</th>
+                        <th class="fw-bold">Thời gian làm bài</th>
+                        <th class="fw-bold">Chi tiết</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var result in Model.Where(result => result.Type == "Full Test"))
+                    {
+                        <tr>
+                            <td class="column-layout">
+                                <div><strong>@result.ExamName</strong></div>
+                                <span class="badge text-black badge-custom">@result.Type</span>
+                            </td>
+                            <td>
+                                <div>@result.CreateAt.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                            </td>
+                            <td>
+                                @result.CorrectAnswerAmount/@result.TotalQuestions (Điểm: @result.Score)
+                            </td>
+                            <td>
+                                @TimeSpan.FromSeconds(result.TimeTaken).ToString(@"hh\:mm\:ss")
+                            </td>
+                            <td>
+                                <a href="/Test/@result.ExamId/result/@result.Id">Xem chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="result-score-box">
-            <div class="result-score-icon text-score"><i class="bi bi-bullseye"></i></div>
-            <div class="result-score-icontext text-score">Điểm mục tiêu</div>
-            <div class="result-score-sub text-score">
-                <a data-toggle="modal" data-target="#exam-top-modal"
-                    onclick="window.load_jqhtml(this, '#exam-top-modal-content')" href="/targetscore/add/"
-                    data-href="/targetscore/add/?view=clean">
-                    <span class="far fa-pen mr-1"></span>
-                    Tạo ngay
-                </a>
+        <div id="practice-tab" class="d-none">
+            <div class="table-responsive">
+                <table class="table table-bordered table-results">
+                    <thead>
+                    <tr>
+                        <th class="fw-bold">Đề thi</th>
+                        <th class="fw-bold">Ngày làm</th>
+                        <th class="fw-bold">Kết quả</th>
+                        <th class="fw-bold">Thời gian làm bài</th>
+                        <th class="fw-bold">Chi tiết</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var result in Model.Where(result => result.Type != "Full Test"))
+                    {
+                        <tr>
+                            <td class="column-layout">
+                                <div><strong>@result.ExamName</strong></div>
+                                <span class="badge text-black badge-custom">@result.Type</span>
+                            </td>
+                            <td>
+                                <div>@result.CreateAt.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                            </td>
+                            <td>
+                                @result.CorrectAnswerAmount/@result.TotalQuestions
+                            </td>
+                            <td>
+                                @TimeSpan.FromSeconds(result.TimeTaken).ToString(@"hh\:mm\:ss")
+                            </td>
+                            <td>
+                                <a href="/Test/@result.ExamId/result/@result.Id">Xem chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    <ul class="nav nav-horizontal nav-pills">
-        <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#nav-section2" role="tab" aria-controls="nav-notes"
-                aria-selected="true" id="listening-button">
-                Listening
-            </a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link " data-toggle="tab" href="#nav-section1" role="tab" aria-controls="nav-notes"
-                aria-selected="true" id="reading-button">
-                Reading
-            </a>
-        </li>
-    </ul>
-    <div class="result-score-box-wrapper" id="listening-wrapper">
-        <div class="result-score-box">
-            <div class="result-score-icontext text-gray">Điểm trung bình</div>
-
-            <div class="result-score-text">
-                70/495
-            </div>
-
-        </div>
-        <div class="result-score-box">
-            <div class="result-score-icontext text-gray">Điểm cao nhất</div>
-
-            <div class="result-score-text">
-                70/495
-            </div>
-        </div>
-    </div>
-    <div class="result-score-box-wrapper hide" id="reading-wrapper">
-        <div class="result-score-box">
-            <div class="result-score-icontext text-gray">Điểm trung bình</div>
-
-            <div class="result-score-text">
-                00/495
-            </div>
-
-        </div>
-        <div class="result-score-box">
-            <div class="result-score-icontext text-gray">Điểm cao nhất</div>
-
-            <div class="result-score-text">
-                00/495
-            </div>
-        </div>
-    </div>
-    <h4 id="danh-sách-đề-thi-đã-làm">Danh sách đề thi đã làm:</h4>
-    <table class="table table-sm table-striped">
-        <thead>
-            <tr>
-                <th>Ngày làm</th>
-                <th style="min-width:250px;">Đề thi</th>
-                <th>Kết quả</th>
-                <th style="min-width:100px;">Thời gian làm bài</th>
-                <th style="min-width:150px;"></th>
-            </tr>
-        </thead>
-        <tbody>
-
-            <tr>
-                <td>11/11/2024</td>
-                <td>
-                    New Economy TOEIC Test 1
-
-                    <span class="result-badge-full">Full test</span>
-
-
-                </td>
-                <td>
-                    12/200
-
-                    (Điểm: 70)
-
-                </td>
-                <td>0:00:47</td>
-                <td><a target="_blank" href="/tests/224/results/20633357/">
-                        Xem chi tiết</a>
-                </td>
-            </tr>
-
-            <tr>
-                <td>11/11/2024</td>
-                <td>
-                    New Economy TOEIC Test 1
-
-                    <span class="result-badge-practice">Luyện tập</span>
-
-                    <span class="result-badge-practice">Part 2</span>
-                </td>
-                <td>
-                    8/25
-                </td>
-                <td>0:00:32</td>
-                <td><a target="_blank" href="/tests/224/results/20633309/">
-                        Xem chi tiết</a>
-                </td>
-            </tr>
-            <tr>
-                <td>11/11/2024</td>
-                <td>
-                    New Economy TOEIC Test 1
-                    <span class="result-badge-practice">Luyện tập</span>
-                    <span class="result-badge-practice">Part 1</span>
-                </td>
-                <td>
-                    4/6
-                </td>
-                <td>0:00:17</td>
-                <td><a target="_blank" href="/tests/224/results/20632102/">
-                        Xem chi tiết</a>
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
 </div>
 
-<script>
-    document.getElementById('listening-button').addEventListener("click", function () {
-        document.getElementById('listening-wrapper').classList.remove('hide');
-        document.getElementById('reading-wrapper').classList.add('hide');
-        document.getElementById('listening-button').classList.add('active');
-        document.getElementById('reading-button').classList.remove('active');
-    });
-    document.getElementById('reading-button').addEventListener("click", function () {
-        document.getElementById('reading-wrapper').classList.remove('hide');
-        document.getElementById('listening-wrapper').classList.add('hide');
-        document.getElementById('reading-button').classList.add('active');
-        document.getElementById('listening-button').classList.remove('active');
-    });
-</script>
+@section scripts
+{
+    <script src="~/js/test_analytics.js"></script>
+    <script src="~/js/test_detail.js"></script>
+}
+

@@ -25,6 +25,11 @@ public class TestResultViewModel
             TimeSpan time = TimeSpan.FromSeconds(TimeTaken);
             return time.ToString(@"hh\:mm\:ss");
         }
+        set
+        {
+            var time = TimeSpan.Parse(value);
+            TimeTaken = (float)time.TotalSeconds;
+        }
     }
     public DateTime CreatedAt { get; set; }
     public string? Type { get; set; }
