@@ -150,7 +150,7 @@ public class UserResultRepository : IUserResultRepository
             Score = totalScore,
             ReadingScore = ReadingScore,
             ListeningScore = ListeningScore,
-            TimeTaken = submission.TimeTaken,
+            TimeTaken = 7200 - submission.TimeTaken,
             CorrectAnswerAmount = readingCorrect + listeningCorrect,
             Type = submission.Type,
             DetailResults = detailResults
