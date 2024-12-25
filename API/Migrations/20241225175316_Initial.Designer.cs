@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241208115401_refactorUR")]
-    partial class refactorUR
+    [Migration("20241225175316_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,7 +58,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.DetailResult", b =>
                 {
-                    b.Property<string>("DetailResultId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<string>("CorrectAnswer")
@@ -76,7 +76,7 @@ namespace API.Migrations
                     b.Property<string>("UserResultId")
                         .HasColumnType("text");
 
-                    b.HasKey("DetailResultId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserResultId");
 
@@ -95,7 +95,6 @@ namespace API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ExamSeriesId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -270,7 +269,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.UserResult", b =>
                 {
-                    b.Property<string>("UserResultId")
+                    b.Property<string>("Id")
                         .HasColumnType("text");
 
                     b.Property<int>("CorrectAnswerAmount")
@@ -300,7 +299,9 @@ namespace API.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("text");
 
-                    b.HasKey("UserResultId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExamId");
 
                     b.ToTable("UserResults");
                 });
@@ -329,8 +330,7 @@ namespace API.Migrations
                     b.HasOne("API.Models.ExamSeries", "ExamSeries")
                         .WithMany("Exams")
                         .HasForeignKey("ExamSeriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ExamSeries");
                 });
@@ -377,9 +377,21 @@ namespace API.Migrations
                     b.Navigation("Exam");
                 });
 
+            modelBuilder.Entity("API.Models.UserResult", b =>
+                {
+                    b.HasOne("API.Models.Exam", "Exam")
+                        .WithMany("UserResults")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Exam");
+                });
+
             modelBuilder.Entity("API.Models.Exam", b =>
                 {
                     b.Navigation("QuestionGroups");
+
+                    b.Navigation("UserResults");
                 });
 
             modelBuilder.Entity("API.Models.ExamSeries", b =>
