@@ -47,7 +47,7 @@ public class TestController : Controller
             var userId = Request.Cookies["userId"];
             if (string.IsNullOrEmpty(userId))
             {
-                return BadRequest("UserId is missing in cookies.");
+                return RedirectToAction("SignIn", "Authentication");
             }
 
             var userResults = await FetchUserResultByExamId(userId, id);
@@ -346,6 +346,4 @@ public class TestController : Controller
         var responseData = await response.Content.ReadAsStringAsync();
         return JsonConvert.DeserializeObject<AnalysisUserResultDto>(responseData);
     }
-    
-    
 }

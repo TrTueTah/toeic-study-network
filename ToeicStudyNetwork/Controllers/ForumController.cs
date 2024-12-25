@@ -36,6 +36,7 @@ namespace ToeicStudyNetwork.Controllers
                 IsLike = p.Likes.Any(like => like.UserId == currentUserId)
             }).ToList();
             
+            ViewBag.Token = Request.Cookies["token"];
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
             ViewBag.CurrentTab = "newest";

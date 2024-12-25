@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -41,108 +42,130 @@ namespace ToeicStudyNetwork.Controllers
                 var responseContent = await response.Content.ReadAsStringAsync();
                 var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 var token = (string)responseObject.token;
+
                 if (!string.IsNullOrEmpty(token))
                 {
-                    // Save the token to cookies
-                    Response.Cookies.Append("token", token);
+                    SetAuthCookies(token);
 
-                    var handler = new JwtSecurityTokenHandler();
-                    var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-                    Response.Cookies.Append("userId", jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value);
-                    Response.Cookies.Append("userImage", jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value);
-                    Response.Cookies.Append("email", jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value);
-                    Response.Cookies.Append("given_name", jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value);
+                    if (HasAdminRole(token)) 
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
 
-                    // Handle successful login (e.g., redirect to a dashboard)
                     return RedirectToAction("Index", "Home");
                 }
             }
-
-            // Handle login failure
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var errorMessage = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, errorMessage ?? "Yêu cầu không hợp lệ.");
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                ModelState.AddModelError(string.Empty, "Email hoặc mật khẩu không đúng.");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Có lỗi xảy ra. Vui lòng thử lại.");
+            }
+            
             return View(model);
         }
-        [HttpPost]
-        public async Task<IActionResult> SignUp(SignUpViewModel model)
+        
+       [HttpPost]
+public async Task<IActionResult> SignUp(SignUpViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        return View(model);
+    }
+
+    if (model.Password != model.ConfirmPassword)
+    {
+        ModelState.AddModelError(string.Empty, "Password and Confirm Password do not match.");
+        return View(model);
+    }
+
+    var signUpData = new
+    {
+        Username = model.Username,
+        Email = model.Email,
+        Password = model.Password,
+    };
+    var json = JsonConvert.SerializeObject(signUpData);
+    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    var response = await _httpClient.PostAsync("http://localhost:5112/api/account/register", content);
+
+    if (response.IsSuccessStatusCode)
+    {
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
+        var token = (string)responseObject.token;
+
+        if (!string.IsNullOrEmpty(token))
         {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            if (model.Password != model.ConfirmPassword)
-            {
-                ModelState.AddModelError(string.Empty, "Password and Confirm Password do not match.");
-                return View(model);
-            }
-            var signUpData = new
-            {
-                Username = model.Username,
-                Email = model.Email,
-                Password = model.Password,
-            };
-            var json = JsonConvert.SerializeObject(signUpData);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("http://localhost:5112/api/account/register", content);
-            if (response.IsSuccessStatusCode)
-            {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var responseObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
-                var token = (string)responseObject.token;
-                if (!string.IsNullOrEmpty(token))
-                {
-                    // Save the token to cookies
-                    Response.Cookies.Append("token", token);
-                    var handler = new JwtSecurityTokenHandler();
-                    var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
-                    Response.Cookies.Append("userId", jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value);
-                    Response.Cookies.Append("userImage", jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value);
-                    Response.Cookies.Append("email", jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value);
-                    Response.Cookies.Append("given_name", jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value);
+            SetAuthCookies(token);
+            return RedirectToAction("Index", "Home");
+        }
+    }
 
-                    // Handle successful login (e.g., redirect to a dashboard)
-                    return RedirectToAction("Index", "Home");
+    if (response.StatusCode == HttpStatusCode.BadRequest)
+    {
+        var errorContent = await response.Content.ReadAsStringAsync();
+        try
+        {
+            var errors = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(errorContent);
+            foreach (var error in errors)
+            {
+                foreach (var errorMessage in error.Value)
+                {
+                    ModelState.AddModelError(string.Empty, errorMessage);
                 }
             }
-            return View(model);
         }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Yêu cầu không hợp lệ.");
+        }
+    }
+    else if (response.StatusCode == HttpStatusCode.Conflict)
+    {
+        ModelState.AddModelError(string.Empty, "Email đã tồn tại.");
+    }
+    else if (response.StatusCode == HttpStatusCode.Unauthorized)
+    {
+        ModelState.AddModelError(string.Empty, "Không được phép truy cập. Vui lòng thử lại.");
+    }
+    else
+    {
+        ModelState.AddModelError(string.Empty, "Có lỗi xảy ra. Vui lòng thử lại.");
+    }
+
+    return View(model);
+}
+
 
         public IActionResult SignIn()
         {
-            var token = Request.Cookies["token"];
-            if (!string.IsNullOrEmpty(token))
+            if (IsAuthenticated())
             {
-                if (IsTokenExpired(token))
-                {
-                    // Delete the token if it is expired
-                    Response.Cookies.Delete("token");
-                }
-                else
-                {
-                    // Redirect to Home if the token is valid
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
 
         public IActionResult SignUp()
         {
-            var token = Request.Cookies["token"];
-            if (!string.IsNullOrEmpty(token))
+            if (IsAuthenticated())
             {
-                if (IsTokenExpired(token))
-                {
-                    // Delete the token if it is expired
-                    Response.Cookies.Delete("token");
-                }
-                else
-                {
-                    // Redirect to Home if the token is valid
-                    return RedirectToAction("Index", "Home");
-                }
+                return RedirectToAction("Index", "Home");
             }
             return View();
         }
+
+        
         private bool IsTokenExpired(string token)
         {
             var handler = new JwtSecurityTokenHandler();
@@ -158,6 +181,34 @@ namespace ToeicStudyNetwork.Controllers
 
             var expDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(exp)).UtcDateTime;
             return expDate < DateTime.UtcNow;
+        }
+        
+        private void SetAuthCookies(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            Response.Cookies.Append("token", token);
+            Response.Cookies.Append("userId", jwtToken.Claims.FirstOrDefault(c => c.Type == "userId")?.Value);
+            Response.Cookies.Append("role", jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value);
+            Response.Cookies.Append("email", jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value);
+            Response.Cookies.Append("given_name", jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value);
+            Response.Cookies.Append("userImage", jwtToken.Claims.FirstOrDefault(c => c.Type == "userImage")?.Value);
+        }
+        
+        private bool IsAuthenticated()
+        {
+            var token = Request.Cookies["token"];
+            return !string.IsNullOrEmpty(token) && !IsTokenExpired(token);
+        }
+        
+        private bool HasAdminRole(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            var role = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+            return role == "admin";
         }
     }
 }

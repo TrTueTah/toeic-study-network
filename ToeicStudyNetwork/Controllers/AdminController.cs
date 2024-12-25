@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ToeicStudyNetwork.Dtos;
@@ -7,6 +8,7 @@ using ToeicStudyNetwork.Models;
 namespace ToeicStudyNetwork.Controllers;
 
 [Route("[controller]")]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly HttpClient _httpClient;
@@ -79,11 +81,5 @@ public class AdminController : Controller
     {
         var exam = await FetchExamById(examId);
         return View("CreateTest", exam);
-    }
-
-    [HttpGet("{examId}/upload")]
-    public IActionResult UploadAssets()
-    {
-        return View();
     }
 }

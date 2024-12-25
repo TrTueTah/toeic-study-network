@@ -83,15 +83,21 @@ Layout = "_LayoutAdmin";
             </button>
             <button class="button next-button" type="button" id="next-page-button">
                 <span>Move to next page</span>
-                <i class="fa fa-arrow-right"></i>
+                <i class="fa fa-arrow-right" id="next-page-arrow" style="margin-left: 0.5rem"></i>
+                <div class="spinner-border spinner-border-sm text-light d-none" id="next-page-loading" role="status" style="margin-left: 0.5rem">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </button>
             <button class="button next-button d-none" type="button" id="previous-page-button">
                 <i class="fa fa-arrow-left"></i>
                 <span>Move to previous page</span>
             </button>
             <button class="button save-button d-none" type="button" id="save-question-button">
-                <i class="fa fa-save"></i>
                 <span>Save</span>
+                <i class="fa fa-save" id="save-icon" style="margin-left: 0.5rem"></i>
+                <div class="spinner-border spinner-border-sm text-light d-none" id="save-loading" role="status" style="margin-left: 0.5rem">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </button>
         </div>
     </div>
@@ -140,6 +146,8 @@ Layout = "_LayoutAdmin";
                };
                reader.readAsText(file);
            }
+           
+           
     });
     </script>
 }
