@@ -46,26 +46,26 @@
                                     <div class="username">@comment.Username</div>
                                     <div class="timestamp">@comment.CreatedAt.ToString("dd/MM/yyyy")</div>
                                 </div>
-                                <div class="dropdown">
-                                    <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <i class="bi bi-three-dots"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <span>Saved</span>
-                                                <i class="bi bi-bookmark"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#">
-                                                <span>Copy link</span>
-                                                <i class="bi bi-link-45deg"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                @* <div class="dropdown"> *@
+                                @*     <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" *@
+                                @*             aria-expanded="false"> *@
+                                @*         <i class="bi bi-three-dots"></i> *@
+                                @*     </button> *@
+                                @*     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> *@
+                                @*         <li> *@
+                                @*             <a class="dropdown-item" href="#"> *@
+                                @*                 <span>Saved</span> *@
+                                @*                 <i class="bi bi-bookmark"></i> *@
+                                @*             </a> *@
+                                @*         </li> *@
+                                @*         <li> *@
+                                @*             <a class="dropdown-item" href="#"> *@
+                                @*                 <span>Copy link</span> *@
+                                @*                 <i class="bi bi-link-45deg"></i> *@
+                                @*             </a> *@
+                                @*         </li> *@
+                                @*     </ul> *@
+                                @* </div> *@
                             </div>
                             <div class="media-content" style="cursor:pointer;" id="mediaMain-@comment.Id">
                                 <div class="media-caption">
@@ -95,6 +95,7 @@
 
 
 @section scripts {
+    <script src="~/js/forum.js" asp-append-version="true"></script>
     <script src="~/js/forum_post_detail.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <script>

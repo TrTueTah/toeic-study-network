@@ -326,56 +326,92 @@ function previewQuestions() {
   toggleEditMode(testQuestionSection, false);
 }
 
-function collectQuestionData() {
-  return questionGroups.map(group => {
-    return group.questions.map(questionId => {
-      const questionTitle = document.getElementById(`test-question-input-${questionId}`).value;
-      const answerA = document.getElementById(`test-answerA-input-${questionId}`).value;
-      const answerB = document.getElementById(`test-answerB-input-${questionId}`).value;
-      const answerC = document.getElementById(`test-answerC-input-${questionId}`).value;
-      const answerD = document.getElementById(`test-answerD-input-${questionId}`).value;
+function collectQuestionData(questionGroups, status) {
+  if (status === 'uploaded') {
+    console.log(questionGroups);
+    return questionGroups.map(group => {
+      return group.questions.map(question => {
+        const questionId = question.id;
+        const questionTitle = document.getElementById(`test-question-input-${questionId}`).value;
+        const answerA = document.getElementById(`test-answerA-input-${questionId}`).value;
+        const answerB = document.getElementById(`test-answerB-input-${questionId}`).value;
+        const answerC = document.getElementById(`test-answerC-input-${questionId}`).value;
+        const answerD = document.getElementById(`test-answerD-input-${questionId}`).value;
 
-      // const correctAnswer = [
-      //   'A', 'B', 'C', 'D'
-      // ].find(letter => document.getElementById(`test-answer${letter}-${questionId}`).checked);
+        // const correctAnswer = [
+        //   'A', 'B', 'C', 'D'
+        // ].find(letter => document.getElementById(`test-answer${letter}-${questionId}`).checked);
 
-      return {
-        title: questionTitle,
-        answerA: answerA,
-        answerB: answerB,
-        answerC: answerC,
-        answerD: answerD,
-        correctAnswer: "A",
-        questionNumber: questionId
-      };
-    });
-  }).flat();
+        return {
+          title: questionTitle,
+          answerA: answerA,
+          answerB: answerB,
+          answerC: answerC,
+          answerD: answerD,
+          correctAnswer: "A",
+          questionNumber: questionId
+        };
+      });
+    }).flat();
+  } else {
+    console.log(questionGroups);
+    return questionGroups.map(group => {
+      return group.questions.map(questionId => {
+        console.log("id", questionId);
+        const questionTitle = document.getElementById(`test-question-input-${questionId}`).value;
+        const answerA = document.getElementById(`test-answerA-input-${questionId}`).value;
+        const answerB = document.getElementById(`test-answerB-input-${questionId}`).value;
+        const answerC = document.getElementById(`test-answerC-input-${questionId}`).value;
+        const answerD = document.getElementById(`test-answerD-input-${questionId}`).value;
+
+        // const correctAnswer = [
+        //   'A', 'B', 'C', 'D'
+        // ].find(letter => document.getElementById(`test-answer${letter}-${questionId}`).checked);
+
+        return {
+          title: questionTitle,
+          answerA: answerA,
+          answerB: answerB,
+          answerC: answerC,
+          answerD: answerD,
+          correctAnswer: "A",
+          questionNumber: questionId
+        };
+      });
+    }).flat();
+  }
 }
 
 async function saveQuestions() {
-  const examId = document.getElementById("test-info-id").textContent.trim();
-  const questionsData = collectQuestionData();
+  const examId = localStorage.getItem('examId');
+  const response = await fetch(`http://localhost:5112/api/v1/exam/getExamById/${examId}`);
+  const examData = await response.json();
+  let questionsData = []
+  if (examData.questionGroups.length > 0) {
+    return examData;
+  } else {
+    questionsData = collectQuestionData(questionGroups, "pending");
+    try {
+      const response = await fetch('http://localhost:5112/api/v1/question/createQuestionList', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json-patch+json',
+        },
+        body: JSON.stringify({
+          examId: examId,
+          questions: questionsData
+        })
+      });
 
-  try {
-    const response = await fetch('http://localhost:5112/api/v1/question/createQuestionList', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json-patch+json',
-      },
-      body: JSON.stringify({
-        examId: examId,
-        questions: questionsData
-      })
-    });
+      if (!response.ok) {
+        throw new Error(`Failed to save questions: ${response.statusText}`);
+      }
 
-    if (!response.ok) {
-      throw new Error(`Failed to save questions: ${response.statusText}`);
+      return response.json();
+    } catch (error) {
+      console.error('Error submitting questions:', error);
+      throw error;
     }
-
-    return response; 
-  } catch (error) {
-    console.error('Error submitting questions:', error);
-    throw error;
   }
 }
 
@@ -387,10 +423,12 @@ async function handleMoveToNextPage () {
   const editQuestionButton = document.getElementById("edit-question-button");
   const previewQuestionButton = document.getElementById("preview-question-button");
   const saveQuestionButton = document.getElementById("save-question-button");
-
+  const nextPageLoading = document.getElementById("next-page-loading");
+  const nextPageArrow = document.getElementById('next-page-arrow');
   try {
-    const response = await saveQuestions();
-    const data = await response.json();
+    nextPageLoading.classList.remove("d-none");
+    nextPageArrow.classList.add("d-none");
+    const data = await saveQuestions();
 
     if (data.questionGroups) {
       const updatedGroups = questionGroups.map(group => {
@@ -406,11 +444,13 @@ async function handleMoveToNextPage () {
 
         return group;
       });
-      console.log(updatedGroups);
+      console.log("updatedGroups", updatedGroups);
       updatedGroups.forEach(group => {
         renderUploadMediaSection(group);
       });
     }
+    nextPageLoading.classList.add("d-none");
+    nextPageArrow.classList.remove("d-none");
 
     this.classList.add("d-none");
     previousPageButton.classList.remove("d-none");
@@ -422,6 +462,8 @@ async function handleMoveToNextPage () {
     previewQuestionButton.classList.add("d-none");
     saveQuestionButton.classList.remove("d-none");
   } catch (error) {
+    nextPageLoading.classList.add("d-none");
+    nextPageArrow.classList.remove("d-none");
     console.error("Error saving questions or rendering media section:", error);
   }
 }
@@ -457,11 +499,15 @@ function handleMoveToPreviousPage () {
 }
 
 async function handleSaveMediaFile () {
+  const saveLoading = document.getElementById("save-loading");
+  const saveIcon = document.getElementById("save-icon");
   const audioInputs = document.querySelectorAll('input[type="file"][accept="audio/*"]');
   const imageInputs = document.querySelectorAll('input[type="file"][accept="image/*"]');
   const audioApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupAudio";
   const imageApiEndpoint = "http://localhost:5112/api/v1/questionGroup/uploadQuestionGroupImage";
 
+  saveLoading.classList.remove('d-none');
+  saveIcon.classList.add('d-none');
   try {
     const uploadData = {};
 
@@ -525,9 +571,14 @@ async function handleSaveMediaFile () {
       } else {
         console.log(`Uploaded image successfully for Group ID: ${groupId}`);
       }
+
+      saveLoading.classList.add('d-none');
+      saveIcon.classList.remove('d-none');
     }
   } catch (error) {
     console.error("Error uploading files:", error);
+    saveLoading.classList.add('d-none');
+    saveIcon.classList.remove('d-none');
   }
 }
 

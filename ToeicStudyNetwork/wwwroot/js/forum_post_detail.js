@@ -93,6 +93,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const postId = document.getElementById("postId").value;
     formData.append("postId", postId);
+    
+    const commentLoading = document.getElementById("comment-loading");
+    
+    commentLoading.classList.remove("d-none")
 
     try {
       const response = await fetch("/Forum/CreateComment", {
@@ -101,10 +105,13 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       if (response.ok) {
+        commentLoading.classList.add("d-none")
         window.location.reload();
       } else {
         const error = await response.text();
         console.error("Lỗi khi đăng bài viết:", error);
+        commentLoading.classList.add("d-none")
+        
       }
     } catch (error) {
       console.error("Lỗi kết nối:", error);

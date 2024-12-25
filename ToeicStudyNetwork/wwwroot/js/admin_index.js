@@ -24,6 +24,12 @@ function renderDropdownMenu(data, containerId, onClickHandler) {
   });
 }
 
+function extractExamIdFromUrl(url) {
+  const urlObj = new URL(url); 
+  const examId = urlObj.pathname.split('/')[2]; 
+  return examId;
+}
+
 async function saveNewTest() {
   const testName = document.getElementById('testName').value.trim();
   const testType = document.getElementById('testTypeDropdown').getAttribute('data-value');
@@ -42,6 +48,8 @@ async function saveNewTest() {
     headers: { 'Content-Type': 'application/json' }
   }).then(response => {
     if (response.redirected) {
+      const examId = extractExamIdFromUrl(response.url);
+      localStorage.setItem("examId", examId);
       window.location.href = response.url;
     } else {
       return response.json();
@@ -152,4 +160,6 @@ document.querySelectorAll(".test-card-title-container").forEach(container => {
   })
 })
 
-
+document.addEventListener('DOMContentLoaded', function () {
+  localStorage.removeItem("examId");
+})
