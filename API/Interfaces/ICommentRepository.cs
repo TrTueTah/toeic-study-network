@@ -13,4 +13,5 @@ public interface ICommentRepository
     bool UpdateComment(Comment comment);
 
     bool CommentExists(string id);
+    bool ChangeCommentStatus(string id);
 }

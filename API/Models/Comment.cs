@@ -10,5 +10,6 @@ public class Comment
     [AllowNull]
     public List<string>? MediaUrls { get; set; }
     public string Content { get; set; }
+    public string Status { get; set; }
     public DateTime CreatedAt { get; set; }
 }
