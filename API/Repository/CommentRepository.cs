@@ -54,8 +54,22 @@ public class CommentRepository : ICommentRepository
 
     public bool CommentExists(string id)
     {
-        return _context.Posts.Any(c => c.Id == id);
+        return _context.Comments.Any(c => c.Id == id);
     }
+
+    public bool ChangeCommentStatus(string id)
+    {
+        var comment = _context.Comments.Find(id);
+        if (comment == null)
+        {
+            return false;
+        }
+        
+        comment.Status = comment.Status == "Active" ? "Inactive" : "Active";
+
+        return Save();
+    }
+
     public bool Save()
     {
         var saved = _context.SaveChanges();

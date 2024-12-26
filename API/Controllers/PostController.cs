@@ -145,6 +145,7 @@ namespace API.Controllers
             var post = _mapper.Map<Post>(createPostDto);
             post.CreatedAt = DateTime.UtcNow;
             post.MediaUrls = new List<string>();
+            post.Status = "Active";
 
             if (!_postRepository.CreatePost(post))
             {
@@ -232,6 +233,25 @@ namespace API.Controllers
             }
 
             return NoContent();
+        }
+        
+        [HttpPut("changePostStatus/{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult ChangePostStatus(string id)
+        {
+            if (!_postRepository.PostExists(id))
+            {
+                return NotFound("Post not found.");
+            }
+
+            if (!_postRepository.ChangePostStatus(id))
+            {
+                return StatusCode(500, "A problem occurred while updating the post status.");
+            }
+
+            return Ok();
         }
     }
 }

@@ -95,4 +95,18 @@ public class PostRepository : IPostRepository
         return _context.Posts
             .Count(p => p.Likes.Any(like => like.UserId == userId));
     }
+
+    public bool ChangePostStatus(string id)
+    {
+        var post = _context.Posts.Find(id);
+        if (post == null)
+        {
+            return false;
+        }
+        
+        post.Status = post.Status == "Active" ? "Inactive" : "Active";
+        
+        return Save();
+
+    }
 }

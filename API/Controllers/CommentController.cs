@@ -100,6 +100,7 @@ namespace API.Controllers
             var comment = _mapper.Map<Comment>(createCommentDto);
             comment.CreatedAt = DateTime.UtcNow;
             comment.MediaUrls = new List<string>();
+            comment.Status = "Active";
 
             if (!_commentRepository.CreateComment(comment)) return StatusCode(500, "A problem occurred.");
 
@@ -165,6 +166,25 @@ namespace API.Controllers
             }
 
             return NoContent();
+        }
+        
+        [HttpPut("changeCommentStatus/{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult ChangeCommentStatus(string id)
+        {
+            if (!_commentRepository.CommentExists(id))
+            {
+                return NotFound("Comment not found.");
+            }
+
+            if (!_commentRepository.ChangeCommentStatus(id))
+            {
+                return StatusCode(500, "A problem occurred while updating the comment status.");
+            }
+
+            return Ok();
         }
     }
 }

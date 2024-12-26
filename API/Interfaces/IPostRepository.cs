@@ -15,4 +15,5 @@ public interface IPostRepository
     bool PostExists(string id);
     int GetAllPostsCount();
     int GetLikedPostsByUserIdCount(string userId);
+    bool ChangePostStatus(string id);
 }
