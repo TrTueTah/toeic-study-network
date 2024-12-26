@@ -169,4 +169,44 @@ document.addEventListener('DOMContentLoaded', function () {
       window.location.href = url;
     })
   })
+
+  document.addEventListener("click", async (event) => {
+    const target = event.target;
+
+    if (target.closest("#remove-post-button")) {
+      const button = target.closest("#remove-post-button");
+      const postId = button.getAttribute("data-post-id");
+
+      if (!postId) {
+        console.error("Missing postId");
+        return;
+      }
+
+      if (confirm("Are you sure you want to remove this post?")) {
+        await removePost(postId);
+      }
+    }
+  });
 })
+
+async function removePost(postId) {
+  try {
+    const response = await fetch(`http://localhost:5112/api/v1/post/changePostStatus/${postId}`, {
+      method: "PUT",
+      headers: {
+        "accept": "*/*"
+      }
+    });
+
+    if (response.ok) {
+      console.log("Post removed successfully");
+      document.getElementById(postId).remove();
+    } else {
+      console.error("Failed to remove post");
+      alert("Failed to remove post");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("An error occurred");
+  }
+}

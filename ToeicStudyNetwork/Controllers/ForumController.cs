@@ -30,6 +30,7 @@ namespace ToeicStudyNetwork.Controllers
                 CreatedAt = p.CreatedAt,
                 Likes = p.Likes,
                 Comments = p.Comments,
+                Status = p.Status,
                 UserId = p.UserId,
                 UserName = p.UserName,
                 UserImageUrl = p.UserImageUrl,
@@ -40,6 +41,7 @@ namespace ToeicStudyNetwork.Controllers
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
             ViewBag.CurrentTab = "newest";
+            ViewBag.Role = Request.Cookies["role"];
             
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
@@ -64,15 +66,23 @@ namespace ToeicStudyNetwork.Controllers
                 CreatedAt = p.CreatedAt,
                 Likes = p.Likes,
                 Comments = p.Comments,
+                Status = p.Status,
                 UserId = p.UserId,
                 UserName = p.UserName,
                 UserImageUrl = p.UserImageUrl,
                 IsLike = p.Likes.Any(like => like.UserId == currentUserId)
             }).ToList();
             
+            // posts = posts.OrderByDescending(p => p.Status == "Active")
+            //     .ThenBy(p => p.Status == "Inactive")
+            //     .ThenByDescending(p => p.CreatedAt)
+            //     .ToList();
+            
+            ViewBag.Token = Request.Cookies["token"];
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
             ViewBag.CurrentTab = "liked";
+            ViewBag.Role = Request.Cookies["role"];
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
@@ -93,6 +103,7 @@ namespace ToeicStudyNetwork.Controllers
             {
                 Id = postResponse.Id,
                 MediaUrls = postResponse.MediaUrls,
+                Content = postResponse.Content,
                 CreatedAt = postResponse.CreatedAt,
                 Likes = postResponse.Likes,
                 Comments = postResponse.Comments,
@@ -104,6 +115,7 @@ namespace ToeicStudyNetwork.Controllers
             
             ViewBag.UserImageUrl = Request.Cookies["userImage"];
             ViewBag.UserName = Request.Cookies["given_name"];
+            ViewBag.Role = Request.Cookies["role"];
             
             return View("PostDetail", postData);
         }
