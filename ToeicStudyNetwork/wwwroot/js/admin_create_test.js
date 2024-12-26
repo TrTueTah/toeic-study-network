@@ -567,11 +567,14 @@ async function handleSaveMediaFile () {
         console.log(`Uploaded image successfully for Group ID: ${groupId}`);
       }
 
-      saveLoading.classList.add('d-none');
-      saveIcon.classList.remove('d-none');
+      window.history.back();
+      
     }
   } catch (error) {
     console.error("Error uploading files:", error);
+    saveLoading.classList.add('d-none');
+    saveIcon.classList.remove('d-none');
+  } finally {
     saveLoading.classList.add('d-none');
     saveIcon.classList.remove('d-none');
   }

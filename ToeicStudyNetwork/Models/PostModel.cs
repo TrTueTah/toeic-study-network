@@ -13,6 +13,7 @@ namespace ToeicStudyNetwork.Models
         public DateTime CreatedAt { get; set; }
         public List<LikeModel> Likes { get; set; }
         public List<CommentModel> Comments { get; set; }
+        public string Status { get; set; }
         public string UserId { get; set; }
         public string UserName { get; set; }
         public string UserImageUrl { get; set; }

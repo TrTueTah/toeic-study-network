@@ -22,3 +22,29 @@ function fullTestTabActive () {
   fullTestTab.classList.remove("d-none");
 }
 
+function checkPartSelection() {
+  const partCheckboxes = document.querySelectorAll('#practice-tab input[name="partNumbers"]');
+  const startButton = document.querySelector('#practice-tab button[type="submit"]');
+  let isPartSelected = false;
+
+  for (let i = 0; i < partCheckboxes.length; i++) {
+    if (partCheckboxes[i].checked) {
+      isPartSelected = true;
+      break;
+    }
+  }
+
+  startButton.disabled = !isPartSelected; 
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  checkPartSelection(); 
+
+  const partCheckboxes = document.querySelectorAll('#practice-tab input[name="partNumbers"]');
+  partCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', checkPartSelection);
+  });
+
+  document.getElementById('practice-tab-button').addEventListener('click', checkPartSelection);
+  document.getElementById('full-test-tab-button').addEventListener('click', checkPartSelection);
+});

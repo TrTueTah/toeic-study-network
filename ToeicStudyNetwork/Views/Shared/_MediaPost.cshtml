@@ -9,26 +9,23 @@
                 <div class="username">@Model.UserName</div>
                 <div class="timestamp">@Model.CreatedAt.ToString("dd/MM/yyyy")</div>
             </div>
-            @* <div class="dropdown"> *@
-            @*     <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" *@
-            @*             aria-expanded="false"> *@
-            @*         <i class="bi bi-three-dots"></i> *@
-            @*     </button> *@
-            @*     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"> *@
-            @*         <li> *@
-            @*             <a class="dropdown-item" href="#"> *@
-            @*                 <span>Saved</span> *@
-            @*                 <i class="bi bi-bookmark"></i> *@
-            @*             </a> *@
-            @*         </li> *@
-            @*         <li> *@
-            @*             <a class="dropdown-item" href="#"> *@
-            @*                 <span>Copy link</span> *@
-            @*                 <i class="bi bi-link-45deg"></i> *@
-            @*             </a> *@
-            @*         </li> *@
-            @*     </ul> *@
-            @* </div> *@
+            @if (ViewBag.Role == "Admin" )
+            {
+                <div class="dropdown">
+                    <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item" id="remove-post-button" data-post-id="@Model.Id">
+                                <span class="text-danger">Remove</span>
+                                <i class="bi bi-trash3-fill text-danger"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            } 
         </div>
         <div class="media-content" style="cursor:pointer;">
             <div class="media-caption"  id="media-caption" data-url="@Url.Action("PostDetail", "Forum", new { postId = @Model.Id })">
