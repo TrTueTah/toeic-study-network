@@ -75,21 +75,36 @@
         if (token) {
             const givenName = getCookie("given_name");
             const userImage = getCookie("userImage");
+            const role = getCookie("role");
+
+            // Xây dựng danh sách dropdown
+            let dropdownMenu = `
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><h6 class="dropdown-header fw-bold text-dark">${givenName}</h6></li>
+                <li><a class="dropdown-item" type="button" href="/Personal">Hồ sơ chi tiết</a></li>
+                <li><a class="dropdown-item" type="button" href="/Personal/ChangePassword">Đổi mật khẩu</a></li>`;
+
+            // Kiểm tra vai trò Admin để thêm mục quản lý đề thi
+            if (role === "Admin") {
+                dropdownMenu += `
+                <li><a class="dropdown-item" type="button" href="/Admin">Quản lý đề thi</a></li>`;
+            }
+
+            dropdownMenu += `
+                <li><button class="dropdown-item text-danger" type="button" onclick="logout()">Đăng xuất</button></li>
+            </ul>`;
+
+            // Hiển thị thông tin người dùng và menu dropdown
             document.getElementById("user-info").innerHTML = `
-                <a type="button" data-bs-toggle="dropdown" aria-expanded="false" href="/" class="user-image">
-                    <img src="${userImage}" alt="userimage" class="rounded-circle">
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><h6 class="dropdown-header fw-bold text-dark">${givenName}</h6></li>
-                    <li><a class="dropdown-item" type="button" href="/Personal">Hồ sơ chi tiết</a></li>
-                    <li><a class="dropdown-item" type="button" href="/Personal/ChangePassword">Đổi mật khẩu</a></li>
-                    <li><button class="dropdown-item text-danger" type="button" onclick="logout()">Đăng xuất</button></li>
-                </ul>
-            `;
+            <a type="button" data-bs-toggle="dropdown" aria-expanded="false" href="/" class="user-image">
+                <img src="${userImage}" alt="userimage" class="rounded-circle">
+            </a>
+            ${dropdownMenu}
+        `;
         } else {
             document.getElementById("user-info").innerHTML = `
-                <a class="btn-login" href="/Authentication/SignIn">Đăng nhập</a>
-            `;
+            <a class="btn-login" href="/Authentication/SignIn">Đăng nhập</a>
+        `;
         }
     });
 </script>

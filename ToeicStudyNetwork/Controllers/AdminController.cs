@@ -8,7 +8,6 @@ using ToeicStudyNetwork.Models;
 namespace ToeicStudyNetwork.Controllers;
 
 [Route("[controller]")]
-[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly HttpClient _httpClient;

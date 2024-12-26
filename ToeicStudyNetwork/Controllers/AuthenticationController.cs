@@ -74,7 +74,7 @@ namespace ToeicStudyNetwork.Controllers
         }
         
        [HttpPost]
-public async Task<IActionResult> SignUp(SignUpViewModel model)
+        public async Task<IActionResult> SignUp(SignUpViewModel model)
 {
     if (!ModelState.IsValid)
     {
@@ -145,8 +145,7 @@ public async Task<IActionResult> SignUp(SignUpViewModel model)
 
     return View(model);
 }
-
-
+        
         public IActionResult SignIn()
         {
             if (IsAuthenticated())
@@ -208,7 +207,7 @@ public async Task<IActionResult> SignUp(SignUpViewModel model)
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
             var role = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-            return role == "admin";
+            return role == "Admin";
         }
     }
 }

@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (examData.questionGroups.length > 0) {
     examData.questionGroups.forEach(group => {
       group.questions.forEach((questionItem, index) => {
-        console.log(questionItem);
         const questionId = questionItem.id;
         const questionElement = document.createElement('div');
         questionElement.id = `test-question-${questionId}`;
@@ -170,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('test-question-list').appendChild(questionElement);
 
         const questionListItem = `
-        <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionItem.questionNumber}</span>
+        <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-listitem-${questionId}">${questionItem.questionNumber}</span>
       `;
         document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
       });
@@ -233,20 +232,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('test-question-list').appendChild(questionElement);
 
         const questionListItem = `
-        <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-lisitem-${questionId}">${questionId}</span>
+        <span class="test-questions-listitem" data-qid="${questionId}" id="test-questions-listitem-${questionId}">${questionId}</span>
       `;
         document.querySelector('.test-questions-list-wrapper').insertAdjacentHTML('beforeend', questionListItem);
       });
     });
   }
-});
 
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.test-questions-listitem').forEach(item => {
     item.addEventListener('click', function () {
+      console.log('clicked');
       const qid = this.dataset.qid;
       const targetQuestion = document.getElementById(`test-question-${qid}`);
       if (targetQuestion) {
@@ -266,13 +261,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+  
+});
+
 document.addEventListener('scroll', function () {
   const subContainer = document.querySelector('.sub-container');
   const scrollThreshold = 100;
 
   if (window.scrollY > scrollThreshold) {
     subContainer.classList.add('sticky');
-    subContainer.style.top = '15vh';
+    subContainer.style.top = '13vh';
   } else {
     subContainer.classList.remove('sticky');
     subContainer.style.top = '12vh';
@@ -328,7 +327,6 @@ function previewQuestions() {
 
 function collectQuestionData(questionGroups, status) {
   if (status === 'uploaded') {
-    console.log(questionGroups);
     return questionGroups.map(group => {
       return group.questions.map(question => {
         const questionId = question.id;
@@ -354,10 +352,8 @@ function collectQuestionData(questionGroups, status) {
       });
     }).flat();
   } else {
-    console.log(questionGroups);
     return questionGroups.map(group => {
       return group.questions.map(questionId => {
-        console.log("id", questionId);
         const questionTitle = document.getElementById(`test-question-input-${questionId}`).value;
         const answerA = document.getElementById(`test-answerA-input-${questionId}`).value;
         const answerB = document.getElementById(`test-answerB-input-${questionId}`).value;
@@ -428,12 +424,13 @@ async function handleMoveToNextPage () {
   try {
     nextPageLoading.classList.remove("d-none");
     nextPageArrow.classList.add("d-none");
+    
     const data = await saveQuestions();
 
     if (data.questionGroups) {
       const updatedGroups = questionGroups.map(group => {
-        const newGroup = data.questionGroups[group.groupId];
-
+        const newGroup = data.questionGroups[group.groupId - 1];
+        console.log("newGroup", newGroup);
         if (newGroup) {
           return {
             groupId: newGroup.questions[0].groupId,
@@ -444,7 +441,6 @@ async function handleMoveToNextPage () {
 
         return group;
       });
-      console.log("updatedGroups", updatedGroups);
       updatedGroups.forEach(group => {
         renderUploadMediaSection(group);
       });
@@ -471,7 +467,6 @@ async function handleMoveToNextPage () {
 function handleEditQuestion () {
   const testQuestionSection = document.getElementById('test-question-section');
   toggleEditMode(testQuestionSection, true);
-  console.log(testQuestionSection);
   questions.map((question) => {
     const questionSection = document.getElementById(`test-question-${question.id}`);
     toggleEditMode(questionSection, true);

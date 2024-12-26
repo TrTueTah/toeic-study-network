@@ -14,12 +14,15 @@
 
     <div class="card">
         @await Html.PartialAsync("_ForumCardHeaderPartial")
-        <div id="post-container">
-            @foreach (var post in Model)
-            {
-                @await Html.PartialAsync("_MediaPost", post)
-            }
-        </div>
+        @if (ViewBag.Token != null)
+        {
+            <div id="post-container">
+                @foreach (var post in Model)
+                {
+                    @await Html.PartialAsync("_MediaPost", post)
+                }
+            </div>
+        }
         @await Html.PartialAsync("_LoadingPartial")
     </div>
 </div>
