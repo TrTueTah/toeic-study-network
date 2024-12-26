@@ -1,6 +1,7 @@
 using API.Data;
 using API.Dtos.ExamDto;
 using API.Dtos.ExamSeriesDto;
+using API.Dtos.QuestionGroupDto;
 using API.Interfaces;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -33,10 +34,22 @@ namespace API.Repository
                     Title = e.Title,
                     CreatedAt = e.CreatedAt,
                     AudioFilesUrl = e.AudioFilesUrl,
-                    QuestionGroups = e.QuestionGroups,
+                    QuestionGroups = e.QuestionGroups
+                        .OrderBy(qg => qg.Questions.Min(q => q.QuestionNumber))
+                        .Select(qg => new GetAllQuestionGroupDto
+                        {
+                            Id = qg.Id,
+                            PartNumber = qg.PartNumber,
+                            AudioFilesUrl = qg.AudioFilesUrl,
+                            ImageFilesUrl = qg.ImageFilesUrl,
+                            Questions = qg.Questions
+                                .OrderBy(q => q.QuestionNumber)
+                                .ToList()
+                        })
+                        .ToList(),
                     ExamSeries = new GetExamSeriesDto
                     {
-                        Id = e.ExamSeries!.Id,
+                        Id = e.ExamSeries.Id,
                         Name = e.ExamSeries.Name
                     },
                 })
@@ -58,6 +71,16 @@ namespace API.Repository
                     AudioFilesUrl = e.AudioFilesUrl,
                     QuestionGroups = e.QuestionGroups
                         .OrderBy(qg => qg.Questions.Min(q => q.QuestionNumber))
+                        .Select(qg => new GetAllQuestionGroupDto
+                        {
+                            Id = qg.Id,
+                            PartNumber = qg.PartNumber,
+                            AudioFilesUrl = qg.AudioFilesUrl,
+                            ImageFilesUrl = qg.ImageFilesUrl,
+                            Questions = qg.Questions
+                                .OrderBy(q => q.QuestionNumber)
+                                .ToList()
+                        })
                         .ToList(),
                     ExamSeries = new GetExamSeriesDto
                     {
@@ -69,6 +92,7 @@ namespace API.Repository
 
             return exam;
         }
+
 
         public GetExamByPartDto GetExamByPart(string examId, List<int> partNumbers)
         {
