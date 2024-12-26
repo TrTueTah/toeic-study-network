@@ -11,6 +11,7 @@ public class PostDto
     public DateTime CreatedAt { get; set; }
     public List<Like> Likes { get; set; }
     public List<Comment> Comments { get; set; }
+    public string Status { get; set; }
     public string UserId { get; set; }
     public string UserName { get; set; }
     public string UserImageUrl { get; set; }

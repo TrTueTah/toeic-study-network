@@ -8,6 +8,7 @@ public class Post
     public DateTime CreatedAt { get; set; }
     public List<Like> Likes { get; set; }
     public List<Comment> Comments { get; set; }
+    public string Status { get; set; }
     public string UserId { get; set; }
     public User User { get; set; }
 }
