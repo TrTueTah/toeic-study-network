@@ -1,6 +1,6 @@
 function loadQuestionDetail(questionId) {
   const modalContent = document.getElementById('result-modal-content');
-  modalContent.innerHTML = '<p>Loading...</p>'; // Hiển thị trạng thái loading
+  modalContent.innerHTML = '<p>Loading...</p>'; 
 
   fetch(`http://localhost:5112/api/v1/result/getQuestionDetailResult/${questionId}`)
     .then(response => {
